@@ -1,0 +1,35 @@
+from django.db import models
+from Work.models import Work
+from Reviewer.models import Reviewer
+
+
+class Comment(models.Model):
+    # 审稿结果
+    RESULT_RECEIVE = True,
+    RESULT_REFUSE = False,
+
+    re_work = models.ForeignKey(
+        Work,
+        verbose_name="关联作品",
+        blank=False,
+        db_index=True,
+    )
+    re_reviewer = models.ForeignKey(
+        Reviewer,
+        verbose_name="关联审稿员",
+        blank=False,
+        db_index=True,
+    )
+    content = models.CharField(
+        verbose_name="评论",
+        max_length=500,
+        default=None,
+    )
+    result = models.BooleanField(
+        verbose_name="审稿结果",
+        default=RESULT_RECEIVE,
+    )
+    create_time = models.DateTimeField(
+        verbose_name="审稿时间",
+        auto_created=True,
+    )
