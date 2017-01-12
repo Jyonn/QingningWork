@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'AbstractUser',
+    'Writer',
+    'Reviewer',
+    'Work',
+    'Comment',
 ]
 
 MIDDLEWARE = [
@@ -76,9 +81,14 @@ WSGI_APPLICATION = 'QingningWork.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'read_default_file': os.path.join(BASE_DIR, 'mysql.local.conf'),
+            'init_command':
+                'SET default_storage_engine=INNODB; SET sql_mode=\'STRICT_TRANS_TABLES\'; SET innodb_strict_mode=1',
+        },
+    },
 }
 
 
@@ -106,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 

@@ -33,7 +33,7 @@ class AbstractUser(models.Model):
         verbose_name="上次登录时间",
         default=None,
     )
-    last_ipv4 = models.IPAddressField(
+    last_ipv4 = models.GenericIPAddressField(
         verbose_name="上次登录IP",
         default=None,
     )

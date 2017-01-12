@@ -33,6 +33,7 @@ class Writer(AbstractUser):
     fee_method = models.CharField(
         verbose_name="文字描述获取稿费的方式",
         default=None,
+        max_length=50,
     )
 
     @classmethod

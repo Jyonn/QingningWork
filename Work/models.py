@@ -37,6 +37,7 @@ class Work(models.Model):
     # 作品字段
     writer_name = models.CharField(
         verbose_name="笔名",
+        max_length=10,
         default=None,
     )
     work_name = models.CharField(
