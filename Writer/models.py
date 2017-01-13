@@ -34,6 +34,7 @@ class Writer(AbstractUser):
         verbose_name="文字描述获取稿费的方式",
         default=None,
         max_length=50,
+        null=True,
     )
 
     @classmethod

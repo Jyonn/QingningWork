@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -122,10 +122,20 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+def is_windows_system():
+    import platform
+    return 'Windows' in platform.system()
+
+if is_windows_system:
+    MEDIA_ROOT = 'D:/Program/web/QingNingWork/'
+else:
+    MEDIA_ROOT = '/home/web/QingNingWork/'
+
 STATIC_URL = '/static/'
+WORK_URL = MEDIA_ROOT+'/work/'
