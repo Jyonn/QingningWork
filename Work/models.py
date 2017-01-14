@@ -5,11 +5,11 @@ from Reviewer.models import Reviewer
 
 class Work(models.Model):
     # 作品状态
-    STATUS_UNDER_WRITE = 0
-    STATUS_UNDER_REVIEW = 1
-    STATUS_RECEIVED = 2
-    STATUS_REFUSED = 3
-    STATUS_CONFIRM_FEE = 4
+    STATUS_UNDER_WRITE = 0  # 正在创作
+    STATUS_UNDER_REVIEW = 1  # 正在审稿
+    STATUS_RECEIVED = 2  # 审稿通过，商讨稿费
+    STATUS_REFUSED = 3  # 审稿驳回
+    STATUS_CONFIRM_FEE = 4  # 确认稿费
     STATUS_TABLE = [
         (STATUS_UNDER_WRITE, "正在创作"),
         (STATUS_UNDER_REVIEW, "正在审稿"),

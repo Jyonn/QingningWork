@@ -29,7 +29,17 @@ class Comment(models.Model):
         verbose_name="审稿结果",
         default=RESULT_RECEIVE,
     )
-    create_time = models.DateTimeField(
+    comment_time = models.DateTimeField(
         verbose_name="审稿时间",
         auto_created=True,
     )
+    is_updated = models.BooleanField(
+        verbose_name="是否有更新（此条无效）",
+        default=False,
+    )
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        comment = cls(*args, **kwargs)
+        comment.save()
+        return comment

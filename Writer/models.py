@@ -11,7 +11,7 @@ class Writer(AbstractUser):
         editable=False,
     )
     total_works = models.IntegerField(
-        verbose_name="全部投稿作品数",
+        verbose_name="全部作品数",
         default=0,
     )
     total_received = models.IntegerField(
