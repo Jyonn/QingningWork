@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Reviewer',
     'Work',
     'Comment',
+    'Magazine',
 ]
 
 MIDDLEWARE = [
@@ -133,9 +134,20 @@ def is_windows_system():
     return 'Windows' in platform.system()
 
 if is_windows_system:
-    MEDIA_ROOT = 'D:/Program/web/QingNingWork/'
+    MEDIA_ROOT = 'D:/Program/web/QingNingWork'
 else:
-    MEDIA_ROOT = '/home/web/QingNingWork/'
+    MEDIA_ROOT = '/home/web/QingNingWork'
+WORK_URL = os.path.join(MEDIA_ROOT, 'work')
+USER_URL = os.path.join(MEDIA_ROOT + 'user')
 
 STATIC_URL = '/static/'
-WORK_URL = MEDIA_ROOT+'/work/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static_files"),
+)
+ICO_URL = os.path.join(STATIC_URL, 'favicon.ico')
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder"
+)
+

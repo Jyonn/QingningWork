@@ -15,6 +15,7 @@ class AbstractUser(models.Model):
         verbose_name="笔名/称呼",
         max_length=20,
         default=None,
+        unique=True,
         null=True,
     )
     username = models.CharField(
@@ -65,6 +66,10 @@ class AbstractUser(models.Model):
         default=None,
         max_length=32,
         null=True,
+    )
+    is_frozen = models.BooleanField(
+        verbose_name="是否被冻结",
+        default=False,
     )
 
     @staticmethod
