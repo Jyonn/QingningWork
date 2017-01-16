@@ -50,7 +50,11 @@ def decorator_generator(verify_func, error_id):
 
 
 def require_login_func(request):
-    return False if "login_in" not in request.session else request.session["login_in"]
+    if "login_in" not in request.session or "role_id" not in request.session or "role_type" not in request.session:
+        return False
+    if request.session["login_in"] is None or request.session["role_id"] is None or request.session["role_type"] is None:
+        return False
+    return request.session["login_in"]
 
 
 def deny_login_func(request):
@@ -61,11 +65,17 @@ deny_login = decorator_generator(deny_login_func, Error.DENY_LOGIN)
 
 
 def require_login_writer_func(request):
-    return False if "login_in" not in request.session else request.session["role_type"] == AbstractUser.WRITER
+    ret = require_login_func(request)
+    if ret is not True:
+        return False
+    return request.session["role_type"] == AbstractUser.WRITER
 
 
 def require_login_reviewer_func(request):
-    return False if "login_in" not in request.session else request.session["role_type"] == AbstractUser.REVIEWER
+    ret = require_login_func(request)
+    if ret is not True:
+        return False
+    return request.session["role_type"] == AbstractUser.REVIEWER
 
 require_login_writer = decorator_generator(require_login_writer_func, Error.NEED_WRITER)
 require_login_reviewer = decorator_generator(require_login_reviewer_func, Error.NEED_REVIEWER)

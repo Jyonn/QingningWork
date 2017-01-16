@@ -16,14 +16,11 @@
     <script type="application/javascript" src="/static/js/jquery.json.js"></script>
     <style type="text/css">
         body {
-{#            background: #63624E;#}
-            background: url('/static/bk.jpg') no-repeat;
-            vertical-align: middle;
+            background: url('/static/bk.jpg') no-repeat center;
         }
         h1 {
             text-align: center;
             padding-top: 80px;
-{#            color: #56634E;#}
         }
         h2 {
             text-align: right;
@@ -49,54 +46,84 @@
         }
     </style>
     <script type="application/javascript">
-        function postJSON(url, jsonStr, successFunction) {
-        $.ajax({
-            url : url,
-            type : 'POST',
-            data : jsonStr,
-            async: true,
-            dataType : 'json',
-            contentType : 'application/text',
-            success : function(response, status, xhr) {
-                if (status != "success")
-                    alert("未知错误");
-                else if (response['code'] != 0)
-                    alert("错误"+response['code']+"："+response['msg']);
-                else successFunction(response);
-            },
-            error : function(xhr, error, exception) {
-                // handle the error.
-                alert(exception.toString());
-            }
-        });
+        function postJSON(url, json_str, success_function) {
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data : json_str,
+                async: true,
+                dataType : 'json',
+                contentType : 'application/text',
+                success : function(response, status) {
+                    if (status != "success")
+                        alert("未知错误");
+                    else if (response['code'] != 0)
+                        alert("错误"+response['code']+"："+response['msg']);
+                    else success_function(response);
+                },
+                error : function(xhr, error, exception) {
+                    // handle the error.
+                    alert(exception.toString());
+                }
+            });
+        }
+        function status_return(response) {
+            if (response["body"] == "reviewer")
+                self.location = "/reviewer/center.view/";
+            else if (response["body"] == "writer")
+                self.location = "/writer/center.view/";
         }
         function login() {
             var username = $("#username").val();
             var password = $("#password").val();
             var post = { username: username, password: password};
             var json_str = $.toJSON(post);
-            postJSON("/user/login/", json_str, function (response) {
-                alert(response["code"]);
-            })
+            postJSON("/user/login/", json_str, status_return);
         }
         function hide_pwd() {
-            if ($("#login_btn").prop("checked"))
+            if ($("#no-pwd").prop("checked"))
                 $("#pwd_block").css("display", "none");
             else
                 $("#pwd_block").css("display", "block");
         }
+        function body_img_callback(w, h) {
+            window.image_width = w;
+            window.image_height = h;
+            change_body_css();
+        }
+        $(document).ready(function () {
+            postJSON("/user/status/", "", status_return);
+            var image = new Image();
+            image.src = $("#body-img").attr("src");
+            if(image.complete){
+                body_img_callback(image.width, image.height);
+            } else {
+                image.onload = function(){
+                    body_img_callback(image.width, image.height);
+                }
+            }
+        });
+        function change_body_css() {
+            var height = window.innerHeight;
+            var width = window.innerWidth;
+            if (height * window.image_width > width * window.image_height)
+                $("body").css("background-size", "auto auto");
+            else
+                $("body").css("background-size", "100% auto");
+        }
     </script>
 </head>
-<body>
+<body onresize="change_body_css()">
+    <img id="body-img" src="/static/bk.jpg" style="display: none"/>
+
     <div class="container">
     <div class="row clearfix">
     <div class="col-xs-12 column">
         <h1 class="heading"><b>青柠文字审稿系统</b></h1>
-        <h2>纵使青山在，欲我驾鹤南</h2>
+        <h2>纵若在青山，欲我驾鹤南</h2>
     </div>
     </div>
     </div>
-
 
     <div class="container">
     <div class="col-xs-12 column">
@@ -108,10 +135,10 @@
                  <label>密码</label><input type="password" class="form-control" id="password" />
             </div>
             <div class="checkbox">
-                 <label onclick="hide_pwd()"><input type="checkbox" />免密登录</label>
+                 <label onclick="hide_pwd()"><input type="checkbox" id="no-pwd"/>免密登录</label>
             </div>
             <div class="submit-button">
-                <input onclick="login()" type="submit" class="btn btn-default" id="login_btn">登录</input>
+                <a onclick="login()" type="submit" class="btn btn-default" id="login_btn">登录</a>
             </div>
         </form>
     </div>

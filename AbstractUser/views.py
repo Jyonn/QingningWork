@@ -1,9 +1,5 @@
-from pydoc import html
-
 from Base.decorator import *
-from QingningWork.settings import WORK_URL
 from Reviewer.models import Reviewer
-from Work.models import Work
 from Writer.models import Writer
 
 
@@ -20,11 +16,13 @@ def login(request):
 
     try:
         reviewer = Reviewer.objects.get(username=username)
+        if reviewer.is_frozen is True:
+            return error_response(Error.FROZEN_USER)
         if reviewer.pwd_login:  # 未开启免密登录，需要验证密码
             if not reviewer.check_password(password):
                 return error_response(Error.WRONG_PASSWORD)
         login_to_session(request, reviewer, AbstractUser.REVIEWER)
-        return response()
+        return response(body=AbstractUser.REVIEWER)
     except Exception as e:
         print(Exception, ":", e)
 
@@ -34,7 +32,7 @@ def login(request):
             if not writer.check_password(password):
                 return error_response(Error.WRONG_PASSWORD)
         login_to_session(request, writer, AbstractUser.WRITER)
-        return response()
+        return response(body=AbstractUser.WRITER)
     except Exception as e:
         print(Exception, ":", e)
 
@@ -84,21 +82,40 @@ def change_password(request):
 @require_params(["password"])
 @require_login
 def unset_password(request):
+    """
+    当前用户设为免密模式
+    """
     password = request.POST["password"]
     user, user_type = get_user_from_session(request)
     if user is None:
         return error_response(Error.UNKNOWN)
-    if not user.pwd_login:
+    if not user.pwd_login:  # 检查是否已经是免密模式
         return error_response(Error.NO_PASSWORD_LOGIN)
-    if not user.check_password(password):
+    if not user.check_password(password):  # 检查密码是否正确
         return error_response(Error.WRONG_PASSWORD)
     user.pwd_login = False
     user.save()
     return response()
 
 
-@require_POST
 @require_login
 def logout(request):
+    """
+    登出系统
+    """
     logout_from_session(request)
     return response()
+
+
+@require_POST
+def status(request):
+    """
+    获取当前用户状态（未登录，已登录）
+    """
+    if require_login_func(request):
+        user, user_type = get_user_from_session(request)
+        if user is None:
+            return error_response(Error.UNKNOWN)
+        return response(body=user_type)
+    else:
+        return response()

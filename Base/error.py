@@ -1,4 +1,6 @@
 class Error:
+    LOGIN_AGAIN = 1018
+    FROZEN_USER = 1017
     NOT_YOUR_WORK = 1016
     NOT_UNDER_REVIEW = 1015
     WORK_IS_PRIVATE = 1014
@@ -37,4 +39,6 @@ class Error:
         (WORK_IS_PRIVATE, "作品没有公开"),
         (NOT_UNDER_REVIEW, "作品不在审阅状态"),
         (NOT_YOUR_WORK, "不是你上传的作品"),
+        (FROZEN_USER, "账号被冻结，请联系社长"),
+        (LOGIN_AGAIN, "重新登录"),
     ]

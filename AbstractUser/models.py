@@ -49,6 +49,20 @@ class AbstractUser(models.Model):
         default=None,
         null=True,
     )
+    this_login = models.DateTimeField(
+        verbose_name="本次登录时间",
+        default=None,
+        null=True,
+    )
+    this_ipv4 = models.GenericIPAddressField(
+        verbose_name="本次登录IP",
+        default=None,
+        null=True,
+    )
+    login_times = models.IntegerField(
+        verbose_name="登录次数",
+        default=0,
+    )
     phone = models.CharField(
         verbose_name="联系方式",
         default=None,

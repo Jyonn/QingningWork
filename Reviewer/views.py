@@ -122,12 +122,17 @@ def get_not_reviewed_list(request):
             is_updated=False,
         )
         if comment_work.count() == 0:
-            return_list.append(dict(
+            work_detail = dict(
                 wid=work.pk,
                 writer_name=work.writer_name,
                 work_name=work.work_name,
                 create_time=work.create_time.strftime("%Y-%m-%d %H:%M:%S"),
-            ))
+            )
+            if work.re_writer is not None:
+                work_detail["re_avatar"] = work.re_writer.avatar
+            else:
+                work_detail["re_avatar"] = work.re_reviewer.avatar
+            return_list.append(work_detail)
     return response(body=return_list)
 
 
@@ -341,3 +346,36 @@ def delete_work(request):
     work.save()
 
     return response()
+
+
+@require_POST
+@require_login_reviewer
+def info(request):
+    reviewer, user_type = get_user_from_session(request)
+    if reviewer is None:
+        return error_response(Error.UNKNOWN)
+    reviewers = Reviewer.objects.filter(is_frozen=False).order_by("-total_upload")
+
+    total_upload_rank = 0
+    for ret_reviewer in reviewers:
+        total_upload_rank += 1
+        if ret_reviewer == reviewer:
+            break
+
+    last_login_str = "第一次登录" if reviewer.last_login is None else reviewer.last_login.strftime("%Y-%m-%d %H:%M:%S")
+    ip_str = "第一次登录" if reviewer.last_ipv4 is None else get_address_by_ip_via_sina(reviewer.last_ipv4)
+
+    return_dict = dict(
+        nickname=reviewer.nickname,
+        avatar=reviewer.avatar,
+        total_review=reviewer.total_review,
+        total_received=reviewer.total_received,
+        total_refused=reviewer.total_refused,
+        total_upload=reviewer.total_upload,
+        total_upload_rank=total_upload_rank,
+        login_times=reviewer.login_times,
+        last_ipv4=ip_str,
+        last_login=last_login_str,
+    )
+
+    return response(body=return_dict)
