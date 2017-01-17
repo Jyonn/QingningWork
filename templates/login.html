@@ -67,11 +67,26 @@
                 }
             });
         }
+        function get_cookie(cookie_name)
+        {
+            var name = cookie_name + "=";
+            var ca = document.cookie.split(';');
+            for(var i = 0; i < ca.length; i++) {
+                var c = ca[i].trim();
+                if (c.indexOf(name) == 0)
+                    return c.substring(name.length, c.length);
+            }
+            return "";
+        }
         function status_return(response) {
-            if (response["body"] == "reviewer")
+            if (response["body"] == "reviewer") {
+{#                document.cookie = "role=reviewer";#}
                 self.location = "/reviewer/center.view/";
-            else if (response["body"] == "writer")
+            }
+            else if (response["body"] == "writer") {
+{#                document.cookie = "role=writer";#}
                 self.location = "/writer/center.view/";
+            }
         }
         function login() {
             var username = $("#username").val();

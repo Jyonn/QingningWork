@@ -51,6 +51,12 @@ def get_work_detail(request):
         status=work.status,
         fee=work.fee,
         work_type=work.work_type,
+        wrt_year=work.create_time.year,
+        wrt_month=work.create_time.month,
+        wrt_day=work.create_time.day,
+        wrt_hour=work.create_time.hour,
+        wrt_min=work.create_time.minute,
+        wrt_sec=work.create_time.second,
     )
     if work.re_writer is not None:
         work_detail["re_writer_id"] = work.re_writer.pk
@@ -165,9 +171,11 @@ def upload_work(request):
             f.close()
     else:
         # Base64解码并HTML转义特殊字符后Base64编码
-        content = base64.b64decode(content)
-        content = html.escape(str(content))
-        content = base64.b64encode(bytes(content, encoding="utf8"))
+        # content = base64.decodebytes(bytes(content, encoding="utf8"))
+        # content = content.decode()
+        # content = html.escape(content)
+        # content = base64.encodebytes(bytes(content, encoding="utf-8"))
+        content = bytes(content, encoding="utf-8")
         # 保存文本文件
         with open(file_path, "wb+") as f:
             f.write(content)

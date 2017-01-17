@@ -1,3 +1,5 @@
+import datetime
+
 from Base.decorator import *
 from Reviewer.models import Reviewer
 from Writer.models import Writer
@@ -120,3 +122,17 @@ def status(request):
         return response(body=user_type)
     else:
         return response()
+
+
+@require_POST
+@require_login
+def get_now_time(request):
+    now = datetime.datetime.now()
+    return response(body=dict(
+        year=now.year,
+        month=now.month,
+        day=now.day,
+        hour=now.hour,
+        min=now.minute,
+        sec=now.second,
+    ))

@@ -7,6 +7,10 @@ import json
 from Base.error import Error
 
 
+def get_readable_time_string(t):
+    return str(t.year) + "年" + str(t.month) + "月" + str(t.day) + "日 " + str(t.hour) + "时" + str(t.minute) + "分"
+
+
 def get_address_by_ip_via_tb(ipv4, timeout=0.5):
     """
     使用淘宝接口根据IP地址获取大致地理位置

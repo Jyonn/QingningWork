@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<body>
+<html>
+<head>
     <meta charset="utf-8">
     <title>青柠审稿</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -12,6 +13,118 @@
     <script type="application/javascript"
             src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="application/javascript" src="/static/js/jquery.json.js"></script>
+    <script type="application/javascript" src="/static/js/base64.min.js"></script>
+    <style type="text/css">
+        body {
+            background: #8FCC31;
+        }
+        .work-title {
+{#            text-align: center;#}
+            padding-left: 0;
+            padding-right: 0;
+            margin-top: 15px;
+        }
+        .work-title-input {
+            border: 0;
+            font-size: xx-large;
+            background: none;
+            color: #ffffff;
+            outline: none;
+        }
+        .work-title-input::-webkit-input-placeholder {
+            color: #dddddd;
+        }
+        .work-title-input::-ms-input-placeholder {
+            color: #dddddd;
+        }
+        .work-title-input::-moz-placeholder {
+            color: #dddddd;
+        }
+        .work-time {
+            color: #ffffff;
+            padding-left: 5px;
+        }
+        .work-writer {
+            padding-left: 0;
+            padding-right: 0;
+            margin-bottom: 15px;
+            text-align: right;
+            color: #ffffff;
+        }
+        .work-writer-input {
+            border: 0;
+            text-align: right;
+            font-size: large;
+            background: none;
+            letter-spacing: 1px;
+            color: #ffffff;
+            outline: none;
+            width: 70%;
+        }
+        .work-writer-input::-webkit-input-placeholder {
+            color: #dddddd;
+            text-align: right;
+        }
+        .work-writer-input::-ms-input-placeholder {
+            color: #dddddd;
+            text-align: right;
+        }
+        .work-writer-input::-moz-placeholder {
+            color: #dddddd;
+            text-align: right;
+        }
+        textarea {
+            border: 0;
+            background: none;
+            color: #ffffff;
+            outline: none;
+            width: 100%;
+            resize: none;
+            overflow-y: hidden;
+            letter-spacing: 1px;
+            font-size: larger;
+            line-height: 150%;
+            text-align:justify;
+        }
+        textarea::-webkit-input-placeholder {
+            color: #dddddd;
+        }
+        .btn-base {
+            color: #ffffff;
+            background: #36A60F;
+        }
+        .btn-long {
+            width: 30%;
+        }
+    </style>
+    <script type="application/javascript">
+        function postJSON(url, json_str, success_function, base_function, error_function) {
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data : json_str,
+                async: true,
+                dataType : 'json',
+                contentType : 'application/text',
+                success : function(response, status) {
+                    if (status != "success")
+                        alert("未知错误");
+                    else if (base_function == null)
+                        if (response['code'] != 0)
+                            alert("错误" + response['code'] + "：" + response['msg']);
+                        else success_function(response);
+                    else
+                        base_function(response, success_function);
+                },
+                error : function(xhr, error, exception) {
+                    if (error_function == null)
+                        alert(exception.toString());
+                    else
+                        error_function(xhr, error, exception);
+                }
+            });
+        }
+    </script>
     <script type="application/javascript">
         function get_work_id() {
             var url = window.location.pathname;
@@ -24,10 +137,48 @@
     <script type="application/javascript">
         $(document).ready(function () {
             window.work_id = get_work_id();
-
+            var post = { wid: window.work_id };
+            var json_str = $.toJSON(post);
+            postJSON("/work/detail/", json_str, function (response) {
+                $("#wrt_year").text(response["body"]["wrt_year"]);
+                $("#wrt_month").text(response["body"]["wrt_month"]);
+                $("#wrt_day").text(response["body"]["wrt_day"]);
+                $("#wrt_hour").text(response["body"]["wrt_hour"]);
+                $("#wrt_min").text(response["body"]["wrt_min"]);
+                $("#work-title").val(response["body"]["work_name"]);
+                $("#work-writer").val(response["body"]["writer_name"]);
+                var content = response["body"]["content"];
+                content = Base64.decode(content);
+                $("#work-content").val(content);
+            });
         });
     </script>
+</head>
+<body>
+    <div class="container">
+    <div class="row clearfix">
+    <div class="col-md-12 column">
+        <div class="col-md-12 column work-title">
+            <input class="work-title-input" type="text" placeholder="标题" id="work-title" readonly/><br/>
+            <text class="work-time">写于
+                <text id="wrt_year"></text>年
+                <text id="wrt_month"></text>月
+                <text id="wrt_day"></text>日
+                <text id="wrt_hour"></text>点
+                <text id="wrt_min"></text>分
+            </text>
+        </div>
+        <div class="col-md-12 column work-writer">
+            <b><input class="work-writer-input" type="text" placeholder="笔名" id="work-writer" readonly/></b>
+            <text style="font-size: large">&nbsp;&nbsp;|&nbsp;&nbsp;文</text>
+        </div>
+        <hr/>
+        <div class="col-md-12 column" style="margin-bottom: 15px">
+            <textarea placeholder="正文（不能为空）" id="work-content" readonly></textarea>
+        </div>
+        <hr/>
+    </div>
+    </div>
+    </div>
 </body>
-<html>
-
 </html>

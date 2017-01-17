@@ -126,7 +126,7 @@
                 }
             });
         }
-        function getCookie(cookie_name)
+        function get_cookie(cookie_name)
         {
             var name = cookie_name + "=";
             var ca = document.cookie.split(';');
@@ -139,6 +139,16 @@
         }
     </script>
     <script type="application/javascript">
+        function status_return(response) {
+            if (response["body"] == "reviewer") {
+{#                document.cookie = "role=reviewer";#}
+                self.location = "/reviewer/center.view/";
+            }
+            else if (response["body"] == "writer") {
+{#                document.cookie = "role=writer";#}
+                self.location = "/writer/center.view/";
+            }
+        }
         function upload() {
             var title = $("#work-title").val();
             var writer = $("#work-writer").val();
@@ -157,7 +167,19 @@
             var json_str = $.toJSON(post);
             postJSON("/work/upload/", json_str, function (response) {
                 alert("发布成功");
+                $("#work-title").val("");
+                $("#work-writer").val("");
+                $("#work-content").val("");
+
+{#                postJSON("/user/status/", "", status_return);#}
             });
+        }
+        function show_now_time(response) {
+            $("#cur_year").text(response["body"]["year"]);
+            $("#cur_month").text(response["body"]["month"]);
+            $("#cur_day").text(response["body"]["day"]);
+            $("#cur_hour").text(response["body"]["hour"]);
+            $("#cur_min").text(response["body"]["min"]);
         }
         $(document).ready(function () {
             $('textarea').each(function () {
@@ -166,6 +188,7 @@
                 this.style.height = "auto";
                 this.style.height = (this.scrollHeight) + 'px';
             });
+            postJSON("/user/base/time-now/", "", show_now_time);
         });
     </script>
 </head>
@@ -175,7 +198,13 @@
     <div class="col-md-12 column">
         <div class="col-md-12 column work-title">
             <input class="work-title-input" type="text" placeholder="标题" id="work-title"/><br/>
-            <text class="work-time">写于 2017年1月3日 20点20分</text>
+            <text class="work-time">写于
+                <text id="cur_year"></text>年
+                <text id="cur_month"></text>月
+                <text id="cur_day"></text>日
+                <text id="cur_hour"></text>点
+                <text id="cur_min"></text>分
+            </text>
         </div>
         <div class="col-md-12 column work-writer">
             <b><input class="work-writer-input" type="text" placeholder="笔名" id="work-writer"/></b>
@@ -185,6 +214,7 @@
         <div class="col-md-12 column" style="margin-bottom: 15px">
             <textarea placeholder="正文（不能为空）" id="work-content"></textarea>
         </div>
+        <hr/>
         <div class="col-md-12 column" style="text-align: right; margin-bottom: 15px">
             <a class="btn btn-base btn-long" onclick="upload()">发布</a>
         </div>

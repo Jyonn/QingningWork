@@ -90,6 +90,7 @@
         .view_span_btn {
             color: #36A60F;
             font-size: 30px;
+            cursor: pointer;
         }
         .span-icon {
             font-size: small;
@@ -131,7 +132,7 @@
                 }
             });
         }
-        function getCookie(cookie_name)
+        function get_cookie(cookie_name)
         {
             var name = cookie_name + "=";
             var ca = document.cookie.split(';');
@@ -163,24 +164,37 @@
             $(".panel-title #total_upload").text(window.review_info["total_upload"]);
             $("#total_upload_rank").text(window.review_info["total_upload_rank"]);
         }
+        function get_work_item(work) {
+            var html = "";
+            html += '<div class="col-xs-12 column">';
+            html += '   <div class="col-xs-2 column">';
+            html += '       <img class="avatar-img-small" src="/user/avatar/' + work["re_avatar"] + '">';
+            html += '   </div>';
+            html += '   <div class="col-xs-9 column">';
+            html += '       <kbd>' + work["writer_name"] + '</kbd> <label>' + work["create_time"] + '</label><br/>';
+            html += '       发布稿件《<label>' + work["work_name"] + '</label>》，审核中';
+            html += '   </div>';
+            html += '   <div class="col-xs-1 column" onclick="detail(' + work.wid + ')">';
+            html += '       <span class="glyphicon glyphicon-chevron-right view_span_btn"></span>';
+            html += '   </div>';
+            html += '</div>';
+            return html;
+        }
+        function refresh_panel_works(work_list, panel_list) {
+            $(panel_list).empty();
+            for (var i = 0; i < work_list.length; i++) {
+                $(panel_list).append(get_work_item(work_list[i]));
+            }
+        }
         function refresh_page() {
             postJSON("/reviewer/info/", "", function (response) {
                 window.review_info = response["body"];
-                document.cookie = "nickname="+response["body"]["nickname"];
-                document.cookie = "avatar="+response["body"]["avatar"];
-                document.cookie = "total_review="+response["body"]["total_review"];
-                document.cookie = "total_received="+response["body"]["total_received"];
-                document.cookie = "total_refused="+response["body"]["total_refused"];
-                document.cookie = "total_upload="+response["body"]["total_upload"];
-                document.cookie = "last_ipv4="+response["body"]["last_ipv4"];
-                document.cookie = "last_login="+response["body"]["last_login"];
-                document.cookie = "login_times="+response["body"]["login_times"];
-                document.cookie = "total_upload_rank="+response["body"]["total_upload_rank"];
                 init_page_for_info();
             });
             postJSON("/reviewer/work/not-reviewed/", "", function (response) {
-
-            })
+                $("#total_not_reviewed").text(response["body"].length);
+                refresh_panel_works(response["body"], "#not-reviewed-list");
+            });
         }
     </script>
     <script type="application/javascript">
@@ -216,7 +230,7 @@
     <div class="panel-group" id="info-list">
         <div class="panel panel-default">
             <div class="panel-heading" data-parent="#info-list" href="#panel-info-list" data-toggle="collapse">
-                 <a class="panel-title">登录信息 <span class="badge" id="total_not_reviewed"></span></a>
+                 <a class="panel-title">登录信息 <span class="badge"></span></a>
             </div>
             <div id="panel-info-list" class="panel-collapse collapse in">
                 <div class="panel-body">
@@ -251,7 +265,7 @@
                  <a class="panel-title">待审稿件 <span class="badge" id="total_not_reviewed"></span></a>
             </div>
             <div id="todo-list" class="panel-collapse collapse">
-                <div class="panel-body">
+                <div class="panel-body" id="not-reviewed-list">
                     Anim pariatur cliche...
                 </div>
             </div>

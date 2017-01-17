@@ -1,13 +1,7 @@
-from QingningWork.settings import WORK_URL
-
 import datetime
 from Base.decorator import *
 from Work.models import Work
 from Comment.models import Comment
-# from bs4 import BeautifulSoup
-# import HTMLParser
-# from pydoc import html
-# import cgi
 
 
 @require_POST
@@ -46,7 +40,7 @@ def get_not_reviewed_list(request):
                 wid=work.pk,
                 writer_name=work.writer_name,
                 work_name=work.work_name,
-                create_time=work.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+                create_time=get_readable_time_string(work.create_time),
             )
             if work.re_writer is not None:
                 work_detail["re_avatar"] = work.re_writer.avatar
