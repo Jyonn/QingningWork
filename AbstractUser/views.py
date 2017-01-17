@@ -98,6 +98,7 @@ def unset_password(request):
     return response()
 
 
+@require_POST
 @require_login
 def logout(request):
     """

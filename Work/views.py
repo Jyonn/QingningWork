@@ -1,3 +1,5 @@
+import base64
+import datetime
 from pydoc import html
 
 from Base.decorator import *
@@ -60,7 +62,6 @@ def get_work_detail(request):
         file_path = WORK_URL + work.work_store
         with open(file_path, "rb+") as f:
             content = f.read().decode()
-            content = html.escape(content)
             f.close()
         work_detail["content"] = content
         work_detail["url"] = None
@@ -104,3 +105,91 @@ def get_work_comments(request):
         ))
 
     return response(body=comment_list)
+
+
+@require_POST
+@require_json
+@require_params(["work_type", "work_name", "writer_name", "content"])
+@require_login
+def upload_work(request):
+    """
+    审稿员或作者上传稿件
+    request
+    {
+        work_type: 作品类型，只能为 WORK_TYPE_FILE 或 WORK_TYPE_TEXT
+        work_name: 作品名称
+        writer_name: 作者名称
+        content: 作品正文，当 work_type 为 WORK_TYPE_TEXT 时有效
+        file: 上传的作品，当 work_type 为 WORK_TYPE_FILE 时有效
+    }
+    """
+    work_type = request.POST["work_type"]  # 作品类型（WORK_TYPE_FILE文件上传; WORK_TYPE_TEXT文本上传）
+    work_name = request.POST["work_name"]  # 作品名称，指题目
+    writer_name = request.POST["writer_name"]  # 作者名称
+    content = request.POST["content"]
+    user, user_type = get_user_from_session(request)
+
+    try:
+        work_type = int(work_type)
+    except:
+        return error_response(Error.NOT_FOUND_WORK_TYPE)
+    if work_type not in [Work.WORK_TYPE_FILE, Work.WORK_TYPE_TEXT]:
+        # 不存在的作品类型
+        return error_response(Error.NOT_FOUND_WORK_TYPE)
+
+    if work_type == Work.WORK_TYPE_FILE:
+        # 如果是文件，获取文件扩展名
+        if request.FILES.get("file") is None:
+            return error_response(Error.NOT_FOUND_FILE)
+        str_name = request.FILES.get("file").name
+        ext_name = "" if str_name.find(".") == -1 else "." + str_name.split(".")[-1]
+    else:
+        # 如果是文本，默认扩展名为txt
+        ext_name = ".txt"
+
+    moment = datetime.datetime.now()
+    create_time = moment.strftime("%Y-%m-%d %H:%M:%S")
+    head_filename = moment.strftime("%Y%m%d_%H%M%S_")
+    from django.utils.crypto import get_random_string
+    # 保存的文件名设置为上传时间+随机子串+扩展名
+    filename = head_filename + get_random_string(length=8) + ext_name[:8]
+    # 保存的文件路径
+    file_path = WORK_URL + filename
+
+    if work_type == Work.WORK_TYPE_FILE:
+        # 上传文件，使用chunk保存
+        save_file = request.FILES.get("file")
+        with open(file_path, "wb+") as f:
+            for chunk in save_file.chunks():
+                f.write(chunk)
+            f.close()
+    else:
+        # Base64解码并HTML转义特殊字符后Base64编码
+        content = base64.b64decode(content)
+        content = html.escape(str(content))
+        content = base64.b64encode(bytes(content, encoding="utf8"))
+        # 保存文本文件
+        with open(file_path, "wb+") as f:
+            f.write(content)
+            f.close()
+
+    # 存入数据库
+    work = Work.create(
+        writer_name=writer_name,
+        work_name=work_name,
+        work_store=filename,
+        work_type=work_type,
+        is_public=True,
+        status=Work.STATUS_UNDER_REVIEW,
+        create_time=create_time,
+    )
+    if user_type == AbstractUser.REVIEWER:
+        work.re_reviewer = user
+        user.total_upload += 1
+    else:
+        work.re_writer = user
+        user.total_works += 1
+    user.save()
+    work.save()
+
+    return response()

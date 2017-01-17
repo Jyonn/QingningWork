@@ -142,6 +142,11 @@
             }
             return "";
         }
+        function exit_system() {
+            postJSON("/user/logout/", "", function (response) {
+                window.location = "/user/login.act/";
+            });
+        }
     </script>
     <script type="application/javascript">
         function init_page_for_info() {
@@ -198,8 +203,8 @@
                 &nbsp;&nbsp;<span class="glyphicon glyphicon-refresh span-icon" onclick="refresh_page()"></span>
             </div>
             <br/>
-            <a class="btn btn-base">发布稿件</a>
-            <a class="btn btn-base">退出系统</a>
+            <a class="btn btn-base" href="/work/upload.act/">发布稿件</a>
+            <a class="btn btn-base" onclick="exit_system()">退出系统</a>
         </div>
     </div>
     </div>

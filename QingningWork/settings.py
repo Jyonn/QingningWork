@@ -137,9 +137,9 @@ if is_windows_system:
     MEDIA_ROOT = 'D:/Program/web/QingNingWork'
 else:
     MEDIA_ROOT = '/home/web/QingNingWork'
-WORK_URL = os.path.join(MEDIA_ROOT, 'work')
-USER_URL = os.path.join(MEDIA_ROOT, 'user')
-AVATAR_URL = os.path.join(MEDIA_ROOT, 'avatar')
+WORK_URL = os.path.join(MEDIA_ROOT, 'work', '')
+USER_URL = os.path.join(MEDIA_ROOT, 'user', '')
+AVATAR_URL = os.path.join(MEDIA_ROOT, 'avatar', '')
 
 STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')

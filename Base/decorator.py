@@ -4,6 +4,7 @@ from AbstractUser.models import AbstractUser
 from django.views.decorators import http
 
 require_POST = http.require_POST
+require_GET = http.require_GET
 
 
 def require_params(need_params):

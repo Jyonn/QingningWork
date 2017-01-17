@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<body>
+    <meta charset="utf-8">
+    <title>青柠审稿</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <script type="application/javascript"
+            src="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
+    <script type="application/javascript"
+            src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script type="application/javascript"
+            src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.json.js"></script>
+    <script type="application/javascript">
+        function get_work_id() {
+            var url = window.location.pathname;
+            var head = "/work/detail.view/";
+            url = url.substring(head.length);
+            url = url.substring(0, url.length - 1);
+            return url;
+          }
+    </script>
+    <script type="application/javascript">
+        $(document).ready(function () {
+            window.work_id = get_work_id();
+
+        });
+    </script>
+</body>
+<html>
+
+</html>

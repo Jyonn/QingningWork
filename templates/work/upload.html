@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html>
+<head>
+    <!-- Magzine -->
+    <meta charset="utf-8">
+    <title>青柠审稿</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <script type="application/javascript"
+            src="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
+    <script type="application/javascript"
+            src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script type="application/javascript"
+            src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.json.js"></script>
+    <script type="application/javascript" src="/static/js/base64.min.js"></script>
+    <style type="text/css">
+        body {
+            background: #8FCC31;
+        }
+        .work-title {
+{#            text-align: center;#}
+            padding-left: 0;
+            padding-right: 0;
+            margin-top: 15px;
+        }
+        .work-title-input {
+            border: 0;
+            font-size: xx-large;
+            background: none;
+            color: #ffffff;
+            outline: none;
+        }
+        .work-title-input::-webkit-input-placeholder {
+            color: #dddddd;
+        }
+        .work-title-input::-ms-input-placeholder {
+            color: #dddddd;
+        }
+        .work-title-input::-moz-placeholder {
+            color: #dddddd;
+        }
+        .work-time {
+            color: #ffffff;
+            padding-left: 5px;
+        }
+        .work-writer {
+            padding-left: 0;
+            padding-right: 0;
+            margin-bottom: 15px;
+            text-align: right;
+            color: #ffffff;
+        }
+        .work-writer-input {
+            border: 0;
+            text-align: right;
+            font-size: large;
+            background: none;
+            letter-spacing: 1px;
+            color: #ffffff;
+            outline: none;
+            width: 70%;
+        }
+        .work-writer-input::-webkit-input-placeholder {
+            color: #dddddd;
+            text-align: right;
+        }
+        .work-writer-input::-ms-input-placeholder {
+            color: #dddddd;
+            text-align: right;
+        }
+        .work-writer-input::-moz-placeholder {
+            color: #dddddd;
+            text-align: right;
+        }
+        textarea {
+            border: 0;
+            background: none;
+            color: #ffffff;
+            outline: none;
+            width: 100%;
+            resize: none;
+            overflow-y: hidden;
+            letter-spacing: 1px;
+            font-size: larger;
+            line-height: 150%;
+            text-align:justify;
+        }
+        textarea::-webkit-input-placeholder {
+            color: #dddddd;
+        }
+        .btn-base {
+            color: #ffffff;
+            background: #36A60F;
+        }
+        .btn-long {
+            width: 30%;
+        }
+    </style>
+    <script type="application/javascript">
+        function postJSON(url, json_str, success_function, base_function, error_function) {
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data : json_str,
+                async: true,
+                dataType : 'json',
+                contentType : 'application/text',
+                success : function(response, status) {
+                    if (status != "success")
+                        alert("未知错误");
+                    else if (base_function == null)
+                        if (response['code'] != 0)
+                            alert("错误" + response['code'] + "：" + response['msg']);
+                        else success_function(response);
+                    else
+                        base_function(response, success_function);
+                },
+                error : function(xhr, error, exception) {
+                    if (error_function == null)
+                        alert(exception.toString());
+                    else
+                        error_function(xhr, error, exception);
+                }
+            });
+        }
+        function getCookie(cookie_name)
+        {
+            var name = cookie_name + "=";
+            var ca = document.cookie.split(';');
+            for(var i = 0; i < ca.length; i++) {
+                var c = ca[i].trim();
+                if (c.indexOf(name) == 0)
+                    return c.substring(name.length, c.length);
+            }
+            return "";
+        }
+    </script>
+    <script type="application/javascript">
+        function upload() {
+            var title = $("#work-title").val();
+            var writer = $("#work-writer").val();
+            var content = $("#work-content").val();
+            if (content == "") {
+                alert("正文不能为空");
+                return;
+            }
+            content = Base64.encode(content);
+            var post = {
+                work_type: 0,
+                work_name: title,
+                writer_name: writer,
+                content: content
+            };
+            var json_str = $.toJSON(post);
+            postJSON("/work/upload/", json_str, function (response) {
+                alert("发布成功");
+            });
+        }
+        $(document).ready(function () {
+            $('textarea').each(function () {
+                this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;');
+            }).on('input', function () {
+                this.style.height = "auto";
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+    <div class="row clearfix">
+    <div class="col-md-12 column">
+        <div class="col-md-12 column work-title">
+            <input class="work-title-input" type="text" placeholder="标题" id="work-title"/><br/>
+            <text class="work-time">写于 2017年1月3日 20点20分</text>
+        </div>
+        <div class="col-md-12 column work-writer">
+            <b><input class="work-writer-input" type="text" placeholder="笔名" id="work-writer"/></b>
+            <text style="font-size: large">&nbsp;&nbsp;|&nbsp;&nbsp;文</text>
+        </div>
+        <hr/>
+        <div class="col-md-12 column" style="margin-bottom: 15px">
+            <textarea placeholder="正文（不能为空）" id="work-content"></textarea>
+        </div>
+        <div class="col-md-12 column" style="text-align: right; margin-bottom: 15px">
+            <a class="btn btn-base btn-long" onclick="upload()">发布</a>
+        </div>
+    </div>
+    </div>
+    </div>
+</body>
+</html>
