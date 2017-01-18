@@ -4,6 +4,97 @@ from Work.models import Work
 from Comment.models import Comment
 
 
+def get_packed_work(work, related_type):
+    work_detail = dict(
+        wid=work.pk,  # 作品编号
+        writer_name=work.writer_name,  # 作者笔名
+        work_name=work.work_name,  # 作品名称
+        create_time=get_readable_time_string(work.create_time),  # 上传时间
+        related_type=related_type,  # 关联类型
+        status=work.status,  # 作品状态
+        is_public=work.is_delete,  # 是否删除
+        is_delete=work.is_public,  # 是否公开
+    )
+    if work.re_writer is not None:
+        work_detail["re_avatar"] = work.re_writer.avatar
+    else:
+        work_detail["re_avatar"] = work.re_reviewer.avatar
+    return work_detail
+
+
+@require_POST
+@require_login_reviewer
+def get_related_lists(request):
+    """
+    审稿员获取
+    1. related_not_reviewed 尚未审阅，且稿件状态为正在审阅的稿件
+    2. related_received     已审并接收的稿件
+    3. related_refused      已审并驳回的稿件
+    4. related_upload       发布的稿件
+    response
+    {
+        code: 0,
+        msg: "ok",
+        body: [{
+            related_type: 和审稿员的关系1-4
+            wid: 作品编号
+            writer_name: 作者名称
+            work_name: 作品名称
+            create_time: 创建时间
+            status: 稿件状态
+            is_public: 是否公开
+            is_delete: 是否被删除
+        },  {
+            ...
+        }]
+    }
+    """
+    # 获取审稿员
+    reviewer, user_type = get_user_from_session(request)
+    if reviewer is None:
+        return error_response(Error.LOGIN_AGAIN)
+
+    # 获取还未审阅的稿件列表
+    works = Work.objects.filter(
+        status=Work.STATUS_UNDER_REVIEW,  # 状态为接受审阅
+        is_delete=False,  # 非删除稿件
+    )
+    return_list = []
+    for work in works:
+        try:
+            # 如果存在评价，则属于审阅过的稿件
+            Comment.objects.get(
+                re_work=work,
+                re_reviewer=reviewer,
+                is_updated=False,
+            )
+        except:
+            # 没有审阅过的稿件，加入返回列表
+            return_list.append(get_packed_work(work, Reviewer.RELATED_NOT_REVIEWED))
+
+    # 获取已审的稿件列表
+    comments = Comment.objects.filter(
+        re_reviewer=reviewer,
+        is_updated=False
+    )
+    for comment in comments:
+        if comment.result is True:
+            # 审阅驳回的稿件
+            return_list.append(get_packed_work(comment.re_work, Reviewer.RELATED_RECEIVED))
+        else:
+            # 审阅通过的稿件
+            return_list.append(get_packed_work(comment.re_work, Reviewer.RELATED_REFUSED))
+
+    # 获取发布的稿件列表
+    works = Work.objects.filter(
+        re_reviewer=reviewer,
+    )
+    for work in works:
+        return_list.append(get_packed_work(work, Reviewer.RELATED_UPLOAD))
+
+    return response(body=return_list)
+
+
 @require_POST
 @require_login_reviewer
 def get_not_reviewed_list(request):
@@ -24,6 +115,9 @@ def get_not_reviewed_list(request):
     }
     """
     reviewer, user_type = get_user_from_session(request)
+    if reviewer is None:
+        return error_response(Error.LOGIN_AGAIN)
+
     works = Work.objects.filter(
         status=Work.STATUS_UNDER_REVIEW,
         is_delete=False,
@@ -75,6 +169,8 @@ def get_reviewed_list(request):
     }
     """
     reviewer, user_type = get_user_from_session(request)
+    if reviewer is None:
+        return error_response(Error.LOGIN_AGAIN)
 
     return_list = []  # 返回列表
     # 获取已审阅稿件列表
@@ -109,6 +205,8 @@ def get_reviewed_work(request):
     """
     wid = request.POST["wid"]
     reviewer, user_type = get_user_from_session(request)
+    if reviewer is None:
+        return error_response(Error.LOGIN_AGAIN)
 
     try:
         work = Work.objects.get(pk=wid)
@@ -162,6 +260,8 @@ def review_work(request):
     content = request.POST["content"]
     result = True if request.POST["result"] is True else False
     reviewer, user_type = get_user_from_session(request)
+    if reviewer is None:
+        return error_response(Error.LOGIN_AGAIN)
 
     try:
         work = Work.objects.get(pk=wid)
@@ -247,6 +347,8 @@ def delete_work(request):
     """
     wid = request.POST["wid"]
     reviewer, user_type = get_user_from_session(request)
+    if reviewer is None:
+        return error_response(Error.LOGIN_AGAIN)
 
     try:
         work = Work.objects.get(pk=wid, re_reviewer=reviewer)
@@ -267,7 +369,7 @@ def delete_work(request):
 def info(request):
     reviewer, user_type = get_user_from_session(request)
     if reviewer is None:
-        return error_response(Error.UNKNOWN)
+        return error_response(Error.LOGIN_AGAIN)
     reviewers = Reviewer.objects.filter(is_frozen=False).order_by("-total_upload")
 
     total_upload_rank = 0

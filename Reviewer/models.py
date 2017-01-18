@@ -3,6 +3,12 @@ from AbstractUser.models import AbstractUser
 
 
 class Reviewer(AbstractUser):
+    # 和work的关联类型
+    RELATED_NOT_REVIEWED = 1
+    RELATED_RECEIVED = 2
+    RELATED_REFUSED = 3
+    RELATED_UPLOAD = 4
+
     rid = models.AutoField(
         "审稿员编号",
         primary_key=True,
@@ -35,7 +41,7 @@ class Reviewer(AbstractUser):
     def create(cls, *args, **kwargs):
         reviewer = cls(*args, **kwargs)
         from random import randint
-        avatar_int = randint(0, 10)
+        avatar_int = randint(1, 10)
         avatar_img = "0" if avatar_int < 10 else ""
         avatar_img += str(avatar_int)
         reviewer.avatar = "default-avatar-" + avatar_img + ".jpg"

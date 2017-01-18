@@ -96,7 +96,9 @@
             background: #36A60F;
         }
         .btn-long {
-            width: 30%;
+            width: 25%;
+            margin-left: 5px;
+            margin-right: 5px;
         }
     </style>
     <script type="application/javascript">
@@ -148,6 +150,9 @@
 {#                document.cookie = "role=writer";#}
                 self.location = "/writer/center.view/";
             }
+        }
+        function cancel() {
+            postJSON("/user/status/", "", status_return);
         }
         function upload() {
             var title = $("#work-title").val();
@@ -216,6 +221,7 @@
         </div>
         <hr/>
         <div class="col-md-12 column" style="text-align: right; margin-bottom: 15px">
+            <a class="btn btn-base btn-long" onclick="cancel()">取消</a>
             <a class="btn btn-base btn-long" onclick="upload()">发布</a>
         </div>
     </div>

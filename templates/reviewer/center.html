@@ -191,9 +191,26 @@
                 window.review_info = response["body"];
                 init_page_for_info();
             });
-            postJSON("/reviewer/work/not-reviewed/", "", function (response) {
-                $("#total_not_reviewed").text(response["body"].length);
-                refresh_panel_works(response["body"], "#not-reviewed-list");
+            postJSON("/reviewer/work/related/", "", function (response) {
+                var work_list_not_reviewed = [];
+                var work_list_received = [];
+                var work_list_refused = [];
+                var work_list_upload = [];
+                for (var i = 0; i < response["body"].length; i++) {
+                    var work = response["body"][i];
+                    var related_type = work["related_type"];
+                    switch (related_type) {
+                        case 1: work_list_not_reviewed.push(work); break;
+                        case 2: work_list_received.push(work); break;
+                        case 3: work_list_refused.push(work); break;
+                        case 4: work_list_upload.push(work); break;
+                    }
+                }
+                $("#total_not_reviewed").text(work_list_not_reviewed.length);
+                refresh_panel_works(work_list_not_reviewed, "#not-reviewed-list");
+                refresh_panel_works(work_list_received, "#received-list");
+                refresh_panel_works(work_list_refused, "#refused-list");
+                refresh_panel_works(work_list_upload, "#upload-list");
             });
         }
     </script>
@@ -261,7 +278,7 @@
     <div class="col-xs-12 column">
     <div class="panel-group" id="work-list">
         <div class="panel panel-default">
-            <div class="panel-heading" data-parent="#work-list" href="#todo-list" data-toggle="collapse">
+            <div class="panel-heading" data-parent="#work-list" data-toggle="collapse" href="#todo-list">
                  <a class="panel-title">待审稿件 <span class="badge" id="total_not_reviewed"></span></a>
             </div>
             <div id="todo-list" class="panel-collapse collapse">
@@ -275,7 +292,7 @@
                  <a class="panel-title">通过稿件 <span class="badge" id="total_received"></span></a>
             </div>
             <div id="recv-list" class="panel-collapse collapse">
-                <div class="panel-body">
+                <div class="panel-body" id="received-list">
                     Anim pariatur cliche...
                 </div>
             </div>
@@ -285,29 +302,29 @@
                  <a class="panel-title">驳回稿件 <span class="badge" id="total_refused"></span></a>
             </div>
             <div id="refs-list" class="panel-collapse collapse">
-                <div class="panel-body">
+                <div class="panel-body" id="refused-list">
                     Anim pariatur cliche...
                 </div>
             </div>
         </div>
         <div class="panel panel-default">
-            <div class="panel-heading" data-toggle="collapse" data-parent="#work-list" href="#upload-list">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#work-list" href="#upld-list">
                  <a class="panel-title">发布稿件 <span class="badge" id="total_upload"></span></a>
             </div>
-            <div id="upload-list" class="panel-collapse in">
-                <div class="panel-body">
-                    <div class="col-xs-12 column">
-                        <div class="col-xs-2 column">
-                            <img class="avatar-img-small" src="/user/avatar/default-avatar-03.jpg">
-                        </div>
-                        <div class="col-xs-9 column">
-                            <kbd>可大</kbd> <label>2000年01月01日 20时20分</label><br/>
-                            发布稿件《<label>黑键</label>》，审核中
-                        </div>
-                        <div class="col-xs-1 column">
-                            <span class="glyphicon glyphicon-chevron-right view_span_btn"></span>
-                        </div>
-                    </div>
+            <div id="upld-list" class="panel-collapse in">
+                <div class="panel-body" id="upload-list">
+{#                    <div class="col-xs-12 column">#}
+{#                        <div class="col-xs-2 column">#}
+{#                            <img class="avatar-img-small" src="/user/avatar/default-avatar-03.jpg">#}
+{#                        </div>#}
+{#                        <div class="col-xs-9 column">#}
+{#                            <kbd>可大</kbd> <label>2000年01月01日 20时20分</label><br/>#}
+{#                            发布稿件《<label>黑键</label>》，审核中#}
+{#                        </div>#}
+{#                        <div class="col-xs-1 column">#}
+{#                            <span class="glyphicon glyphicon-chevron-right view_span_btn"></span>#}
+{#                        </div>#}
+{#                    </div>#}
                 </div>
             </div>
         </div>
