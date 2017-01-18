@@ -104,6 +104,10 @@
             color: #ffffff;
             text-decoration: none;
         }
+        hr {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
     </style>
     <script type="application/javascript">
         function postJSON(url, json_str, success_function, base_function, error_function) {
@@ -150,6 +154,9 @@
         }
     </script>
     <script type="application/javascript">
+        function show_detail(wid) {
+            window.location = "/work/detail.view/"+wid+"/";
+        }
         function init_page_for_info() {
             $("#avatar-img").attr("src", "/user/avatar/"+window.review_info["avatar"]);
             if (window.review_info["nickname"] == null)
@@ -172,10 +179,26 @@
             html += '   </div>';
             html += '   <div class="col-xs-9 column">';
             html += '       <kbd>' + work["writer_name"] + '</kbd> <label>' + work["create_time"] + '</label><br/>';
-            html += '       发布稿件《<label>' + work["work_name"] + '</label>》，审核中';
+            html += '       发布稿件《<label>' + work["work_name"] + '</label>》';
             html += '   </div>';
-            html += '   <div class="col-xs-1 column" onclick="detail(' + work.wid + ')">';
+            html += '   <div class="col-xs-1 column" onclick="show_detail(' + work.wid + ')">';
             html += '       <span class="glyphicon glyphicon-chevron-right view_span_btn"></span>';
+            html += '   </div>';
+            html += '</div>';
+            return html;
+        }
+        function get_sep_item() {
+            var html = "";
+            html += '<div class="col-xs-12 column">';
+            html += '   <hr/>';
+            html += '</div>';
+            return html;
+        }
+        function get_no_item() {
+            var html = "";
+            html += '<div class="col-xs-12 column">';
+            html += '   <div class="col-xs-9 column">';
+            html += '       空荡荡的一片哦';
             html += '   </div>';
             html += '</div>';
             return html;
@@ -184,6 +207,11 @@
             $(panel_list).empty();
             for (var i = 0; i < work_list.length; i++) {
                 $(panel_list).append(get_work_item(work_list[i]));
+                if (i < work_list.length - 1)
+                        $(panel_list).append(get_sep_item());
+            }
+            if (work_list.length == 0) {
+                $(panel_list).append(get_no_item());
             }
         }
         function refresh_page() {
@@ -313,18 +341,19 @@
             </div>
             <div id="upld-list" class="panel-collapse in">
                 <div class="panel-body" id="upload-list">
-{#                    <div class="col-xs-12 column">#}
-{#                        <div class="col-xs-2 column">#}
-{#                            <img class="avatar-img-small" src="/user/avatar/default-avatar-03.jpg">#}
-{#                        </div>#}
-{#                        <div class="col-xs-9 column">#}
-{#                            <kbd>可大</kbd> <label>2000年01月01日 20时20分</label><br/>#}
-{#                            发布稿件《<label>黑键</label>》，审核中#}
-{#                        </div>#}
-{#                        <div class="col-xs-1 column">#}
-{#                            <span class="glyphicon glyphicon-chevron-right view_span_btn"></span>#}
-{#                        </div>#}
-{#                    </div>#}
+{#                <div class="panel-body">#}
+                    <div class="col-xs-12 column">
+                        <div class="col-xs-2 column">
+                            <img class="avatar-img-small" src="/user/avatar/default-avatar-03.jpg">
+                        </div>
+                        <div class="col-xs-9 column">
+                            <kbd>可大</kbd> <label>2000年01月01日 20时20分</label><br/>
+                            发布稿件《<label>黑键</label>》，审核中
+                        </div>
+                        <div class="col-xs-1 column">
+                            <span class="glyphicon glyphicon-chevron-right view_span_btn"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

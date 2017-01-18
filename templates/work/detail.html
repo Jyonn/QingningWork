@@ -14,6 +14,12 @@
             src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="application/javascript" src="/static/js/jquery.json.js"></script>
     <script type="application/javascript" src="/static/js/base64.min.js"></script>
+    <script type="application/javascript" src="/static/js/highlight.js"></script>
+    <script type="application/javascript" src="/static/js/main.js"></script>
+    <script type="application/javascript" src="/static/js/bootstrap-switch.min.js"></script>
+    <link href="/static/css/highlight.css" rel="stylesheet"/>
+    <link href="/static/css/bootstrap-switch.min.css" rel="stylesheet"/>
+
     <style type="text/css">
         body {
             background: #8FCC31;
@@ -34,7 +40,7 @@
         .work-title-input::-webkit-input-placeholder {
             color: #dddddd;
         }
-        .work-title-input::-ms-input-placeholder {
+        .work-title-input:-ms-input-placeholder {
             color: #dddddd;
         }
         .work-title-input::-moz-placeholder {
@@ -65,13 +71,34 @@
             color: #dddddd;
             text-align: right;
         }
-        .work-writer-input::-ms-input-placeholder {
+        .work-writer-input:-ms-input-placeholder {
             color: #dddddd;
             text-align: right;
         }
         .work-writer-input::-moz-placeholder {
             color: #dddddd;
             text-align: right;
+        }
+        .comment-input {
+            border: 2px solid;
+            font-size: large;
+            background: none;
+            letter-spacing: 1px;
+            color: #ffffff;
+            outline: none;
+            width: 100%;
+{#            margin-bottom: 20px;#}
+            padding: 5px;
+
+        }
+        .comment-input::-webkit-input-placeholder {
+            color: #dddddd;
+        }
+        .comment-input:-ms-input-placeholder {
+            color: #dddddd;
+        }
+        .comment-input::-moz-placeholder {
+            color: #dddddd;
         }
         textarea {
             border: 0;
@@ -89,12 +116,24 @@
         textarea::-webkit-input-placeholder {
             color: #dddddd;
         }
+        .count-text {
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
         .btn-base {
             color: #ffffff;
             background: #36A60F;
         }
         .btn-long {
             width: 30%;
+        }
+        .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary {
+            color: #ffffff;
+            background: #36A60F;
+        }
+        .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default {
+            color: #ffffff;
+            background: #CC5A40;
         }
     </style>
     <script type="application/javascript">
@@ -150,8 +189,56 @@
                 var content = response["body"]["content"];
                 content = Base64.decode(content);
                 $("#work-content").val(content);
+                var c = document.getElementById("work-content");
+                c.style.height = (c.scrollHeight) + 'px';
             });
         });
+    </script>
+    <script type="application/javascript">
+        function status_return(response) {
+            if (response["body"] == "reviewer") {
+                self.location = "/reviewer/center.view/";
+            }
+            else if (response["body"] == "writer") {
+                self.location = "/writer/center.view/";
+            }
+        }
+        function comment() {
+            var result = $("#result").bootstrapSwitch('state');
+            var comment = $("#comment").val();
+            comment = Base64.encode(comment);
+            var post = {
+                wid: window.work_id,
+                content: comment,
+                result: result
+            };
+            var json_str = $.toJSON(post);
+            postJSON("/reviewer/work/review/", json_str, function (response) {
+                alert("评价成功");
+                $("#work-title").val("");
+                $("#comment").val("");
+                postJSON("/user/status/", "", status_return);
+            });
+        }
+        function count() {
+            var count = $("#comment").val().length;
+            $("#count").text(count);
+            if (count > 200) {
+                $(".count-text").css("color", "#CC5A40");
+            } else {
+                $(".count-text").css("color", "#ffffff");
+            }
+        }
+        $(document).ready(function () {
+{#            $('textarea').each(function () {#}
+{#                this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;');#}
+{#            }).on('input', function () {#}
+{#                this.style.height = "auto";#}
+{#                this.style.height = (this.scrollHeight) + 'px';#}
+{#            });#}
+            $("#count").text($("#comment").val().length);
+            $('[type="checkbox"]').bootstrapSwitch();
+        })
     </script>
 </head>
 <body>
@@ -174,9 +261,27 @@
         </div>
         <hr/>
         <div class="col-md-12 column" style="margin-bottom: 15px">
-            <textarea placeholder="正文（不能为空）" id="work-content" readonly></textarea>
+            <textarea placeholder="正文（不能为空）" id="work-content"></textarea>
         </div>
-        <hr/>
+    </div>
+    </div>
+    </div>
+
+    <div class="container">
+    <div class="row clearfix">
+    <div class="col-md-12 column">
+        <div class="col-md-12 column" style="margin-bottom: 20px; text-align: right">
+            <textarea class="comment-input" placeholder="评价（不超过200字）" id="comment" rows="3" oninput="count()"></textarea>
+            <text class="count-text"><text id="count"></text> / 140</text>
+        </div>
+        <div class="col-md-12 column" style="margin-bottom: 20px">
+            <div class="switch">
+                <input type="checkbox" id="result" data-on-text="过" data-off-text="驳"/>
+            </div>
+        </div>
+        <div class="col-md-12 column" style="text-align: right; margin-bottom: 15px">
+            <a class="btn btn-base btn-long" onclick="comment()">评价</a>
+        </div>
     </div>
     </div>
     </div>

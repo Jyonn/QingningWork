@@ -143,11 +143,9 @@
     <script type="application/javascript">
         function status_return(response) {
             if (response["body"] == "reviewer") {
-{#                document.cookie = "role=reviewer";#}
                 self.location = "/reviewer/center.view/";
             }
             else if (response["body"] == "writer") {
-{#                document.cookie = "role=writer";#}
                 self.location = "/writer/center.view/";
             }
         }
@@ -176,7 +174,7 @@
                 $("#work-writer").val("");
                 $("#work-content").val("");
 
-{#                postJSON("/user/status/", "", status_return);#}
+                postJSON("/user/status/", "", status_return);
             });
         }
         function show_now_time(response) {

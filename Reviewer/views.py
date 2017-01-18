@@ -316,7 +316,7 @@ def review_work(request):
                 writer.total_received += 1
             else:
                 writer.total_refused += 1
-        writer.save()
+            writer.save()
 
     # 创建新评论
     moment = datetime.datetime.now()
