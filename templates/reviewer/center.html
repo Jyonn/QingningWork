@@ -65,23 +65,25 @@
             margin-top: 5px;
 {#            margin-bottom: 5px;#}
         }
-        .panel-body .col-xs-9 {
+        .panel-body .col-xs-12 .col-xs-9 {
             padding-left: 10px;
             padding-right: 0;
 {#            padding-top: 5px;#}
         }
-        .panel-body .col-xs-2 {
+        .panel-body .col-xs-12 .col-xs-2 {
             padding-left: 0;
             padding-right: 0;
             text-align: center;
         }
-        .panel-body .col-xs-1 {
+        .panel-body .col-xs-12 .col-xs-1 {
             padding: 10px 0;
             text-align: center;
         }
-        .panel-body kbd {
-            margin-left: 0;
-            margin-right: 10px;
+        .panel-body .col-xs-12 .col-xs-12 {
+            margin: 0;
+        }
+        .panel-body .col-xs-12 .col-xs-8 {
+            padding-left: 0;
         }
         .btn-base {
             color: #ffffff;
@@ -107,6 +109,27 @@
         hr {
             margin-top: 5px;
             margin-bottom: 5px;
+        }
+        .status-success {
+            background: #36A60F;
+            margin-right: 2px;
+            margin-left: 2px;
+        }
+        .status-warning {
+            background: #CC5A40;
+            margin-right: 0;
+        }
+        .status-die {
+            background: #333333;
+            margin-right: 0;
+        }
+        .status-process {
+            background: #337ab7;
+            margin-right: 0;
+        }
+        .status-create {
+            background: #FFBFB1;
+            margin-right: 0;
         }
     </style>
     <script type="application/javascript">
@@ -175,6 +198,45 @@
         }
         function get_work_item(work) {
             var html = "";
+{#            var delete_str, delete_tag;#}
+{#            if (work["is_delete"] == true) {#}
+{#                delete_str = "已删除";#}
+{#                delete_tag = "status-die";#}
+{#            } else {#}
+{#                delete_str = "未删除";#}
+{#                delete_tag = "status-success";#}
+{#            }#}
+            var public_str, public_tag;
+            if (work["is_public"] == true) {
+                public_str = "公开";
+                public_tag = "status-success";
+            } else {
+                public_str = "私密";
+                public_tag = "status_warning";
+            }
+            var status_str, status_tag;
+            var STATUS_UNDER_WRITE = 0,
+                    STATUS_UNDER_REVIEW = 1,
+                    STATUS_RECEIVED = 2,
+                    STATUS_REFUSED = 3,
+                    STATUS_CONFIRM_FEE = 4;
+            if (work["status"] == STATUS_UNDER_WRITE) {
+                status_str = "正在创作";
+                status_tag = "status-create";
+            }
+            else if (work["status"] == STATUS_UNDER_REVIEW) {
+                status_str = "正在审阅";
+                status_tag = "status-process";
+            }
+            else if (work["status"] == STATUS_RECEIVED || work["status"] == STATUS_CONFIRM_FEE) {
+                status_str = "稿件通过";
+                status_tag = "status-success";
+            }
+            else if (work["status"] == STATUS_UNDER_REVIEW) {
+                status_str = "稿件驳回";
+                status_tag = "status-warning";
+            }
+
             html += '<div class="col-xs-12 column">';
             html += '   <div class="col-xs-2 column">';
             html += '       <img class="avatar-img-small" src="/user/avatar/' + work["re_avatar"] + '">';
@@ -185,6 +247,18 @@
             html += '   </div>';
             html += '   <div class="col-xs-1 column" onclick="show_detail(' + work.wid + ')">';
             html += '       <span class="glyphicon glyphicon-chevron-right view_span_btn"></span>';
+            html += '   </div>';
+            html += '   <div class="col-xs-12 column work-status">';
+            html += '       <div class="col-xs-8 column">';
+            if (work["is_delete"] == true)
+                    html += '           <kbd class="status-die"><text>已删除</text></kbd>';
+            html += '           <kbd class="'+public_tag+'"><text>'+public_str+'</text></kbd>';
+            html += '           <kbd class="'+status_tag+'"><text>'+status_str+'</text></kbd>';
+            html += '       </div>';
+            html += '       <div class="col-xs-4 column" style="text-align: right">';
+            html += '           <kbd class="status-success">👍<text>'+work.recv_num+'</text></kbd>';
+            html += '           <kbd class="status-warning">👎<text>'+work.refs_num+'</text></kbd>';
+            html += '       </div>';
             html += '   </div>';
             html += '</div>';
             return html;
@@ -321,7 +395,7 @@
             <div class="panel-heading" data-parent="#work-list" data-toggle="collapse" href="#todo-list">
                  <a class="panel-title">待审稿件 <span class="badge" id="total_not_reviewed"></span></a>
             </div>
-            <div id="todo-list" class="panel-collapse collapse">
+            <div id="todo-list" class="panel-collapse in">
                 <div class="panel-body" id="not-reviewed-list"></div>
             </div>
         </div>
@@ -345,7 +419,7 @@
             <div class="panel-heading" data-toggle="collapse" data-parent="#work-list" href="#upld-list">
                  <a class="panel-title">发布稿件 <span class="badge" id="total_upload"></span></a>
             </div>
-            <div id="upld-list" class="panel-collapse in">
+            <div id="upld-list" class="panel-collapse collapse">
                 <div class="panel-body" id="upload-list"></div>
             </div>
         </div>

@@ -136,7 +136,8 @@ USE_TZ = False
 # if is_windows_system is True:
 #     MEDIA_ROOT = 'D:/Program/web/QingNingWork'
 # else:
-MEDIA_ROOT = '/home/web/QingNingWork'
+MEDIA_ROOT = 'D:/Program/web/QingNingWork'
+# MEDIA_ROOT = '/home/web/QingNingWork'
 WORK_URL = os.path.join(MEDIA_ROOT, 'work', '')
 USER_URL = os.path.join(MEDIA_ROOT, 'user', '')
 AVATAR_URL = os.path.join(MEDIA_ROOT, 'avatar', '')

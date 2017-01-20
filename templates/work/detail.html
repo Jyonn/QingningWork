@@ -24,6 +24,12 @@
         body {
             background: #8FCC31;
         }
+        .avatar-img-small {
+            border: 3px solid #cccccc;
+            border-radius: 50%;
+            height: 50px;
+            width: 50px;
+        }
         .work-title {
 {#            text-align: center;#}
             padding-left: 0;
@@ -204,7 +210,6 @@
 {#                self.location = "/writer/center.view/";#}
                 window.location.href = document.referrer;
             }
-
         }
         function comment() {
             var result = $("#result").bootstrapSwitch('state');
@@ -233,12 +238,6 @@
             }
         }
         $(document).ready(function () {
-{#            $('textarea').each(function () {#}
-{#                this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;');#}
-{#            }).on('input', function () {#}
-{#                this.style.height = "auto";#}
-{#                this.style.height = (this.scrollHeight) + 'px';#}
-{#            });#}
             $("#count").text($("#comment").val().length);
             $('[type="checkbox"]').bootstrapSwitch();
         })
@@ -247,8 +246,8 @@
 <body>
     <div class="container">
     <div class="row clearfix">
-    <div class="col-md-12 column">
-        <div class="col-md-12 column work-title">
+    <div class="col-xs-12 column">
+        <div class="col-xs-12 column work-title">
             <input class="work-title-input" type="text" placeholder="标题" id="work-title" readonly/><br/>
             <text class="work-time">写于
                 <text id="wrt_year"></text>年
@@ -258,31 +257,50 @@
                 <text id="wrt_min"></text>分
             </text>
         </div>
-        <div class="col-md-12 column work-writer">
+        <div class="col-xs-12 column work-writer">
             <b><input class="work-writer-input" type="text" placeholder="笔名" id="work-writer" readonly/></b>
             <text style="font-size: large">&nbsp;&nbsp;|&nbsp;&nbsp;文</text>
         </div>
-        <hr/>
-        <div class="col-md-12 column" style="margin-bottom: 15px">
+        <div class="col-xs-12 column">
+            <hr/>
+        </div>
+        <div class="col-xs-12 column" style="margin-bottom: 15px">
             <textarea placeholder="正文（不能为空）" id="work-content"></textarea>
+        </div>
+        <div class="col-xs-12 column">
+            <hr/>
         </div>
     </div>
     </div>
     </div>
 
+{#    <div class="container">#}
+{#    <div class="row clearfix">#}
+{#    <div class="col-xs-12 column">#}
+{#        <div class="col-xs-12 column">#}
+{#            <div class="col-xs-12 column">#}
+{#                <div class="col-xs-4 column">#}
+{#                    <img class="avatar-img-small" src="/user/avatar/default-avatar-01.jpg">#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#    </div>#}
+{#    </div>#}
+
     <div class="container">
     <div class="row clearfix">
-    <div class="col-md-12 column">
-        <div class="col-md-12 column" style="margin-bottom: 20px; text-align: right">
+    <div class="col-xs-12 column">
+        <div class="col-xs-12 column" style="margin-bottom: 20px; text-align: right">
             <textarea class="comment-input" placeholder="评价（不超过200字）" id="comment" rows="3" oninput="count()"></textarea>
-            <text class="count-text"><text id="count"></text> / 140</text>
+            <text class="count-text"><text id="count"></text> / 200</text>
         </div>
-        <div class="col-md-12 column" style="margin-bottom: 20px">
+        <div class="col-xs-12 column" style="margin-bottom: 20px">
             <div class="switch">
-                <input type="checkbox" id="result" data-on-text="过" data-off-text="驳"/>
+                <input type="checkbox" id="result" data-on-text="过审" data-off-text="驳回"/>
             </div>
         </div>
-        <div class="col-md-12 column" style="text-align: right; margin-bottom: 15px">
+        <div class="col-xs-12 column" style="text-align: right; margin-bottom: 15px">
             <a class="btn btn-base btn-long" onclick="comment()">评价</a>
         </div>
     </div>

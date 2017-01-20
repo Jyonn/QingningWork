@@ -8,7 +8,21 @@ from Base.error import Error
 
 
 def get_readable_time_string(t):
-    return str(t.year) + "年" + str(t.month) + "月" + str(t.day) + "日 " + str(t.hour) + "时" + str(t.minute) + "分"
+    ret_str = str(t.year) + "年"
+    if t.month < 10:
+        ret_str += "0"
+    ret_str += str(t.month) + "月"
+    if t.day < 10:
+        ret_str += "0"
+    ret_str += str(t.day) + "日 "
+    if t.hour < 10:
+        ret_str += "0"
+    ret_str += str(t.hour) + "时"
+    if t.minute < 10:
+        ret_str += "0"
+    ret_str += str(t.minute) + "分"
+
+    return ret_str
 
 
 def get_address_by_ip_via_tb(ipv4, timeout=0.5):

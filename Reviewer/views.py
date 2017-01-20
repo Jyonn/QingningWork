@@ -5,6 +5,8 @@ from Comment.models import Comment
 
 
 def get_packed_work(work, related_type):
+    refs_num = Comment.objects.filter(re_work=work, is_updated=False, result=False).count()
+    recv_num = Comment.objects.filter(re_work=work, is_updated=False, result=True).count()
     work_detail = dict(
         wid=work.pk,  # 作品编号
         writer_name=work.writer_name,  # 作者笔名
@@ -12,8 +14,10 @@ def get_packed_work(work, related_type):
         create_time=get_readable_time_string(work.create_time),  # 上传时间
         related_type=related_type,  # 关联类型
         status=work.status,  # 作品状态
-        is_public=work.is_delete,  # 是否删除
-        is_delete=work.is_public,  # 是否公开
+        is_public=work.is_public,  # 是否删除
+        is_delete=work.is_delete,  # 是否公开
+        refs_num=refs_num,  # 过审数
+        recv_num=recv_num,  # 驳回数
     )
     if work.re_writer is not None:
         work_detail["re_avatar"] = work.re_writer.avatar
