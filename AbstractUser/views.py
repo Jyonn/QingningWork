@@ -8,7 +8,7 @@ from Writer.models import Writer
 @require_POST
 @require_json
 @require_params(["username", "password"])
-@deny_login
+# @deny_login
 def login(request):
     """
     登录系统

@@ -133,7 +133,7 @@ def is_windows_system():
     import platform
     return 'Windows' in platform.system()
 
-if is_windows_system:
+if is_windows_system is True:
     MEDIA_ROOT = 'D:/Program/web/QingNingWork'
 else:
     MEDIA_ROOT = '/home/web/QingNingWork'
