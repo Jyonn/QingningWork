@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include, static
 from django.contrib import admin
+from AbstractUser import front_views
 
 from QingningWork.settings import ICO_URL
 
 urlpatterns = [
+    url(r'^$', front_views.login),
     url(r'^admin/', admin.site.urls),
     url(r'^user/', include("AbstractUser.urls")),
     url(r'^reviewer/', include("Reviewer.urls")),
