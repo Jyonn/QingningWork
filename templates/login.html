@@ -14,6 +14,12 @@
     <script type="application/javascript"
             src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="application/javascript" src="/static/js/jquery.json.js"></script>
+    <script type="application/javascript" src="/static/js/highlight.js"></script>
+    <script type="application/javascript" src="/static/js/main.js"></script>
+    <script type="application/javascript" src="/static/js/bootstrap-switch.min.js"></script>
+    <link href="/static/css/highlight.css" rel="stylesheet"/>
+    <link href="/static/css/bootstrap-switch.min.css" rel="stylesheet"/>
+
     <style type="text/css">
         body {
             background: url('/static/bk.jpg') no-repeat center;
@@ -41,8 +47,8 @@
             padding-bottom: 20px;
             margin: 20px;
         }
-        label {
-{#            color: #B0AD8A;#}
+        .btn-long {
+            width: 30%;
         }
     </style>
     <script type="application/javascript">
@@ -95,18 +101,28 @@
             var json_str = $.toJSON(post);
             postJSON("/user/login/", json_str, status_return);
         }
-        function hide_pwd() {
-            if ($("#no-pwd").prop("checked"))
-                $("#pwd_block").css("display", "none");
-            else
-                $("#pwd_block").css("display", "block");
-        }
+{#        function hide_pwd() {#}
+{##}
+{#            if ($("#no-pwd").prop("checked"))#}
+{#                $("#pwd_block").css("display", "none");#}
+{#            else#}
+{#                $("#pwd_block").css("display", "block");#}
+{#        }#}
         function body_img_callback(w, h) {
             window.image_width = w;
             window.image_height = h;
             change_body_css();
         }
         $(document).ready(function () {
+            $("#switch").bootstrapSwitch().on('switchChange.bootstrapSwitch', function (e, state) {
+                if(state) {
+                    $("#pwd_block").css("display", "none");
+                }
+                else {
+                    $("#pwd_block").css("display", "block");
+                }
+            });
+
             postJSON("/user/status/", "", status_return);
             var image = new Image();
             image.src = $("#body-img").attr("src");
@@ -149,11 +165,13 @@
             <div class="form-group" id="pwd_block">
                  <label>密码</label><input type="password" class="form-control" id="password" />
             </div>
-            <div class="checkbox">
-                 <label onclick="hide_pwd()"><input type="checkbox" id="no-pwd"/>免密登录</label>
+            <div class="form-group" id="pwd_block">
+                <div class="switch" data-animated="false">
+                    <input type="checkbox" id="switch" data-on-text="免密" data-off-text="默认"/>
+                </div>
             </div>
             <div class="submit-button">
-                <a onclick="login()" type="submit" class="btn btn-default" id="login_btn">登录</a>
+                <a onclick="login()" type="submit" class="btn btn-default btn-long" id="login_btn">登录</a>
             </div>
         </form>
     </div>

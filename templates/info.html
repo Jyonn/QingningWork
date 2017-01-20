@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html>
+<head>
+    <!-- Magzine -->
+    <meta charset="utf-8">
+    <title>青柠审稿</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <script type="application/javascript"
+            src="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
+    <script type="application/javascript"
+            src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script type="application/javascript"
+            src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.json.js"></script>
+    <script type="application/javascript" src="/static/js/highlight.js"></script>
+    <script type="application/javascript" src="/static/js/main.js"></script>
+    <script type="application/javascript" src="/static/js/bootstrap-switch.min.js"></script>
+    <link href="/static/css/highlight.css" rel="stylesheet"/>
+    <link href="/static/css/bootstrap-switch.min.css" rel="stylesheet"/>
+
+    <style type="text/css">
+        body {
+            background: #8FCC31;
+        }
+        .panel-default .panel-heading {
+            color: #ffffff;
+            background: #36A60F none;
+{#            text-align: center;#}
+        }
+        .panel-default {
+            border: none;
+        }
+        .container {
+            padding-top: 20px;
+        }
+        .white-text {
+            color: #ffffff;
+        }
+        #avatar-img {
+            border: 3px solid #cccccc;
+            border-radius: 50%;
+            height: 80px;
+            width: 80px;
+        }
+        .avatar-img-small {
+            border: 3px solid #cccccc;
+            border-radius: 50%;
+            height: 50px;
+            width: 50px;
+{#            margin-top: 2px;#}
+{#            margin-bottom: 2px;#}
+        }
+        #nickname-front {
+            font-size: x-large;
+        }
+        #nickname {
+            background-color: #ffffff;
+            color: #36A60F;
+            font-size: large;
+        }
+        .panel-body {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .panel-body .col-xs-12 {
+            padding-left: 5px;
+            padding-right: 5px;
+            margin-top: 5px;
+{#            margin-bottom: 5px;#}
+        }
+        .panel-body .col-xs-9 {
+            padding-left: 10px;
+            padding-right: 0;
+{#            padding-top: 5px;#}
+        }
+        .panel-body .col-xs-2 {
+            padding-left: 0;
+            padding-right: 0;
+            text-align: center;
+        }
+        .panel-body .col-xs-1 {
+            padding: 10px 0;
+            text-align: center;
+        }
+        .panel-body kbd {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+        .btn-base {
+            color: #ffffff;
+            background: #36A60F;
+        }
+        .view_span_btn {
+            color: #36A60F;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .span-icon {
+            font-size: small;
+            cursor: pointer;
+        }
+        .panel-default>.panel-heading .badge {
+            background-color: #ffffff;
+            color: #36A60F;
+        }
+        .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+            color: #ffffff;
+            background-color: #36A60F;
+            border: none;
+        }
+        .nav-tabs {
+            border-bottom-color: #dddddd;
+        }
+        a:focus, a:hover, a {
+            color: #000000;
+            text-decoration: none;
+            background-color: #dddddd;
+        }
+        hr {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .base-input {
+            border: 0;
+            font-size: large;
+            background: none;
+            letter-spacing: 1px;
+            color: #ffffff;
+            outline: none;
+            width: 100%;
+        }
+        .base-input::-webkit-input-placeholder {
+            color: #dddddd;
+        }
+        .base-input::-ms-input-placeholder {
+            color: #dddddd;
+        }
+        .base-input::-moz-placeholder {
+            color: #dddddd;
+        }
+        .tab-pane .col-xs-12 {
+            margin-top: 10px;
+        }
+        .col-xs-4 label {
+            font-size: large;
+            color: #ffffff;
+        }
+        .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary {
+            color: #ffffff;
+            background: #36A60F;
+        }
+        .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default {
+            color: #ffffff;
+            background: #CC5A40;
+        }
+        .container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .btn-long {
+            width: 30%;
+        }
+    </style>
+    <script type="application/javascript">
+        function postJSON(url, json_str, success_function, base_function, error_function) {
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data : json_str,
+                async: true,
+                dataType : 'json',
+                contentType : 'application/text',
+                success : function(response, status) {
+                    if (status != "success")
+                        alert("未知错误");
+                    else if (base_function == null)
+                        if (response['code'] != 0)
+                            alert("错误" + response['code'] + "：" + response['msg']);
+                        else success_function(response);
+                    else
+                        base_function(response, success_function);
+                },
+                error : function(xhr, error, exception) {
+                    if (error_function == null)
+                        alert(exception.toString());
+                    else
+                        error_function(xhr, error, exception);
+                }
+            });
+        }
+        function exit_system() {
+            postJSON("/user/logout/", "", function (response) {
+{#                window.location = "/user/login.act/";#}
+                window.location.href = document.referrer;
+            });
+        }
+    </script>
+    <script type="application/javascript">
+        function submit_password() {
+            var old_password = $("#old-password").val();
+            var new_password = $("#new-password").val();
+            $("#old-password").val("");
+            $("#new-password").val("");
+            var no_pwd_login = $("#switch-pwd-login").bootstrapSwitch('state');
+            if (no_pwd_login == false) {
+                var post = {
+                    old_password: old_password,
+                    new_password: new_password,
+                };
+                var json_str = $.toJSON(post);
+                postJSON("/user/password/change/", json_str, function (response) {
+                    alert("设置成功！");
+                    refresh_page();
+                });
+            } else {
+                var post = {password: old_password};
+                var json_str = $.toJSON(post);
+                postJSON("/user/password/unset/", json_str, function (response) {
+                    alert("设置成功！");
+                    refresh_page();
+                });
+            }
+        }
+        function submit_basic_info() {
+            var nickname = $("#nickname-input").val();
+            if (nickname == "")
+                    nickname = null;
+            var post = {nickname: nickname};
+            var json_str = $.toJSON(post);
+            $("#submit_basic_info").blur();
+            postJSON("/user/info/set/basic/", json_str, function (response) {
+                alert("设置成功！");
+                refresh_page();
+{#                window.location.reload();#}
+            });
+        }
+        function submit_username() {
+            var old_username = $("#old-username").val();
+            var new_username = $("#new-username").val();
+            var password = $("#password").val();
+            $("#old-username").val("");
+            $("#new-username").val("");
+            $("#password").val("");
+            if (window.pwd_login == true)
+                    old_username = "";
+            else
+                    password = "";
+            var post = {
+                old_username: old_username,
+                new_username: new_username,
+                password: password,
+            };
+            var json_str = $.toJSON(post);
+            postJSON("/user/username/change/", json_str, function (response) {
+                alert("设置成功！");
+                refresh_page();
+{#                window.location.reload();#}
+            });
+        }
+    </script>
+    <script type="application/javascript">
+        function refresh_page() {
+            postJSON("/user/info/", "", function (response) {
+                var nickname = response["body"]["nickname"];
+                window.pwd_login = response["body"]["pwd_login"];
+                if (nickname != null)
+                        $("#nickname-input").val(nickname);
+                if (window.pwd_login == true) {
+                    // 修改密码模块
+                    $("#no-pwd-explain").css("display", "none");
+                    $("#old-password-block").css("display", "block");
+                    $("#new-password-block").css("display", "block");
+                    // 修改账号模块
+                    $("#old-username-block").css("display", "none");
+                } else {
+                    if ($("#switch-pwd-login").bootstrapSwitch('state') == false)
+                        $("#switch-pwd-login").bootstrapSwitch('toggleState');
+                    $("#old-password-block").css("display", "none");
+                    $("#new-password-block").css("display", "none");
+                    // 修改账号模块
+                    $("#password-block").css("display", "none");
+                }
+            });
+        }
+    </script>
+    <script type="application/javascript">
+        $(document).ready(function () {
+            $("#switch-basic-info").bootstrapSwitch().on('switchChange.bootstrapSwitch', function (e, state) {
+                if(state) {
+                    $("#nickname-input").attr("readonly", null);
+                }
+                else {
+                    $("#nickname-input").attr("readonly", "readonly");
+                }
+            });
+            $("#switch-pwd-login").bootstrapSwitch().on('switchChange.bootstrapSwitch', function (e, state) {
+                if(state) {
+                    // 开启免密模式
+                    $("#no-pwd-explain").css("display", "block");
+                    $("#new-password-block").css("display", "none");
+                    if (window.pwd_login == false) {
+                        $("#old-password-block").css("display", "none");
+                    }
+                }
+                else {
+                    // 关闭免密模式
+                    $("#no-pwd-explain").css("display", "none");
+                    $("#new-password-block").css("display", "block");
+                    if (window.pwd_login == false) {
+                        $("#old-password-block").css("display", "none");
+                    }
+                }
+            });
+            refresh_page();
+        });
+        function info_page() {
+            window.location = "/user/info.view/";
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+    <div class="row clearfix">
+    <div class="col-xs-12 column">
+        <div class="tabbable" id="tabs-for-basic-info">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                     <a href="#panel-basic" data-toggle="tab">基本信息</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="panel-basic">
+                    <div class="col-xs-12 column">
+                        <div class="col-xs-4 column">
+                            <label>昵称</label>
+                        </div>
+                        <div class="col-xs-8 column">
+                            <input class="base-input" type="text" placeholder="笔名为空" id="nickname-input" readonly/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 column">
+                        <div class="col-xs-6 column">
+                            <div class="switch">
+                                <input type="checkbox" id="switch-basic-info" data-on-text="编辑" data-off-text="只读"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 column">
+                        <div style="text-align: right">
+                            <a class="btn btn-base btn-long" onclick="submit_basic_info()" id="submit_basic_info">提交</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="container">
+    <div class="row clearfix">
+    <div class="col-xs-12 column">
+        <div class="tabbable" id="tabs-for-password">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                     <a href="#panel-password" data-toggle="tab">修改密码</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="panel-password">
+                    <div class="col-xs-12 column">
+                        <div class="col-xs-4 column">
+                            <label>免密</label>
+                        </div>
+                        <div class="col-xs-8 column">
+                            <div class="switch" data-animated="false">
+                                <input type="checkbox" id="switch-pwd-login" data-on-text="开启" data-off-text="关闭"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 column" id="old-password-block">
+                        <div class="col-xs-4 column">
+                            <label>原密码</label>
+                        </div>
+                        <div class="col-xs-8 column">
+                            <input class="base-input" type="password" placeholder="此处输入原密码" id="old-password"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 column" id="new-password-block">
+                        <div class="col-xs-4 column">
+                            <label>新密码</label>
+                        </div>
+                        <div class="col-xs-8 column">
+                            <input class="base-input" type="password" placeholder="此处输入新密码" id="new-password"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 column" id="no-pwd-explain">
+                        <label style="text-align: justify">
+                            免密模式是青柠尝鲜的新登录模式，用户只需记住账号，无需填写密码即可登录。
+                            因此，需要用户谨慎保管您的账号。用户可以修改账号。
+                        </label>
+                    </div>
+                    <div class="col-xs-12 column">
+                        <div style="text-align: right">
+                            <a class="btn btn-base btn-long" onclick="submit_password()">提交</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+    <div class="container">
+    <div class="row clearfix">
+    <div class="col-xs-12 column">
+        <div class="tabbable" id="tabs-for-username">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                     <a href="#panel-username" data-toggle="tab">修改账号</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="panel-username">
+                    <div class="col-xs-12 column" id="old-username-block">
+                        <div class="col-xs-4 column">
+                            <label>原账号</label>
+                        </div>
+                        <div class="col-xs-8 column">
+                            <input class="base-input" type="text" placeholder="此处输入原账号" id="old-username"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 column" id="password-block">
+                        <div class="col-xs-4 column">
+                            <label>密码</label>
+                        </div>
+                        <div class="col-xs-8 column">
+                            <input class="base-input" type="text" placeholder="此处输入当前密码" id="this-password"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 column" id="new-username-blck">
+                        <div class="col-xs-4 column">
+                            <label>新账号</label>
+                        </div>
+                        <div class="col-xs-8 column">
+                            <input class="base-input" type="text" placeholder="此处输入新账号" id="new-username"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 column">
+                        <div style="text-align: right">
+                            <a class="btn btn-base btn-long" onclick="submit_username()">提交</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+</body>
+</html>

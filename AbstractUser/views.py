@@ -43,18 +43,25 @@ def login(request):
 
 @require_POST
 @require_json
-@require_params(["username", "password"])
+@require_params(["old_username", "new_username", "password"])
 @require_login
 def change_username(request):
-    username = request.POST["username"]
+    """
+    修改用户账号
+    """
+    old_username = request.POST["old_username"]
+    new_username = request.POST["new_username"]
     password = request.POST["password"]
     user, user_type = get_user_from_session(request)
     if user is None:
-        return error_response(Error.UNKNOWN)
+        return error_response(Error.LOGIN_AGAIN)
     if user.pwd_login:
         if not user.check_password(password):
             return error_response(Error.WRONG_PASSWORD)
-    user.username = username
+    else:
+        if user.username != old_username:
+            return error_response(Error.WRONG_USERNAME)
+    user.username = new_username
     user.save()
     return response()
 
@@ -64,11 +71,14 @@ def change_username(request):
 @require_params(["old_password", "new_password"])
 @require_login
 def change_password(request):
+    """
+    修改用户密码
+    """
     old_password = request.POST["old_password"]
     new_password = request.POST["new_password"]
     user, user_type = get_user_from_session(request)
     if user is None:
-        return error_response(Error.UNKNOWN)
+        return error_response(Error.LOGIN_AGAIN)
     if user.pwd_login:
         if not user.check_password(old_password):
             return error_response(Error.WRONG_PASSWORD)
@@ -95,8 +105,10 @@ def unset_password(request):
         return error_response(Error.NO_PASSWORD_LOGIN)
     if not user.check_password(password):  # 检查密码是否正确
         return error_response(Error.WRONG_PASSWORD)
+    print("true");
     user.pwd_login = False
     user.save()
+    print(user.pwd_login)
     return response()
 
 
@@ -118,7 +130,7 @@ def status(request):
     if require_login_func(request):
         user, user_type = get_user_from_session(request)
         if user is None:
-            return error_response(Error.UNKNOWN)
+            return error_response(Error.LOGIN_AGAIN)
         return response(body=user_type)
     else:
         return response()
@@ -136,3 +148,52 @@ def get_now_time(request):
         min=now.minute,
         sec=now.second,
     ))
+
+
+@require_POST
+@require_login
+def get_info(request):
+    """
+    获取个人信息
+    response
+    {
+        type: 用户类型
+        nickname: 昵称 / 笔名
+        pwd_login: 是否免密
+        phone: 手机号
+        email: 邮箱
+        avatar: 头像
+    }
+    """
+    user, user_type = get_user_from_session(request)
+    if user is None:
+        return error_response(Error.LOGIN_AGAIN)
+    return_dict = dict(
+        type=user_type,
+        nickname=user.nickname,
+        pwd_login=user.pwd_login,
+        phone=user.phone,
+        email=user.email,
+        avatar=user.avatar,
+    )
+    return response(body=return_dict)
+
+
+@require_POST
+@require_json
+@require_params(["nickname"])
+@require_login
+def set_basic_info(request):
+    """
+    修改用户基本信息
+    """
+    user, user_type = get_user_from_session(request)
+    if user is None:
+        return error_response(Error.LOGIN_AGAIN)
+    nickname = request.POST["nickname"]
+    try:
+        user.nickname = nickname
+        user.save()
+    except:
+        return error_response(Error.EXIST_NICKNAME)
+    return response()

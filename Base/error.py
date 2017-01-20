@@ -1,4 +1,6 @@
 class Error:
+    WRONG_USERNAME = 1020
+    EXIST_NICKNAME = 1019
     LOGIN_AGAIN = 1018
     FROZEN_USER = 1017
     NOT_YOUR_WORK = 1016
@@ -41,4 +43,6 @@ class Error:
         (NOT_YOUR_WORK, "不是你上传的作品"),
         (FROZEN_USER, "账号被冻结，请联系社长"),
         (LOGIN_AGAIN, "重新登录"),
+        (EXIST_NICKNAME, "已存在的昵称"),
+        (WRONG_USERNAME, "错误的账号"),
     ]

@@ -165,11 +165,13 @@
                 $("#nickname").text(window.review_info["nickname"]);
             $("#total_received").text(window.review_info["total_received"]);
             $("#total_refused").text(window.review_info["total_refused"]);
+            $("#total_review").text(window.review_info["total_review"]);
             $("#last_ipv4").text(window.review_info["last_ipv4"]);
             $("#last_login").text(window.review_info["last_login"]);
             $(".panel-body #total_upload").text(window.review_info["total_upload"]);
             $(".panel-title #total_upload").text(window.review_info["total_upload"]);
             $("#total_upload_rank").text(window.review_info["total_upload_rank"]);
+            $("#total_review_rank").text(window.review_info["total_review_rank"]);
         }
         function get_work_item(work) {
             var html = "";
@@ -246,6 +248,9 @@
         $(document).ready(function () {
             refresh_page();
         });
+        function info_page() {
+            window.location = "/user/info.view/";
+        }
     </script>
 </head>
 <body>
@@ -254,12 +259,12 @@
     <div class="row clearfix">
     <div class="col-xs-12 column">
         <div class="col-xs-4">
-            <img id="avatar-img" src="">
+            <img id="avatar-img" src="" onclick="info_page()">
         </div>
         <div class="col-xs-8 white-text">
             <div id="nickname-front">
                 审稿员&nbsp;&nbsp;<kbd id="nickname"></kbd>
-                &nbsp;&nbsp;<span class="glyphicon glyphicon-refresh span-icon" onclick="refresh_page()"></span>
+{#                &nbsp;&nbsp;<span class="glyphicon glyphicon-refresh span-icon" onclick="refresh_page()"></span>#}
             </div>
             <br/>
             <a class="btn btn-base" href="/work/upload.act/">发布稿件</a>
@@ -287,10 +292,17 @@
                         <div class="col-xs-4 column">登录地点</div>
                         <div class="col-xs-8 column" id="last_ipv4">浙江省衢州市</div>
                     </div>
+                    <div class="col-xs-12 column"><hr/></div>
                     <div class="col-xs-12 column">
                         <div class="col-xs-4 column">发布稿件</div>
                         <div class="col-xs-8 column">
                             <label id="total_upload"></label>篇，排名第<label id="total_upload_rank"></label>位
+                        </div>
+                    </div>
+                    <div class="col-xs-12 column">
+                        <div class="col-xs-4 column">已审稿件</div>
+                        <div class="col-xs-8 column">
+                            <label id="total_review"></label>篇，排名第<label id="total_review_rank"></label>位
                         </div>
                     </div>
                 </div>
@@ -310,9 +322,7 @@
                  <a class="panel-title">待审稿件 <span class="badge" id="total_not_reviewed"></span></a>
             </div>
             <div id="todo-list" class="panel-collapse collapse">
-                <div class="panel-body" id="not-reviewed-list">
-                    Anim pariatur cliche...
-                </div>
+                <div class="panel-body" id="not-reviewed-list"></div>
             </div>
         </div>
         <div class="panel panel-default">
@@ -320,9 +330,7 @@
                  <a class="panel-title">通过稿件 <span class="badge" id="total_received"></span></a>
             </div>
             <div id="recv-list" class="panel-collapse collapse">
-                <div class="panel-body" id="received-list">
-                    Anim pariatur cliche...
-                </div>
+                <div class="panel-body" id="received-list"></div>
             </div>
         </div>
         <div class="panel panel-default">
@@ -330,9 +338,7 @@
                  <a class="panel-title">驳回稿件 <span class="badge" id="total_refused"></span></a>
             </div>
             <div id="refs-list" class="panel-collapse collapse">
-                <div class="panel-body" id="refused-list">
-                    Anim pariatur cliche...
-                </div>
+                <div class="panel-body" id="refused-list"></div>
             </div>
         </div>
         <div class="panel panel-default">
@@ -340,21 +346,7 @@
                  <a class="panel-title">发布稿件 <span class="badge" id="total_upload"></span></a>
             </div>
             <div id="upld-list" class="panel-collapse in">
-                <div class="panel-body" id="upload-list">
-{#                <div class="panel-body">#}
-                    <div class="col-xs-12 column">
-                        <div class="col-xs-2 column">
-                            <img class="avatar-img-small" src="/user/avatar/default-avatar-03.jpg">
-                        </div>
-                        <div class="col-xs-9 column">
-                            <kbd>可大</kbd> <label>2000年01月01日 20时20分</label><br/>
-                            发布稿件《<label>黑键</label>》，审核中
-                        </div>
-                        <div class="col-xs-1 column">
-                            <span class="glyphicon glyphicon-chevron-right view_span_btn"></span>
-                        </div>
-                    </div>
-                </div>
+                <div class="panel-body" id="upload-list"></div>
             </div>
         </div>
     </div>

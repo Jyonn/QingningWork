@@ -364,19 +364,40 @@ def delete_work(request):
     return response()
 
 
+def get_rank(reviewer, order_by):
+    reviewers = Reviewer.objects.filter(is_frozen=False).order_by(order_by)
+    rank = 0
+    for ret_reviewer in reviewers:
+        rank += 1
+        if ret_reviewer == reviewer:
+            break
+    return rank
+
+
 @require_POST
 @require_login_reviewer
 def info(request):
+    """
+    获取审稿员基本信息
+    response
+    {
+        nickname: 笔名/昵称
+        avatar: 头像地址
+        total_review: 已审作品数目
+        total_received: 通过作品数目
+        total_refused: 驳回作品数目
+        total_upload: 发布作品数目
+        total_upload_rank: 发布作品排名
+        login_times: 登录次数
+        last_ipv4: 上次登录地址
+        last_login: 上次登录时间
+    }
+    """
     reviewer, user_type = get_user_from_session(request)
     if reviewer is None:
         return error_response(Error.LOGIN_AGAIN)
-    reviewers = Reviewer.objects.filter(is_frozen=False).order_by("-total_upload")
-
-    total_upload_rank = 0
-    for ret_reviewer in reviewers:
-        total_upload_rank += 1
-        if ret_reviewer == reviewer:
-            break
+    total_upload_rank = get_rank(reviewer, "-total_upload")
+    total_review_rank = get_rank(reviewer, "-total_review")
 
     last_login_str = "第一次登录" if reviewer.last_login is None else reviewer.last_login.strftime("%Y-%m-%d %H:%M:%S")
     ip_str = "第一次登录" if reviewer.last_ipv4 is None else get_address_by_ip_via_sina(reviewer.last_ipv4)
@@ -389,6 +410,7 @@ def info(request):
         total_refused=reviewer.total_refused,
         total_upload=reviewer.total_upload,
         total_upload_rank=total_upload_rank,
+        total_review_rank=total_review_rank,
         login_times=reviewer.login_times,
         last_ipv4=ip_str,
         last_login=last_login_str,
