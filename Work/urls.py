@@ -3,8 +3,9 @@ from QingningWork.settings import WORK_URL
 from Work import views, front_views
 
 urlpatterns = [
-    url(r'^detail/', views.get_work_detail, name="get-work-detail"),
-    url(r'^upload/', views.upload_work, name="upload-work-via-reviewer-or-writer"),
+    url(r'^detail/$', views.get_work_detail, name="get-work-detail"),
+    url(r'^comment/$', views.get_work_comments, name="get-work-comment"),
+    url(r'^upload/$', views.upload_work, name="upload-work-via-reviewer-or-writer"),
 ] + [
     url(r'^detail.view/(?P<wid>\d+)/', front_views.detail, name="front-page-work-detail"),
     url(r'^upload.act/', front_views.upload, name="front-page-upload-work"),

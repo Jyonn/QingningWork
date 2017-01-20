@@ -141,6 +141,50 @@
             color: #ffffff;
             background: #CC5A40;
         }
+        .comment-list-container {
+            margin-bottom: 10px;
+        }
+        .comment-list-container .col-xs-12 {
+            padding-left: 10px;
+            padding-right: 0;
+        }
+        .comment-list-container .col-xs-10 {
+            padding: 0;
+        }
+        .comment-list-container .col-xs-2 {
+            padding: 0;
+            text-align: center;
+        }
+        .nickname-front {
+            font-size: large;
+            color: #ffffff;
+        }
+        .nickname {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        .status-success {
+            background: #36A60F;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        .status-warning {
+            background: #CC5A40;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        .status-process {
+            background: #337ab7;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        .comment-textarea {
+            color: #ffffff;
+            text-align: right;
+            padding-top: 10px;
+            padding-right: 10px;
+            border-right: 5px solid #eee;
+        }
     </style>
     <script type="application/javascript">
         function postJSON(url, json_str, success_function, base_function, error_function) {
@@ -177,7 +221,64 @@
             url = url.substring(head.length);
             url = url.substring(0, url.length - 1);
             return url;
-          }
+        }
+        function get_comment_item(comment) {
+            var html = "";
+            var nickname = "没有昵称";
+            if (comment["nickname"] != null)
+                    nickname = comment["nickname"];
+            var result_str, result_tag;
+            if (comment["result"] == true) {
+                result_str = "通过";
+                result_tag = "status-success";
+            }
+            else {
+                result_str = "驳回";
+                result_tag = "status-warning";
+            }
+            var content = comment["content"];
+            content = Base64.decode(content);
+            if (content == "")
+                    content = "没有评价";
+            html += '<div class="col-xs-12 column">';
+            html += '   <div class="col-xs-12 column">';
+            html += '       <div class="col-xs-2 column">';
+            html += '           <img class="avatar-img-small" src="/user/avatar/'+comment["avatar"]+'">';
+            html += '       </div>';
+            html += '       <div class="col-xs-10 column">';
+            html += '           <div class="col-xs-12 column nickname-front">';
+            html += '               <kbd class="nickname">'+nickname+'</kbd><kbd class="status-process">第'+comment["times"]+'次审阅</kbd><kbd class="'+result_tag+'">'+result_str+'</kbd>';
+            html += '           </div>';
+            html += '           <div class="col-xs-12 column" style="text-align: right">';
+            html += '               <text class="work-time">于 '+comment["comment_time"]+'</text>';
+            html += '           </div>';
+            html += '       </div>';
+            html += '   </div>';
+            html += '   <div class="col-xs-12 column">';
+            html += '       <textarea class="comment-textarea">'+content+'</textarea>';
+            html += '   </div>';
+            html += '</div>';
+            return html;
+        }
+        function get_no_comment_item() {
+            var html = "";
+            html += '<div class="col-xs-12 column">';
+            html += '   暂时还没有评论哦';
+            html += '</div>';
+            return html;
+        }
+        function get_comment() {
+            var post = { wid: window.work_id };
+            var json_str = $.toJSON(post);
+            postJSON("/work/comment/", json_str, function (response) {
+                $("#comment-list-container").empty();
+                for (var i = 0; i < response["body"].length; i++) {
+                    $("#comment-list-container").append(get_comment_item(response["body"][i]));
+                }
+                if (response["body"].length == 0)
+                        $("#comment-list-container").append(get_no_comment_item());
+            })
+        }
     </script>
     <script type="application/javascript">
         $(document).ready(function () {
@@ -197,6 +298,7 @@
                 $("#work-content").val(content);
                 var c = document.getElementById("work-content");
                 c.style.height = (c.scrollHeight) + 'px';
+                get_comment();
             });
         });
     </script>
@@ -268,27 +370,21 @@
             <textarea placeholder="正文（不能为空）" id="work-content"></textarea>
         </div>
         <div class="col-xs-12 column">
-            <hr/>
+            <text style="color: #ffffff">以下审稿员评论</text>
+            <hr style="margin-top: 0"/>
         </div>
     </div>
     </div>
     </div>
 
-{#    <div class="container">#}
-{#    <div class="row clearfix">#}
-{#    <div class="col-xs-12 column">#}
-{#        <div class="col-xs-12 column">#}
-{#            <div class="col-xs-12 column">#}
-{#                <div class="col-xs-4 column">#}
-{#                    <img class="avatar-img-small" src="/user/avatar/default-avatar-01.jpg">#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#    </div>#}
-{#    </div>#}
-
     <div class="container">
+    <div class="row clearfix">
+    <div class="col-xs-12 column comment-list-container" id="comment-list-container">
+    </div>
+    </div>
+    </div>
+
+    <div class="container" style="margin-top: 15px">
     <div class="row clearfix">
     <div class="col-xs-12 column">
         <div class="col-xs-12 column" style="margin-bottom: 20px; text-align: right">

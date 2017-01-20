@@ -84,7 +84,17 @@ def get_work_detail(request):
 @require_login
 def get_work_comments(request):
     """
-    获取作品的所有最新评论
+    获取作品的所有(最新)评论
+    response
+    {
+        rid: 审稿员编号
+        nickname: 审稿员昵称
+        avatar: 审稿员头像
+        content: 评价内容
+        result: 评价结果
+        comment_time: 评价时间
+        times: 评价次数
+    }
     """
     wid = request.POST["wid"]
     try:
@@ -102,12 +112,15 @@ def get_work_comments(request):
         is_updated=False,
     )
     for comment in comments:
+        reviewer_comments = Comment.objects.filter(re_work=work, re_reviewer=comment.re_reviewer)
         comment_list.append(dict(
             rid=comment.re_reviewer.pk,
-            reviewer_name=comment.re_reviewer.nickname,
+            nickname=comment.re_reviewer.nickname,
+            avatar=comment.re_reviewer.avatar,
             content=comment.content,
             result=comment.result,
-            comment_time=comment.comment_time,
+            comment_time=get_readable_time_string(comment.comment_time),
+            times=reviewer_comments.count(),
         ))
 
     return response(body=comment_list)

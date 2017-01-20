@@ -112,8 +112,7 @@
         }
         .status-success {
             background: #36A60F;
-            margin-right: 2px;
-            margin-left: 2px;
+            margin-right: 0;
         }
         .status-warning {
             background: #CC5A40;
@@ -281,6 +280,9 @@
         }
         function refresh_panel_works(work_list, panel_list) {
             $(panel_list).empty();
+            work_list.sort(function (a, b) {
+                return a["create_time"] < b["create_time"];
+            });
             for (var i = 0; i < work_list.length; i++) {
                 $(panel_list).append(get_work_item(work_list[i]));
                 if (i < work_list.length - 1)
