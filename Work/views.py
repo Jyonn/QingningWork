@@ -11,7 +11,6 @@ from Work.models import Work
 @require_POST
 @require_json
 @require_params(["wid"])
-@require_login
 def get_work_detail(request):
     """
     获取作品详细信息
@@ -81,7 +80,6 @@ def get_work_detail(request):
 @require_POST
 @require_json
 @require_params(["wid"])
-@require_login
 def get_work_comments(request):
     """
     获取作品的所有(最新)评论

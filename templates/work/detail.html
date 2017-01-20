@@ -255,7 +255,7 @@
             html += '       </div>';
             html += '   </div>';
             html += '   <div class="col-xs-12 column">';
-            html += '       <textarea class="comment-textarea">'+content+'</textarea>';
+            html += '       <textarea class="comment-textarea" readonly>'+content+'</textarea>';
             html += '   </div>';
             html += '</div>';
             return html;
@@ -285,6 +285,7 @@
             window.work_id = get_work_id();
             var post = { wid: window.work_id };
             var json_str = $.toJSON(post);
+            get_status();
             postJSON("/work/detail/", json_str, function (response) {
                 $("#wrt_year").text(response["body"]["wrt_year"]);
                 $("#wrt_month").text(response["body"]["wrt_month"]);
@@ -330,6 +331,14 @@
                 postJSON("/user/status/", "", status_return);
             });
         }
+        function get_status() {
+            postJSON("/user/status/", "", null, function (response, success_function) {
+                if (response["code"] == 0 && response["body"] == "reviewer")
+                        $("#my-comment").css("display", "block");
+                else
+                        $("#my-comment").css("display", "none");
+            });
+        }
         function count() {
             var count = $("#comment").val().length;
             $("#count").text(count);
@@ -367,7 +376,7 @@
             <hr/>
         </div>
         <div class="col-xs-12 column" style="margin-bottom: 15px">
-            <textarea placeholder="正文（不能为空）" id="work-content"></textarea>
+            <textarea placeholder="正文（不能为空）" id="work-content" readonly></textarea>
         </div>
         <div class="col-xs-12 column">
             <text style="color: #ffffff">以下审稿员评论</text>
@@ -384,7 +393,7 @@
     </div>
     </div>
 
-    <div class="container" style="margin-top: 15px">
+    <div class="container" style="margin-top: 15px" id="my-comment">
     <div class="row clearfix">
     <div class="col-xs-12 column">
         <div class="col-xs-12 column" style="margin-bottom: 20px; text-align: right">
