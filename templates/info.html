@@ -275,12 +275,15 @@
                     $("#new-password-block").css("display", "block");
                     // 修改账号模块
                     $("#old-username-block").css("display", "none");
+                    $("#password-block").css("display", "block");
                 } else {
                     if ($("#switch-pwd-login").bootstrapSwitch('state') == false)
                         $("#switch-pwd-login").bootstrapSwitch('toggleState');
+                    $("#no-pwd-explain").css("display", "block");
                     $("#old-password-block").css("display", "none");
                     $("#new-password-block").css("display", "none");
                     // 修改账号模块
+                    $("#old-username-block").css("display", "block");
                     $("#password-block").css("display", "none");
                 }
             });

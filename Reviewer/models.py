@@ -9,6 +9,8 @@ class Reviewer(AbstractUser):
     RELATED_REFUSED = 3
     RELATED_UPLOAD = 4
 
+    PRIVILEGE_ADD_WRITER = 0X01
+
     rid = models.AutoField(
         "审稿员编号",
         primary_key=True,

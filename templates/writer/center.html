@@ -186,6 +186,8 @@
             else
                 $("#nickname").text(window.writer_info["nickname"]);
             $("#total_received").text(window.writer_info["total_received"]);
+            $("#total_received_2").text(window.writer_info["total_received"]);
+            $("#total_refused").text(window.writer_info["total_refused"]);
             $("#total_works").text(window.writer_info["total_works"]);
             $("#total_review").text(window.writer_info["total_review"]);
             $("#last_ipv4").text(window.writer_info["last_ipv4"]);
@@ -396,7 +398,7 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading" data-toggle="collapse" data-parent="#work-list" href="#recv-list">
-                 <a class="panel-title">通过稿件 <span class="badge" id="total_received"></span></a>
+                 <a class="panel-title">通过稿件 <span class="badge" id="total_received_2"></span></a>
             </div>
             <div id="recv-list" class="panel-collapse collapse">
                 <div class="panel-body" id="received-list"></div>
