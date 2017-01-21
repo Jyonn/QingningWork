@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^user/', include("AbstractUser.urls")),
     url(r'^reviewer/', include("Reviewer.urls")),
     url(r'^work/', include("Work.urls")),
+    url(r'^writer/', include("Writer.urls")),
 ]
 
 urlpatterns += static.static('favicon.ico', document_root=ICO_URL)

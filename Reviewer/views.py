@@ -2,28 +2,7 @@ import datetime
 from Base.decorator import *
 from Work.models import Work
 from Comment.models import Comment
-
-
-def get_packed_work(work, related_type):
-    refs_num = Comment.objects.filter(re_work=work, is_updated=False, result=False).count()
-    recv_num = Comment.objects.filter(re_work=work, is_updated=False, result=True).count()
-    work_detail = dict(
-        wid=work.pk,  # 作品编号
-        writer_name=work.writer_name,  # 作者笔名
-        work_name=work.work_name,  # 作品名称
-        create_time=get_readable_time_string(work.create_time),  # 上传时间
-        related_type=related_type,  # 关联类型
-        status=work.status,  # 作品状态
-        is_public=work.is_public,  # 是否删除
-        is_delete=work.is_delete,  # 是否公开
-        refs_num=refs_num,  # 过审数
-        recv_num=recv_num,  # 驳回数
-    )
-    if work.re_writer is not None:
-        work_detail["re_avatar"] = work.re_writer.avatar
-    else:
-        work_detail["re_avatar"] = work.re_reviewer.avatar
-    return work_detail
+from Work.views import get_packed_work
 
 
 @require_POST
@@ -48,6 +27,8 @@ def get_related_lists(request):
             status: 稿件状态
             is_public: 是否公开
             is_delete: 是否被删除
+            recv_num: 过审数
+            refs_num: 驳回数
         },  {
             ...
         }]
@@ -92,6 +73,7 @@ def get_related_lists(request):
     # 获取发布的稿件列表
     works = Work.objects.filter(
         re_reviewer=reviewer,
+        is_delete=False,
     )
     for work in works:
         return_list.append(get_packed_work(work, Reviewer.RELATED_UPLOAD))
@@ -370,10 +352,13 @@ def delete_work(request):
 
 def get_rank(reviewer, order_by):
     reviewers = Reviewer.objects.filter(is_frozen=False).order_by(order_by)
+    attr = order_by
+    if order_by[0] == '-':
+        attr = attr[1:]
     rank = 0
     for ret_reviewer in reviewers:
         rank += 1
-        if ret_reviewer == reviewer:
+        if getattr(ret_reviewer, attr) == getattr(reviewer, attr):
             break
     return rank
 

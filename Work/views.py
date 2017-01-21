@@ -8,6 +8,28 @@ from QingningWork.settings import WORK_URL
 from Work.models import Work
 
 
+def get_packed_work(work, related_type=None):
+    refs_num = Comment.objects.filter(re_work=work, is_updated=False, result=False).count()
+    recv_num = Comment.objects.filter(re_work=work, is_updated=False, result=True).count()
+    work_detail = dict(
+        wid=work.pk,  # 作品编号
+        writer_name=work.writer_name,  # 作者笔名
+        work_name=work.work_name,  # 作品名称
+        create_time=get_readable_time_string(work.create_time),  # 上传时间
+        related_type=related_type,  # 关联类型
+        status=work.status,  # 作品状态
+        is_public=work.is_public,  # 是否删除
+        is_delete=work.is_delete,  # 是否公开
+        refs_num=refs_num,  # 过审数
+        recv_num=recv_num,  # 驳回数
+    )
+    if work.re_writer is not None:
+        work_detail["re_avatar"] = work.re_writer.avatar
+    else:
+        work_detail["re_avatar"] = work.re_reviewer.avatar
+    return work_detail
+
+
 @require_POST
 @require_json
 @require_params(["wid"])
@@ -42,20 +64,15 @@ def get_work_detail(request):
     if work.is_public is False:
         return error_response(Error.WORK_IS_PRIVATE)
 
+
     work_detail = dict(
         wid=work.pk,
         writer_name=work.writer_name,
         work_name=work.work_name,
-        create_time=work.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+        create_time=get_readable_time_string(work.create_time),
         status=work.status,
         fee=work.fee,
         work_type=work.work_type,
-        wrt_year=work.create_time.year,
-        wrt_month=work.create_time.month,
-        wrt_day=work.create_time.day,
-        wrt_hour=work.create_time.hour,
-        wrt_min=work.create_time.minute,
-        wrt_sec=work.create_time.second,
     )
     if work.re_writer is not None:
         work_detail["re_writer_id"] = work.re_writer.pk

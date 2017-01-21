@@ -180,31 +180,23 @@
             window.location = "/work/detail.view/"+wid+"/";
         }
         function init_page_for_info() {
-            $("#avatar-img").attr("src", "/user/avatar/"+window.reviewer_info["avatar"]);
-            if (window.reviewer_info["nickname"] == null)
+            $("#avatar-img").attr("src", "/user/avatar/"+window.writer_info["avatar"]);
+            if (window.writer_info["nickname"] == null)
                 $("#nickname").text("没有昵称");
             else
-                $("#nickname").text(window.reviewer_info["nickname"]);
-            $("#total_received").text(window.reviewer_info["total_received"]);
-            $("#total_refused").text(window.reviewer_info["total_refused"]);
-            $("#total_review").text(window.reviewer_info["total_review"]);
-            $("#last_ipv4").text(window.reviewer_info["last_ipv4"]);
-            $("#last_login").text(window.reviewer_info["last_login"]);
-            $(".panel-body #total_upload").text(window.reviewer_info["total_upload"]);
-            $(".panel-title #total_upload").text(window.reviewer_info["total_upload"]);
-            $("#total_upload_rank").text(window.reviewer_info["total_upload_rank"]);
-            $("#total_review_rank").text(window.reviewer_info["total_review_rank"]);
+                $("#nickname").text(window.writer_info["nickname"]);
+            $("#total_received").text(window.writer_info["total_received"]);
+            $("#total_works").text(window.writer_info["total_works"]);
+            $("#total_review").text(window.writer_info["total_review"]);
+            $("#last_ipv4").text(window.writer_info["last_ipv4"]);
+            $("#last_login").text(window.writer_info["last_login"]);
+            $(".panel-body #total_upload").text(window.writer_info["total_upload"]);
+            $(".panel-title #total_upload").text(window.writer_info["total_upload"]);
+            $("#total_works_rank").text(window.writer_info["total_works_rank"]);
+            $("#total_received_rank").text(window.writer_info["total_received_rank"]);
         }
         function get_work_item(work) {
             var html = "";
-{#            var delete_str, delete_tag;#}
-{#            if (work["is_delete"] == true) {#}
-{#                delete_str = "已删除";#}
-{#                delete_tag = "status-die";#}
-{#            } else {#}
-{#                delete_str = "未删除";#}
-{#                delete_tag = "status-success";#}
-{#            }#}
             var public_str, public_tag;
             if (work["is_public"] == true) {
                 public_str = "公开";
@@ -293,23 +285,26 @@
             }
         }
         function refresh_page() {
-            postJSON("/reviewer/info/", "", function (response) {
-                window.reviewer_info = response["body"];
+            postJSON("/writer/info/", "", function (response) {
+                window.writer_info = response["body"];
                 init_page_for_info();
             });
-            postJSON("/reviewer/work/related/", "", function (response) {
+            postJSON("/writer/work/related/", "", function (response) {
                 var work_list_not_reviewed = [];
                 var work_list_received = [];
                 var work_list_refused = [];
-                var work_list_upload = [];
+                var STATUS_UNDER_WRITE = 0,
+                        STATUS_UNDER_REVIEW = 1,
+                        STATUS_RECEIVED = 2,
+                        STATUS_REFUSED = 3,
+                        STATUS_CONFIRM_FEE = 4;
                 for (var i = 0; i < response["body"].length; i++) {
                     var work = response["body"][i];
-                    var related_type = work["related_type"];
-                    switch (related_type) {
-                        case 1: work_list_not_reviewed.push(work); break;
-                        case 2: work_list_received.push(work); break;
-                        case 3: work_list_refused.push(work); break;
-                        case 4: work_list_upload.push(work); break;
+                    var status = work["status"];
+                    switch (status) {
+                        case STATUS_UNDER_REVIEW: work_list_not_reviewed.push(work); break;
+                        case STATUS_RECEIVED: work_list_received.push(work); break;
+                        case STATUS_REFUSED: work_list_refused.push(work); break;
                     }
                 }
                 $("#total_not_reviewed").text(work_list_not_reviewed.length);
@@ -330,7 +325,6 @@
     </script>
 </head>
 <body>
-
     <div class="container">
     <div class="row clearfix">
     <div class="col-xs-12 column">
@@ -339,8 +333,7 @@
         </div>
         <div class="col-xs-8 white-text">
             <div id="nickname-front">
-                审稿员&nbsp;&nbsp;<kbd id="nickname"></kbd>
-{#                &nbsp;&nbsp;<span class="glyphicon glyphicon-refresh span-icon" onclick="refresh_page()"></span>#}
+                作者&nbsp;&nbsp;<kbd id="nickname"></kbd>
             </div>
             <br/>
             <a class="btn btn-base" href="/work/upload.act/">发布稿件</a>
@@ -372,13 +365,13 @@
                     <div class="col-xs-12 column">
                         <div class="col-xs-4 column">发布稿件</div>
                         <div class="col-xs-8 column">
-                            <label id="total_upload"></label>篇，排名第<label id="total_upload_rank"></label>位
+                            <label id="total_works"></label>篇，排名第<label id="total_works_rank"></label>位
                         </div>
                     </div>
                     <div class="col-xs-12 column">
-                        <div class="col-xs-4 column">已审稿件</div>
+                        <div class="col-xs-4 column">采纳稿件</div>
                         <div class="col-xs-8 column">
-                            <label id="total_review"></label>篇，排名第<label id="total_review_rank"></label>位
+                            <label id="total_received"></label>篇，排名第<label id="total_received_rank"></label>位
                         </div>
                     </div>
                 </div>
@@ -415,14 +408,6 @@
             </div>
             <div id="refs-list" class="panel-collapse collapse">
                 <div class="panel-body" id="refused-list"></div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading" data-toggle="collapse" data-parent="#work-list" href="#upld-list">
-                 <a class="panel-title">发布稿件 <span class="badge" id="total_upload"></span></a>
-            </div>
-            <div id="upld-list" class="panel-collapse collapse">
-                <div class="panel-body" id="upload-list"></div>
             </div>
         </div>
     </div>

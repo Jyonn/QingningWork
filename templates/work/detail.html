@@ -271,13 +271,18 @@
             var post = { wid: window.work_id };
             var json_str = $.toJSON(post);
             postJSON("/work/comment/", json_str, function (response) {
-                $("#comment-list-container").empty();
+                var comment_container = $("#comment-list-container");
+                comment_container.empty();
                 for (var i = 0; i < response["body"].length; i++) {
-                    $("#comment-list-container").append(get_comment_item(response["body"][i]));
+                    comment_container.append(get_comment_item(response["body"][i]));
+                }
+                var textareas = document.getElementsByClassName("comment-textarea");
+                for (i = 0; i < textareas.length; i++) {
+                    textareas[i].style.height = (textareas[i].scrollHeight) + "px";
                 }
                 if (response["body"].length == 0)
-                        $("#comment-list-container").append(get_no_comment_item());
-            })
+                        comment_container.append(get_no_comment_item());
+            });
         }
     </script>
     <script type="application/javascript">
@@ -287,13 +292,7 @@
             var json_str = $.toJSON(post);
             get_status();
             postJSON("/work/detail/", json_str, function (response) {
-                $("#wrt_year").text(response["body"]["wrt_year"]);
-                $("#wrt_month").text(response["body"]["wrt_month"]);
-                $("#wrt_day").text(response["body"]["wrt_day"]);
-                $("#wrt_hour").text(response["body"]["wrt_hour"]);
-                $("#wrt_min").text(response["body"]["wrt_min"]);
-                $("#work-title").val(response["body"]["work_name"]);
-                $("#work-writer").val(response["body"]["writer_name"]);
+                $("#create_time").text(response["body"]["create_time"]);
                 var content = response["body"]["content"];
                 content = Base64.decode(content);
                 $("#work-content").val(content);
@@ -333,10 +332,11 @@
         }
         function get_status() {
             postJSON("/user/status/", "", null, function (response, success_function) {
+                var my_comment = $("#my-comment");
                 if (response["code"] == 0 && response["body"] == "reviewer")
-                        $("#my-comment").css("display", "block");
+                        my_comment.css("display", "block");
                 else
-                        $("#my-comment").css("display", "none");
+                        my_comment.css("display", "none");
             });
         }
         function count() {
@@ -360,13 +360,7 @@
     <div class="col-xs-12 column">
         <div class="col-xs-12 column work-title">
             <input class="work-title-input" type="text" placeholder="标题" id="work-title" readonly/><br/>
-            <text class="work-time">写于
-                <text id="wrt_year"></text>年
-                <text id="wrt_month"></text>月
-                <text id="wrt_day"></text>日
-                <text id="wrt_hour"></text>点
-                <text id="wrt_min"></text>分
-            </text>
+            <text class="work-time">上传于 <text id="create_time"></text></text>
         </div>
         <div class="col-xs-12 column work-writer">
             <b><input class="work-writer-input" type="text" placeholder="笔名" id="work-writer" readonly/></b>
