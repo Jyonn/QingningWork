@@ -49,6 +49,12 @@
         .btn-long {
             width: 30%;
         }
+        .login-div {
+            text-align: center;
+            margin-top: 20px;
+            font-size: larger;
+            color: #ffffff;
+        }
     </style>
     <script type="application/javascript">
         function postJSON(url, json_str, success_function) {
@@ -100,6 +106,14 @@
             var json_str = $.toJSON(post);
             postJSON("/user/login/", json_str, status_return);
         }
+        function register() {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            var no_pwd = $("#switch").bootstrapSwitch('state');
+            var post = { username: username, password: password, no_pwd: no_pwd};
+            var json_str = $.toJSON(post);
+            postJSON("/user/register/", json_str, status_return);
+        }
 {#        function hide_pwd() {#}
 {##}
 {#            if ($("#no-pwd").prop("checked"))#}
@@ -113,6 +127,7 @@
             change_body_css();
         }
         $(document).ready(function () {
+            login_btn();
             $("#switch").bootstrapSwitch().on('switchChange.bootstrapSwitch', function (e, state) {
                 if(state) {
                     $("#pwd_block").css("display", "none");
@@ -141,6 +156,18 @@
             else
                 $("body").css("background-size", "100% auto");
         }
+        function login_btn() {
+            $("#login_btn").css("display", "inline-table");
+            $("#register_btn").css("display", "none");
+            $("#register-text").css("display", "inline-table");
+            $("#login-text").css("display", "none");
+        }
+        function register_btn() {
+            $("#register_btn").css("display", "inline-table");
+            $("#login_btn").css("display", "none");
+            $("#login-text").css("display", "inline-table");
+            $("#register-text").css("display", "none");
+        }
     </script>
 </head>
 <body onresize="change_body_css()">
@@ -156,6 +183,7 @@
     </div>
 
     <div class="container">
+    <div class="row clearfix">
     <div class="col-xs-12 column">
         <form role="form">
             <div class="form-group">
@@ -170,7 +198,12 @@
                 </div>
             </div>
             <div class="submit-button">
-                <a onclick="login()" type="submit" class="btn btn-default btn-long" id="login_btn">登录</a>
+                <a onclick="login()" type="submit" class="btn btn-primary btn-long" id="login_btn">登录</a>
+                <a onclick="register()" type="submit" class="btn btn-primary btn-long" id="register_btn">注册</a>
+            </div>
+            <div class="login-div">
+                <text onclick="register_btn()" id="register-text">没有账号？点我注册</text>
+                <text onclick="login_btn()" id="login-text">我有账号，点我登录</text>
             </div>
         </form>
     </div>

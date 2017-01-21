@@ -1,5 +1,6 @@
 import base64
 import datetime
+import time
 from pydoc import html
 
 from Base.decorator import *
@@ -11,11 +12,28 @@ from Work.models import Work
 def get_packed_work(work, related_type=None):
     refs_num = Comment.objects.filter(re_work=work, is_updated=False, result=False).count()
     recv_num = Comment.objects.filter(re_work=work, is_updated=False, result=True).count()
+    timestamp_now = int(datetime.datetime.now().timestamp())
+    timestamp_crt = int(work.create_time.timestamp())
+    dist = timestamp_now - timestamp_crt
+    if dist < 60:
+        dist_str = str(int(dist)) + "秒前"
+    elif dist < 60 * 60:
+        dist_str = str(int(dist/60)) + "分钟前"
+    elif dist < 60 * 60 * 24:
+        dist_str = str(int(dist/60/60)) + "小时前"
+    elif dist < 60 * 60 * 24 * 30:
+        dist_str = str(int(dist/60/60/24)) + "天前"
+    elif dist < 60 * 60 * 24 * 365:
+        dist_str = str(int(dist/60/60/24/30)) + "个月前"
+    else:
+        dist_str = str(int(dist/60/60/24/365)) + "年前"
+
     work_detail = dict(
         wid=work.pk,  # 作品编号
         writer_name=work.writer_name,  # 作者笔名
         work_name=work.work_name,  # 作品名称
         create_time=get_readable_time_string(work.create_time),  # 上传时间
+        dist_time=dist_str,
         related_type=related_type,  # 关联类型
         status=work.status,  # 作品状态
         is_public=work.is_public,  # 是否删除

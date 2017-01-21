@@ -7,6 +7,29 @@ from Writer.models import Writer
 
 @require_POST
 @require_json
+@require_params(["username", "password", "no_pwd"])
+def register(request):
+    """
+    注册系统
+    """
+    username = request.POST["username"]
+    password = request.POST["password"]
+    pwd_login = request.POST["no_pwd"] is True
+    if AbstractUser.objects.filter(username=username).count() >= 1:
+        return error_response(Error.EXIST_USERNAME)
+
+    writer = Writer.create(
+        username=username,
+        pwd_login=pwd_login,
+    )
+    if pwd_login is True:
+        writer.set_password(password).save()
+    login_to_session(request, writer, AbstractUser.WRITER)
+    return response(body=AbstractUser.WRITER)
+
+
+@require_POST
+@require_json
 @require_params(["username", "password"])
 # @deny_login
 def login(request):

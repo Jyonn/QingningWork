@@ -41,7 +41,7 @@ class Writer(AbstractUser):
     def create(cls, *args, **kwargs):
         writer = cls(*args, **kwargs)
         from random import randint
-        avatar_int = randint(0, 10)
+        avatar_int = randint(1, 10)
         avatar_img = "0" if avatar_int < 10 else ""
         avatar_img += str(avatar_int)
         writer.avatar = "default-avatar-" + avatar_img + ".jpg"

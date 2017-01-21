@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^info/$', views.get_info, name="user-information"),
     url(r'^info/set/basic/$', views.set_basic_info, name="set-basic-info"),
     url(r'^login/$', views.login, name="user-login"),
+    url(r'^register/$', views.register, name="writer-register"),
     url(r'^status/$', views.status, name="user-status"),
     url(r'^logout/$', views.logout, name="user-logout"),
     url(r'^username/change/$', views.change_username, name="change-username"),

@@ -1,4 +1,5 @@
 class Error:
+    EXIST_USERNAME = 1021
     WRONG_USERNAME = 1020
     EXIST_NICKNAME = 1019
     LOGIN_AGAIN = 1018
@@ -45,4 +46,5 @@ class Error:
         (LOGIN_AGAIN, "重新登录"),
         (EXIST_NICKNAME, "已存在的昵称"),
         (WRONG_USERNAME, "错误的账号"),
+        (EXIST_USERNAME, "已存在的账号"),
     ]

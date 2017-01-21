@@ -22,6 +22,7 @@ class AbstractUser(models.Model):
         verbose_name="用户账号",
         max_length=20,
         default=None,
+        unique=True,
     )
     password = models.CharField(
         verbose_name="用户密码",
