@@ -304,6 +304,8 @@
                 $("#modify_ops").css("display", "none");
                 if (response["body"]["is_mine"] == true) {
                     $("#is_mine").css("display", "block");
+                    if (window.role == "reviewer")
+                            $("#bind_btn").css("display", "inline-table");
                 }
                 else {
                     $("#is_mine").css("display", "none");
@@ -349,10 +351,15 @@
         function get_status() {
             postJSON("/user/status/", "", null, function (response, success_function) {
                 var my_comment = $("#my-comment");
-                if (response["code"] == 0 && response["body"] == "reviewer")
-                        my_comment.css("display", "block");
-                else
-                        my_comment.css("display", "none");
+                if (response["code"] == 0 && response["body"] == "reviewer") {
+                    my_comment.css("display", "block");
+                }
+                else {
+                    my_comment.css("display", "none");
+                }
+                window.role = "null";
+                if (response["code"] == 0)
+                        window.role = response["body"];
             });
         }
         function count() {
@@ -418,6 +425,20 @@
                 location.replace("/work/detail.view/"+response["body"]+"/");
             });
         }
+        function bind_btn() {
+            if (!confirm("绑定后稿件权限归作者所有，是否确认绑定？"))
+                    return;
+            var writer_username = prompt("请输入作者的账号");
+            var post = {
+                wid: window.work_id,
+                writer_username: writer_username
+            };
+            var json_str = $.toJSON(post);
+            postJSON("/reviewer/work/bind-writer/", json_str, function (response) {
+                alert("绑定成功");
+                location.reload();
+            });
+        }
     </script>
 </head>
 <body>
@@ -439,6 +460,7 @@
             <textarea placeholder="正文（不能为空）" id="work-content" readonly></textarea>
         </div>
         <div class="col-xs-12 column" style="text-align: right; margin-bottom: 15px; display: none" id="is_mine">
+            <a onclick="bind_btn()" type="submit" class="btn btn-base btn-long" id="bind_btn" style="display: none">绑定作者</a>
             <a onclick="modify_btn()" type="submit" class="btn btn-base btn-long" id="modify_btn">编辑</a>
             <a onclick="delete_btn()" type="submit" class="btn btn-danger btn-long" id="delete_btn">删除</a>
         </div>

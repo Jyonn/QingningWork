@@ -2,7 +2,7 @@ import datetime
 from Base.decorator import *
 from Work.models import Work
 from Comment.models import Comment
-from Work.views import get_packed_work
+from Work.views import get_packed_work, get_work_by_id, work_is_mine
 
 
 @require_POST
@@ -407,3 +407,27 @@ def info(request):
     )
 
     return response(body=return_dict)
+
+
+@require_POST
+@require_json
+@require_params(["wid", "writer_username"])
+@require_login_reviewer
+def bind_writer(request):
+    wid = request.POST["wid"]
+    writer_username = request.POST["writer_username"]
+    work, ret_code = get_work_by_id(wid)
+    if ret_code != Error.OK:
+        return error_response(ret_code)
+    if work_is_mine(request, work) is False:
+        return error_response(Error.NOT_YOUR_WORK)
+    try:
+        writer = Writer.objects.get(username=writer_username)
+        if writer.is_frozen:
+            return error_response(Error.FROZEN_USER)
+    except:
+        return error_response(Error.NOT_FOUND_USERNAME)
+    work.re_writer = writer
+    work.save()
+
+    return response()
