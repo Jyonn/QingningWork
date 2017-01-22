@@ -214,6 +214,7 @@ def set_basic_info(request):
     if user is None:
         return error_response(Error.LOGIN_AGAIN)
     nickname = request.POST["nickname"]
+    nickname = ''.join(nickname.split(' '))
     if len(nickname) > 6:
         return error_response(Error.NICKNAME_TOO_LONG)
     try:

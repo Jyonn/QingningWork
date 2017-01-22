@@ -230,7 +230,6 @@
                     nickname = null;
             var post = {nickname: nickname};
             var json_str = $.toJSON(post);
-            alert(json_str);
             postJSON("/user/info/set/basic/", json_str, function (response) {
                 alert("设置成功！");
                 refresh_page();
