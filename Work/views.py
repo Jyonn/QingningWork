@@ -1,12 +1,31 @@
-import base64
 import datetime
-import time
-from pydoc import html
 
 from Base.decorator import *
 from Comment.models import Comment
 from QingningWork.settings import WORK_URL
 from Work.models import Work
+
+
+def work_is_mine(request, work):
+    if require_login_func(request):
+        user, user_type = get_user_from_session(request)
+        if user is None:
+            return False
+        if user == work.re_writer:
+            return True
+        elif user == work.re_reviewer and work.re_writer is None:
+            return True
+    return False
+
+
+def get_work_by_id(wid):
+    try:
+        work = Work.objects.get(pk=wid)
+    except:
+        return None, Error.NOT_FOUND_WORK_ID
+    if work.is_delete is True:
+        return None, Error.WORK_HAS_DELETED
+    return work, Error.OK
 
 
 def get_packed_work(work, related_type=None):
@@ -69,19 +88,13 @@ def get_work_detail(request):
         work_type: 作品类型
         re_writer_id: 作者编号
         re_reviewer_id: 审稿员编号
+        is_mine: 是当前用户的作品
     }
     """
     wid = request.POST["wid"]
-
-    try:
-        work = Work.objects.get(pk=wid)
-    except:
-        return error_response(Error.NOT_FOUND_WORK_ID)
-    if work.is_delete is True:
-        return error_response(Error.WORK_HAS_DELETED)
-    if work.is_public is False:
-        return error_response(Error.WORK_IS_PRIVATE)
-
+    work, ret_code = get_work_by_id(wid)
+    if work is None:
+        return error_response(ret_code)
 
     work_detail = dict(
         wid=work.pk,
@@ -94,10 +107,14 @@ def get_work_detail(request):
     )
     if work.re_writer is not None:
         work_detail["re_writer_id"] = work.re_writer.pk
-        work_detail["re_reviewer_id"] = None
-    else:
+    if work.re_reviewer is not None:
         work_detail["re_reviewer_id"] = work.re_reviewer.pk
-        work_detail["re_writer_id"] = None
+
+    work_detail["is_mine"] = work_is_mine(request, work)
+
+    if work.is_public is False and work_detail["is_mine"] is False:
+        return error_response(Error.WORK_IS_PRIVATE)
+
     if work.work_type == Work.WORK_TYPE_TEXT:
         file_path = WORK_URL + work.work_store
         with open(file_path, "rb+") as f:
@@ -130,12 +147,9 @@ def get_work_comments(request):
     }
     """
     wid = request.POST["wid"]
-    try:
-        work = Work.objects.get(pk=wid)
-    except:
-        return error_response(Error.NOT_FOUND_WORK_ID)
-    if work.is_delete is True:
-        return error_response(Error.WORK_HAS_DELETED)
+    work, ret_code = get_work_by_id(wid)
+    if work is None:
+        return error_response(ret_code)
     if work.is_public is False:
         return error_response(Error.WORK_IS_PRIVATE)
 
@@ -159,40 +173,31 @@ def get_work_comments(request):
     return response(body=comment_list)
 
 
-@require_POST
-@require_json
-@require_params(["work_type", "work_name", "writer_name", "content"])
-@require_login
-def upload_work(request):
+def create_work(request):
     """
-    审稿员或作者上传稿件
-    request
-    {
-        work_type: 作品类型，只能为 WORK_TYPE_FILE 或 WORK_TYPE_TEXT
-        work_name: 作品名称
-        writer_name: 作者名称
-        content: 作品正文，当 work_type 为 WORK_TYPE_TEXT 时有效
-        file: 上传的作品，当 work_type 为 WORK_TYPE_FILE 时有效
-    }
+    创建作品
     """
     work_type = request.POST["work_type"]  # 作品类型（WORK_TYPE_FILE文件上传; WORK_TYPE_TEXT文本上传）
     work_name = request.POST["work_name"]  # 作品名称，指题目
     writer_name = request.POST["writer_name"]  # 作者名称
     content = request.POST["content"]
     user, user_type = get_user_from_session(request)
+    if user is None:
+        return None, Error.LOGIN_AGAIN
 
+    #  获取作品类型
     try:
         work_type = int(work_type)
     except:
-        return error_response(Error.NOT_FOUND_WORK_TYPE)
+        return None, Error.NOT_FOUND_WORK_TYPE
     if work_type not in [Work.WORK_TYPE_FILE, Work.WORK_TYPE_TEXT]:
         # 不存在的作品类型
-        return error_response(Error.NOT_FOUND_WORK_TYPE)
+        return None, Error.NOT_FOUND_WORK_TYPE
 
     if work_type == Work.WORK_TYPE_FILE:
         # 如果是文件，获取文件扩展名
         if request.FILES.get("file") is None:
-            return error_response(Error.NOT_FOUND_FILE)
+            return None, Error.NOT_FOUND_FILE
         str_name = request.FILES.get("file").name
         ext_name = "" if str_name.find(".") == -1 else "." + str_name.split(".")[-1]
     else:
@@ -200,8 +205,8 @@ def upload_work(request):
         ext_name = ".txt"
 
     moment = datetime.datetime.now()
-    create_time = moment.strftime("%Y-%m-%d %H:%M:%S")
-    head_filename = moment.strftime("%Y%m%d_%H%M%S_")
+    create_time = moment.strftime("%Y-%m-%d %H:%M:%S")  # 创建时间
+    head_filename = moment.strftime("%Y%m%d_%H%M%S_")  # 保存文件头
     from django.utils.crypto import get_random_string
     # 保存的文件名设置为上传时间+随机子串+扩展名
     filename = head_filename + get_random_string(length=8) + ext_name[:8]
@@ -217,8 +222,10 @@ def upload_work(request):
             f.close()
     else:
         # Base64解码并HTML转义特殊字符后Base64编码
+        # import base64
         # content = base64.decodebytes(bytes(content, encoding="utf8"))
         # content = content.decode()
+        # from pydoc import html
         # content = html.escape(content)
         # content = base64.encodebytes(bytes(content, encoding="utf-8"))
         content = bytes(content, encoding="utf-8")
@@ -245,5 +252,107 @@ def upload_work(request):
         user.total_works += 1
     user.save()
     work.save()
+    return work, Error.OK
+
+
+def delete_work(work):
+    """
+    删除作品
+    """
+    if work.status == Work.STATUS_CONFIRM_FEE:  # 作品被确认收录，无法删除
+        return Error.CAN_NOT_DELETE_CAUSE_CONFIRMED
+    if work.re_writer is not None:  # 作品属于某作者
+        work.re_writer.total_works -= 1  # 作者作品总数-1
+        if work.status == Work.STATUS_RECEIVED:  # 作者被采纳作品数-1
+            work.re_writer.total_received -= 1
+        elif work.status == Work.STATUS_REFUSED:  # 作者被驳回作品数-1
+            work.re_writer.total_refused -= 1
+        work.re_writer.save()
+    elif work.re_reviewer is not None:  # 作品属于某审稿员
+        work.re_reviewer.total_upload -= 1  # 审稿员总上传数-1
+        work.re_reviewer.save()
+
+    # 获取作品评论
+    comments = Comment.objects.filter(re_work=work, is_updated=False)
+    for comment in comments:
+        # 恢复审稿员的审稿数
+        if comment.result is True:
+            comment.re_reviewer.total_received -= 1
+        else:
+            comment.re_reviewer.total_refused -= 1
+        comment.re_reviewer.save()
+
+    # 标记删除
+    work.is_delete = True
+    work.save()
+    return Error.OK
+
+
+@require_POST
+@require_json
+@require_params(["work_type", "work_name", "writer_name", "content"])
+@require_login
+def upload_work(request):
+    """
+    审稿员或作者上传稿件
+    request
+    {
+        work_type: 作品类型，只能为 WORK_TYPE_FILE 或 WORK_TYPE_TEXT
+        work_name: 作品名称
+        writer_name: 作者名称
+        content: 作品正文，当 work_type 为 WORK_TYPE_TEXT 时有效
+        file: 上传的作品，当 work_type 为 WORK_TYPE_FILE 时有效
+    }
+    """
+    work, ret_code = create_work(request)
+    if ret_code != Error.OK:
+        return error_response(ret_code)
+
+    return response(body=work.pk)
+
+
+@require_POST
+@require_json
+@require_params(["work_type", "work_name", "writer_name", "content", "wid"])
+@require_login
+def modify(request):
+    """
+    修改作品（懒惰删除，保留备份）
+    """
+    wid = request.POST["wid"]
+    work, ret_code = get_work_by_id(wid)
+    if work is None:
+        return error_response(ret_code)
+
+    # 删除原作品
+    ret_code = delete_work(work)
+    if ret_code != Error.OK:
+        return error_response(ret_code)
+
+    # 创建新作品
+    work, ret_code = create_work(request)
+    if ret_code != Error.OK:
+        return error_response(ret_code)
+
+    return response(body=work.pk)
+
+
+@require_POST
+@require_json
+@require_params(["wid"])
+@require_login
+def delete(request):
+    wid = request.POST["wid"]
+    # 获取作品
+    work, ret_code = get_work_by_id(wid)
+    if ret_code != Error.OK:
+        return error_response(ret_code)
+    if work_is_mine(request, work) is False:
+        return error_response(Error.NOT_YOUR_WORK)
+
+    ret_code = delete_work(work)
+    if ret_code != Error.OK:
+        return error_response(ret_code)
 
     return response()
+

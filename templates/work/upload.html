@@ -152,7 +152,7 @@
             }
         }
         function cancel() {
-            postJSON("/user/status/", "", status_return);
+            location.replace(document.referrer);
         }
         function upload() {
             var title = $("#work-title").val();
@@ -176,7 +176,7 @@
                 $("#work-writer").val("");
                 $("#work-content").val("");
 
-                postJSON("/user/status/", "", status_return);
+                location.replace(document.referrer);
             });
         }
         function show_now_time(response) {

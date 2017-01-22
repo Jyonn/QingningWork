@@ -10,6 +10,8 @@ class Work(models.Model):
     STATUS_RECEIVED = 2  # 审稿通过，商讨稿费
     STATUS_REFUSED = 3  # 审稿驳回
     STATUS_CONFIRM_FEE = 4  # 确认稿费
+    # 作品状态允许的转移路线为：0->1, 1->2, 1->3, 2->4，其他状态不被允许且不可逆
+    #
     STATUS_TABLE = [
         (STATUS_UNDER_WRITE, "正在创作"),
         (STATUS_UNDER_REVIEW, "正在审稿"),
@@ -85,4 +87,3 @@ class Work(models.Model):
         work = cls(*args, **kwargs)
         work.save()
         return work
-

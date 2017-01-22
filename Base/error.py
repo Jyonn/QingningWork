@@ -1,4 +1,5 @@
 class Error:
+    CAN_NOT_DELETE_CAUSE_CONFIRMED = 1022
     EXIST_USERNAME = 1021
     WRONG_USERNAME = 1020
     EXIST_NICKNAME = 1019
@@ -22,8 +23,10 @@ class Error:
     NEED_JSON = 1001
     NOT_FOUND_ERROR = 1000
     UNKNOWN = 1
+    OK = 0
 
     ERROR_DICT = [
+        (OK, "操作成功"),
         (UNKNOWN, "未知错误"),
         (NOT_FOUND_ERROR, "不存在的错误"),
         (NEED_JSON, "需要JSON数据"),
@@ -41,10 +44,11 @@ class Error:
         (WORK_HAS_DELETED, "作品已被删除"),
         (WORK_IS_PRIVATE, "作品没有公开"),
         (NOT_UNDER_REVIEW, "作品不在审阅状态"),
-        (NOT_YOUR_WORK, "不是你上传的作品"),
+        (NOT_YOUR_WORK, "不是你的作品"),
         (FROZEN_USER, "账号被冻结，请联系社长"),
         (LOGIN_AGAIN, "重新登录"),
         (EXIST_NICKNAME, "已存在的昵称"),
         (WRONG_USERNAME, "错误的账号"),
         (EXIST_USERNAME, "已存在的账号"),
+        (CAN_NOT_DELETE_CAUSE_CONFIRMED, "稿件已被确认收录，无法删除"),
     ]

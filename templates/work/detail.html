@@ -130,6 +130,10 @@
             color: #ffffff;
             background: #36A60F;
         }
+        .btn-danger {
+            color: #ffffff;
+            background: #CC5A40;
+        }
         .btn-long {
             width: 30%;
         }
@@ -286,8 +290,7 @@
         }
     </script>
     <script type="application/javascript">
-        $(document).ready(function () {
-            window.work_id = get_work_id();
+        function init() {
             var post = { wid: window.work_id };
             var json_str = $.toJSON(post);
             get_status();
@@ -298,8 +301,21 @@
                 $("#work-content").val(content);
                 var c = document.getElementById("work-content");
                 c.style.height = (c.scrollHeight) + 'px';
+                $("#modify_ops").css("display", "none");
+                if (response["body"]["is_mine"] == true) {
+                    $("#is_mine").css("display", "block");
+                }
+                else {
+                    $("#is_mine").css("display", "none");
+                }
+                $("#work-title").val(response["body"]["work_name"]);
+                $("#work-writer").val(response["body"]["writer_name"]);
                 get_comment();
             });
+        }
+        $(document).ready(function () {
+            window.work_id = get_work_id();
+            init();
         });
     </script>
     <script type="application/javascript">
@@ -327,7 +343,7 @@
                 alert("评价成功");
                 $("#work-title").val("");
                 $("#comment").val("");
-                postJSON("/user/status/", "", status_return);
+                location.reload();
             });
         }
         function get_status() {
@@ -351,7 +367,57 @@
         $(document).ready(function () {
             $("#count").text($("#comment").val().length);
             $('[type="checkbox"]').bootstrapSwitch();
-        })
+        });
+        function modify_btn() {
+            if (!confirm("修改后将重新进行审阅，是否确认修改？"))
+                    return;
+
+            $("#modify_ops").css("display", "block");
+            $("#is_mine").css("display", "none");
+
+            $("#work-title").attr("readonly", null);
+            $("#work-writer").attr("readonly", null);
+            $("#work-content").attr("readonly", null);
+
+        }
+        function cancel_btn() {
+            if (!confirm("取消后修改将不被保存，是否确认取消？"))
+                    return;
+            $("#work-title").attr("readonly", "readonly");
+            $("#work-writer").attr("readonly", "readonly");
+            $("#work-content").attr("readonly", "readonly");
+            init();
+        }
+        function delete_btn() {
+            if (!confirm("删除后无法恢复，是否确认删除？"))
+                    return;
+            var post = { wid: window.work_id };
+            var json_str = $.toJSON(post);
+            postJSON("/work/delete/", json_str, function (response) {
+                location.replace(document.referrer);
+            });
+        }
+        function upload_btn() {
+            var title = $("#work-title").val();
+            var writer = $("#work-writer").val();
+            var content = $("#work-content").val();
+            if (content == "") {
+                alert("正文不能为空");
+                return;
+            }
+            content = Base64.encode(content);
+            var post = {
+                wid: window.work_id,
+                work_type: 0,
+                work_name: title,
+                writer_name: writer,
+                content: content
+            };
+            var json_str = $.toJSON(post);
+            postJSON("/work/modify/", json_str, function (response) {
+                location.replace("/work/detail.view/"+response["body"]+"/");
+            });
+        }
     </script>
 </head>
 <body>
@@ -372,6 +438,14 @@
         <div class="col-xs-12 column" style="margin-bottom: 15px">
             <textarea placeholder="正文（不能为空）" id="work-content" readonly></textarea>
         </div>
+        <div class="col-xs-12 column" style="text-align: right; margin-bottom: 15px; display: none" id="is_mine">
+            <a onclick="modify_btn()" type="submit" class="btn btn-base btn-long" id="modify_btn">编辑</a>
+            <a onclick="delete_btn()" type="submit" class="btn btn-danger btn-long" id="delete_btn">删除</a>
+        </div>
+        <div class="col-xs-12 column" style="text-align: right; margin-bottom: 15px; display: none" id="modify_ops">
+            <a onclick="upload_btn()" type="submit" class="btn btn-base btn-long" id="upload_btn">提交</a>
+            <a onclick="cancel_btn()" type="submit" class="btn btn-danger btn-long" id="cancel_btn">取消</a>
+        </div>
         <div class="col-xs-12 column">
             <text style="color: #ffffff">以下审稿员评论</text>
             <hr style="margin-top: 0"/>
@@ -387,7 +461,7 @@
     </div>
     </div>
 
-    <div class="container" style="margin-top: 15px" id="my-comment">
+    <div class="container" style="margin-top: 15px; display: none" id="my-comment">
     <div class="row clearfix">
     <div class="col-xs-12 column">
         <div class="col-xs-12 column" style="margin-bottom: 20px; text-align: right">
