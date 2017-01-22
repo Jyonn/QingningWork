@@ -73,6 +73,7 @@ def get_related_lists(request):
     # 获取发布的稿件列表
     works = Work.objects.filter(
         re_reviewer=reviewer,
+        re_writer=None,
         is_delete=False,
     )
     for work in works:
@@ -427,7 +428,17 @@ def bind_writer(request):
             return error_response(Error.FROZEN_USER)
     except:
         return error_response(Error.NOT_FOUND_USERNAME)
+
+    # 作品交接
     work.re_writer = writer
+    work.re_writer.total_works += 1  # 作者数量+1
+    if work.status == Work.STATUS_RECEIVED:  # 采纳数量+1
+        work.re_writer.total_received += 1
+    elif work.status == Work.STATUS_REFUSED:  # 驳回数量+1
+        work.re_writer.total_refused += 1
+    work.re_writer.save()
+    work.re_reviewer.total_upload -= 1
+    work.re_reviewer.save()
     work.save()
 
     return response()
