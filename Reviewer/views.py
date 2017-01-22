@@ -248,7 +248,8 @@ def review_work(request):
     reviewer, user_type = get_user_from_session(request)
     if reviewer is None:
         return error_response(Error.LOGIN_AGAIN)
-
+    if len(content) > 400:
+        return error_response(Error.COMMENT_TOO_LONG)
     try:
         work = Work.objects.get(pk=wid)
     except:

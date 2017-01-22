@@ -251,7 +251,7 @@
             html += '       </div>';
             html += '       <div class="col-xs-10 column">';
             html += '           <div class="col-xs-12 column nickname-front">';
-            html += '               <kbd class="nickname">'+nickname+'</kbd><kbd class="status-process">第'+comment["times"]+'次审阅</kbd><kbd class="'+result_tag+'">'+result_str+'</kbd>';
+            html += '               <kbd class="nickname">'+nickname+'</kbd><kbd class="status-process">第'+comment["times"]+'次</kbd><kbd class="'+result_tag+'">'+result_str+'</kbd>';
             html += '           </div>';
             html += '           <div class="col-xs-12 column" style="text-align: right">';
             html += '               <text class="work-time">于 '+comment["comment_time"]+'</text>';
@@ -358,7 +358,7 @@
         function count() {
             var count = $("#comment").val().length;
             $("#count").text(count);
-            if (count > 200) {
+            if (count > 300) {
                 $(".count-text").css("color", "#CC5A40");
             } else {
                 $(".count-text").css("color", "#ffffff");
@@ -465,8 +465,8 @@
     <div class="row clearfix">
     <div class="col-xs-12 column">
         <div class="col-xs-12 column" style="margin-bottom: 20px; text-align: right">
-            <textarea class="comment-input" placeholder="评价（不超过200字）" id="comment" rows="3" oninput="count()"></textarea>
-            <text class="count-text"><text id="count"></text> / 200</text>
+            <textarea class="comment-input" placeholder="评价（不超过300字）" id="comment" rows="3" oninput="count()"></textarea>
+            <text class="count-text"><text id="count"></text> / 300</text>
         </div>
         <div class="col-xs-12 column" style="margin-bottom: 20px">
             <div class="switch">

@@ -184,7 +184,11 @@ def create_work(request):
     user, user_type = get_user_from_session(request)
     if user is None:
         return None, Error.LOGIN_AGAIN
-
+    if len(work_name) > 10:
+        return None, Error.WORK_NAME_TOO_LONG
+    if len(writer_name) > 6:
+        return None, Error.NICKNAME_TOO_LONG
+    
     #  获取作品类型
     try:
         work_type = int(work_type)
