@@ -59,6 +59,7 @@ def get_packed_work(work, related_type=None):
         is_delete=work.is_delete,  # 是否公开
         refs_num=refs_num,  # 过审数
         recv_num=recv_num,  # 驳回数
+        version_num=work.version_num,
     )
     if work.re_writer is not None:
         work_detail["re_avatar"] = work.re_writer.avatar

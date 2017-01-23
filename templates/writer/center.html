@@ -235,8 +235,8 @@
             html += '       <img class="avatar-img-small" src="/user/avatar/' + work["re_avatar"] + '">';
             html += '   </div>';
             html += '   <div class="col-xs-9 column">';
-            html += '       <kbd>' + work["writer_name"] + '</kbd> <label>' + work["dist_time"] + '</label><br/>';
-            html += '       发布稿件《<label>' + work["work_name"] + '</label>》';
+            html += '       <kbd>' + work["writer_name"] + '</kbd> <label>' + work["dist_time"] + ' 发布稿件</label><br/>';
+            html += '       <label>第' + work["version_num"] + '版</label> 《<label>' + work["work_name"] + '</label>》';
             html += '   </div>';
             html += '   <div class="col-xs-1 column" onclick="show_detail(' + work.wid + ')">';
             html += '       <span class="glyphicon glyphicon-chevron-right view_span_btn"></span>';
