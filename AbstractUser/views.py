@@ -161,15 +161,16 @@ def status(request):
 
 @require_POST
 @require_login
-def get_now_time(request):
+def upload_prepare(request):
     now = datetime.datetime.now()
+    user, user_type = get_user_from_session(request)
+    if user is not None and user_type == "writer":
+        writer_name = user.nickname
+    else:
+        writer_name = None
     return response(body=dict(
-        year=now.year,
-        month=now.month,
-        day=now.day,
-        hour=now.hour,
-        min=now.minute,
-        sec=now.second,
+        writer_name=writer_name,
+        current_time=get_readable_time_string(now),
     ))
 
 

@@ -128,17 +128,6 @@
                 }
             });
         }
-        function get_cookie(cookie_name)
-        {
-            var name = cookie_name + "=";
-            var ca = document.cookie.split(';');
-            for(var i = 0; i < ca.length; i++) {
-                var c = ca[i].trim();
-                if (c.indexOf(name) == 0)
-                    return c.substring(name.length, c.length);
-            }
-            return "";
-        }
     </script>
     <script type="application/javascript">
         function status_return(response) {
@@ -179,13 +168,6 @@
                 location.replace(document.referrer);
             });
         }
-        function show_now_time(response) {
-            $("#cur_year").text(response["body"]["year"]);
-            $("#cur_month").text(response["body"]["month"]);
-            $("#cur_day").text(response["body"]["day"]);
-            $("#cur_hour").text(response["body"]["hour"]);
-            $("#cur_min").text(response["body"]["min"]);
-        }
         $(document).ready(function () {
             $('textarea').each(function () {
                 this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;');
@@ -193,7 +175,10 @@
                 this.style.height = "auto";
                 this.style.height = (this.scrollHeight) + 'px';
             });
-            postJSON("/user/base/time-now/", "", show_now_time);
+            postJSON("/user/upload-prepare/", "", function (response) {
+                $("#create_time").text(response["body"]["current_time"]);
+                $("#work-writer").val(response["body"]["writer_name"]);
+            });
         });
     </script>
 </head>
@@ -203,13 +188,7 @@
     <div class="col-md-12 column">
         <div class="col-md-12 column work-title">
             <input class="work-title-input" type="text" placeholder="标题" id="work-title"/><br/>
-            <text class="work-time">写于
-                <text id="cur_year"></text>年
-                <text id="cur_month"></text>月
-                <text id="cur_day"></text>日
-                <text id="cur_hour"></text>点
-                <text id="cur_min"></text>分
-            </text>
+            <text class="work-time">上传于 <text id="create_time"></text></text>
         </div>
         <div class="col-md-12 column work-writer">
             <b><input class="work-writer-input" type="text" placeholder="笔名" id="work-writer"/></b>

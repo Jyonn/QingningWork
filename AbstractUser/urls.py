@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^username/change/$', views.change_username, name="change-username"),
     url(r'^password/change/$', views.change_password, name="change-password"),
     url(r'^password/unset/$', views.unset_password, name="unset-password"),
-    url(r'^base/time-now/$', views.get_now_time, name="get-current-time"),
+    url(r'^upload-prepare/$', views.upload_prepare, name="get-current-time"),
 ] + [
     url(r'^login.act/$', front_views.login, name="front-page-login"),
     url(r'^info.view/$', front_views.info, name="front-page-user-info"),
