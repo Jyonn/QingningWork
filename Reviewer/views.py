@@ -60,7 +60,8 @@ def get_related_lists(request):
     # 获取已审的稿件列表
     comments = Comment.objects.filter(
         re_reviewer=reviewer,
-        is_updated=False
+        re_work__is_delete=False,
+        is_updated=False,
     )
     for comment in comments:
         if comment.result is True:
