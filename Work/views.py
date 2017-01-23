@@ -334,11 +334,14 @@ def modify(request):
         return error_response(ret_code)
 
     # 创建新作品
-    work, ret_code = create_work(request)
+    modified_work, ret_code = create_work(request)
     if ret_code != Error.OK:
         return error_response(ret_code)
+    modified_work.last_version_work = work
+    modified_work.version_num = work.version_num + 1
+    modified_work.save()
 
-    return response(body=work.pk)
+    return response(body=modified_work.pk)
 
 
 @require_POST

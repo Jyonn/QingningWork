@@ -81,6 +81,17 @@ class Work(models.Model):
         verbose_name="创建时间",
         default=None,
     )
+    last_version_work = models.ForeignKey(
+        "self",
+        verbose_name="上一版本的作品",
+        default=None,
+        null=True,
+        blank=True,
+    )
+    version_num = models.IntegerField(
+        verbose_name="作品第几版",
+        default=1,
+    )
 
     @classmethod
     def create(cls, *args, **kwargs):
