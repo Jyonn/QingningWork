@@ -55,6 +55,6 @@ class Error:
         (EXIST_USERNAME, "已存在的账号"),
         (CAN_NOT_DELETE_CAUSE_CONFIRMED, "稿件已被确认收录，无法删除"),
         (NICKNAME_TOO_LONG, "笔名不能超过6个字符"),
-        (WORK_NAME_TOO_LONG, "作品名称不能超过10个字符"),
+        (WORK_NAME_TOO_LONG, "作品名称不能超过20个字符"),
         (COMMENT_TOO_LONG, "评论不能超过300个字符"),
     ]
