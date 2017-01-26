@@ -2,6 +2,7 @@ import datetime
 from Base.decorator import *
 from Work.models import Work
 from Comment.models import Comment
+from AbstractUser.models import LikeUser
 from Work.views import get_packed_work, get_work_by_id, work_is_mine
 
 
@@ -443,3 +444,72 @@ def bind_writer(request):
     work.save()
 
     return response()
+
+
+@require_POST
+@require_json
+@require_params(["rank_begin", "rank_end", "rank_type"])
+def rank(request):
+    """
+    获取审稿员排名
+    request
+    {
+        rank_begin: 排名首
+        rank_end: 排名末
+        rank_type: 排名类型，仅 total_upload 和 total_review
+    }
+    response
+    {
+        rank: 排名序号
+        avatar: 头像
+        nickname: 昵称
+        uid: 用户编号
+        work_number: 排名类型作品数量
+        like_number: 审稿员受喜爱数
+        mine_like: 当前用户对审稿员的喜爱
+    }
+    """
+    rank_type = request.POST["rank_type"]
+    rank_begin = request.POST["rank_begin"]
+    rank_end = request.POST["rank_end"]
+    try:
+        rank_begin = int(rank_begin)
+        rank_end = int(rank_end)
+    except:
+        return error_response(Error.PARAM_FORMAT_ERROR)
+    if rank_type not in ["total_upload", "total_review"]:
+        return error_response(Error.UNDEFINED_RANK_TYPE)
+    reviewers = Reviewer.objects.filter(is_frozen=False).order_by("-"+rank_type)
+    if rank_begin < 0:
+        rank_begin = 0
+    if rank_end < 0 or rank_end > reviewers.count():
+        rank_end = reviewers.count()
+
+    if require_login_func(request):
+        user, user_type = get_user_from_session(request)
+    else:
+        user = None
+
+    return_list = []
+    for i in range(rank_begin, rank_end):
+        reviewer = reviewers[i]
+        if user is None:
+            mine_like = None
+        else:
+            try:
+                mine_like = LikeUser.objects.get(
+                    re_user_liked__uid=reviewer.uid,
+                    re_user_to_like__uid=user.uid
+                ).result
+            except:
+                mine_like = None
+        return_list.append(dict(
+            rank=i+1,
+            uid=reviewer.uid,
+            avatar=reviewer.avatar,
+            nickname=reviewer.nickname,
+            work_number=getattr(reviewer, rank_type),
+            like_number=reviewer.total_likes,
+            mine_like=mine_like,
+        ))
+    return response(body=return_list)

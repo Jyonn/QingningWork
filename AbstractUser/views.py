@@ -3,6 +3,17 @@ import datetime
 from Base.decorator import *
 from Reviewer.models import Reviewer
 from Writer.models import Writer
+from AbstractUser.models import LikeUser
+
+
+def get_user_by_id(uid):
+    try:
+        user = AbstractUser.objects.get(pk=uid)
+    except:
+        return None, Error.NOT_FOUND_USER_ID
+    if user.is_frozen is True:
+        return None, Error.FROZEN_USER
+    return user, Error.OK
 
 
 @require_POST
@@ -224,3 +235,41 @@ def set_basic_info(request):
     except:
         return error_response(Error.EXIST_NICKNAME)
     return response()
+
+
+@require_POST
+@require_json
+@require_params(["uid"])
+@require_login
+def reverse_like(request):
+    uid = request.POST["uid"]
+    user, user_type = get_abstract_user_from_session(request)
+    if user is None:
+        return error_response(Error.LOGIN_AGAIN)
+    user_liked, ret_code = get_user_by_id(uid)
+    if ret_code != Error.OK:
+        return error_response(ret_code)
+    try:
+        like_user = LikeUser.objects.get(
+            re_user_liked=user_liked,
+            re_user_to_like=user,
+        )
+    except:
+        like_user = LikeUser.create(
+            re_user_liked=user_liked,
+            re_user_to_like=user,
+            result=None,
+        )
+    if like_user.result is None:
+        like_user.result = True
+        user_liked.total_likes += 1
+    elif like_user.result is True:
+        like_user.result = None
+        user_liked.total_likes -= 1
+    like_user.save()
+    user_liked.save()
+
+    return response(body=dict(
+        result=like_user.result,
+        like_number=user_liked.total_likes,
+    ))

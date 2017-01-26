@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^register/$', views.register, name="writer-register"),
     url(r'^status/$', views.status, name="user-status"),
     url(r'^logout/$', views.logout, name="user-logout"),
+    url(r'^reverse-like/$', views.reverse_like, name="user-reverse-like"),
     url(r'^username/change/$', views.change_username, name="change-username"),
     url(r'^password/change/$', views.change_password, name="change-password"),
     url(r'^password/unset/$', views.unset_password, name="unset-password"),

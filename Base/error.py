@@ -1,4 +1,7 @@
 class Error:
+    NOT_FOUND_USER_ID = 1028
+    PARAM_FORMAT_ERROR = 1027
+    UNDEFINED_RANK_TYPE = 1026
     COMMENT_TOO_LONG = 1025
     WORK_NAME_TOO_LONG = 1024
     NICKNAME_TOO_LONG = 1023
@@ -57,4 +60,7 @@ class Error:
         (NICKNAME_TOO_LONG, "笔名不能超过6个字符"),
         (WORK_NAME_TOO_LONG, "作品名称不能超过20个字符"),
         (COMMENT_TOO_LONG, "评论不能超过300个字符"),
+        (UNDEFINED_RANK_TYPE, "未定义的排序类型"),
+        (PARAM_FORMAT_ERROR, "参数格式错误"),
+        (NOT_FOUND_USER_ID, "不存在的用户"),
     ]

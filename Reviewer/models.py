@@ -49,4 +49,3 @@ class Reviewer(AbstractUser):
         reviewer.avatar = "default-avatar-" + avatar_img + ".jpg"
         reviewer.save()
         return reviewer
-

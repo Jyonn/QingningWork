@@ -8,6 +8,8 @@ urlpatterns = [
     url(r'^work/related/', views.get_related_lists, name="get-related-works"),
     url(r'^work/bind-writer/', views.bind_writer, name="bind-work-to-writer"),
     url(r'^info/', views.info, name="reviewer-information"),
+    url(r'^rank/', views.rank, name="reviewer-rank"),
 ] + [
     url(r'^center.view/', front_views.center, name="front-page-reviewer-center"),
+    url(r'^rank.view/', front_views.rank, name="rank-of-reviewers"),
 ]

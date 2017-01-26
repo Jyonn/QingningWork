@@ -98,6 +98,26 @@ def login_to_session(request, user, user_type):
     return None
 
 
+def get_abstract_user_from_session(request):
+    if request.session["role_type"] == AbstractUser.WRITER:
+        try:
+            user = Writer.objects.get(pk=request.session["role_id"])
+            user = AbstractUser.objects.get(pk=user.uid)
+        except Exception as e:
+            print(Exception, ":", e)
+            return None, None
+        return user, AbstractUser.WRITER
+    elif request.session["role_type"] == AbstractUser.REVIEWER:
+        try:
+            user = Reviewer.objects.get(pk=request.session["role_id"])
+            user = AbstractUser.objects.get(pk=user.uid)
+        except Exception as e:
+            print(Exception, ":", e)
+            return None, None
+        return user, AbstractUser.REVIEWER
+    else:
+        return None, None
+
 def get_user_from_session(request):
     if request.session["role_type"] == AbstractUser.WRITER:
         try:

@@ -158,17 +158,6 @@
                 }
             });
         }
-        function get_cookie(cookie_name)
-        {
-            var name = cookie_name + "=";
-            var ca = document.cookie.split(';');
-            for(var i = 0; i < ca.length; i++) {
-                var c = ca[i].trim();
-                if (c.indexOf(name) == 0)
-                    return c.substring(name.length, c.length);
-            }
-            return "";
-        }
         function exit_system() {
             postJSON("/user/logout/", "", function (response) {
                 window.location = "/user/login.act/";
@@ -373,6 +362,7 @@
                         <div class="col-xs-4 column">发布稿件</div>
                         <div class="col-xs-8 column">
                             <label id="total_upload"></label>篇，排名第<label id="total_upload_rank"></label>位
+                            &nbsp;&nbsp;<label>查看排行...</label>
                         </div>
                     </div>
                     <div class="col-xs-12 column">

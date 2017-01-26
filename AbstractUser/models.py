@@ -82,6 +82,10 @@ class AbstractUser(models.Model):
         max_length=32,
         null=True,
     )
+    total_likes = models.IntegerField(
+        verbose_name="喜爱总数",
+        default=0,
+    )
     is_frozen = models.BooleanField(
         verbose_name="是否被冻结",
         default=False,
@@ -109,3 +113,33 @@ class AbstractUser(models.Model):
         self.salt = salt
         self.password = encrypted
         return self
+
+
+class LikeUser(models.Model):
+    re_user_liked = models.ForeignKey(
+        AbstractUser,
+        verbose_name="关联被喜爱用户",
+        default=None,
+        null=False,
+        blank=False,
+        related_name="user_liked",
+    )
+    re_user_to_like = models.ForeignKey(
+        AbstractUser,
+        verbose_name="关联点评喜爱用户",
+        default=None,
+        null=False,
+        blank=False,
+        related_name="user_to_like",
+    )
+    result = models.NullBooleanField(
+        verbose_name="喜爱结果",
+        default=None,
+        null=True,
+    )
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        like_user = cls(*args, **kwargs)
+        like_user.save()
+        return like_user

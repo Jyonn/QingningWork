@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html>
+<head>
+    <!-- Magzine -->
+    <meta charset="utf-8">
+    <title>青柠审稿</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <script type="application/javascript"
+            src="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
+    <script type="application/javascript"
+            src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script type="application/javascript"
+            src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.json.js"></script>
+    <script type="application/javascript" src="/static/js/highlight.js"></script>
+    <script type="application/javascript" src="/static/js/main.js"></script>
+    <script type="application/javascript" src="/static/js/bootstrap-switch.min.js"></script>
+    <link href="/static/css/highlight.css" rel="stylesheet"/>
+    <link href="/static/css/bootstrap-switch.min.css" rel="stylesheet"/>
+
+    <style type="text/css">
+        @font-face {
+            font-family: "CenturyGothic";
+            src: url("/static/font/CenturyGothic.ttf");
+        }
+        .avatar-img {
+            border: 3px solid #cccccc;
+            border-radius: 50%;
+            height: 60px;
+            width: 60px;
+        }
+        .like-img {
+            border: 0;
+            height: 30px;
+            width: auto;
+        }
+        body {
+            background: #8FCC31;
+        }
+        .rank-title {
+            text-align: right;
+            color: #ffffff;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+        .rank-list {
+            color: #ffffff;
+        }
+        .col-xs-12 {
+            padding: 0;
+        }
+        .avatar-div {
+            text-align: right;
+            padding: 0;
+        }
+        .rank-rank {
+            font: 50px CenturyGothic;
+            text-align: right;
+        }
+        .rank-nickname {
+            padding-top: 3px;
+        }
+        .rank-num {
+{#            padding-top: 10px;#}
+            padding-bottom: 3px;
+            font: 30px CenturyGothic;
+        }
+        .rank-num-append {
+            font-size: 20px;
+            color: #dddddd;
+        }
+        .like-img-div {
+            padding-top: 20px;
+            padding-bottom: 20px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .like-num {
+            font: 20px CenturyGothic;
+            margin-left: 15px;
+        }
+        .rank-item {
+            margin-bottom: 10px;
+        }
+        .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary {
+            color: #ffffff;
+            background: #36A60F;
+        }
+        .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default {
+            color: #ffffff;
+            background: #36A60F;
+        }
+        .switch {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script type="application/javascript">
+        function postJSON(url, json_str, success_function, base_function, error_function) {
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data : json_str,
+                async: true,
+                dataType : 'json',
+                contentType : 'application/text',
+                success : function(response, status) {
+                    if (status != "success")
+                        alert("未知错误");
+                    else if (base_function == null)
+                        if (response['code'] != 0)
+                            alert("错误" + response['code'] + "：" + response['msg']);
+                        else success_function(response);
+                    else
+                        base_function(response, success_function);
+                },
+                error : function(xhr, error, exception) {
+                    if (error_function == null)
+                        alert(exception.toString());
+                    else
+                        error_function(xhr, error, exception);
+                }
+            });
+        }
+    </script>
+    <script type="application/javascript">
+        function get_rank_item(rank_item) {
+            var html = "";
+            var like = (rank_item["mine_like"] == true);
+            var like_str = like ? "like.png" : "unlike.png";
+            var nickname = (rank_item["username"] == null) ? "没有昵称" : rank_item["username"];
+
+            html += '<div class="col-xs-12 rank-item">';
+            html += '   <div class="col-xs-1">';
+            html += '       <text class="rank-rank">'+rank_item["rank"]+'</text>';
+            html += '   </div>';
+            html += '   <div class="col-xs-3 avatar-div">';
+            html += '       <img src="/user/avatar/'+rank_item["avatar"]+'" class="avatar-img"/>';
+            html += '   </div>';
+            html += '   <div class="col-xs-4">';
+            html += '       <div class="col-xs-12 rank-nickname">';
+            html += '           <kbd>'+nickname+'</kbd>';
+            html += '       </div>';
+            html += '       <div class="col-xs-12 rank-num">';
+            html += '           <text>'+rank_item["work_number"]+'</text><text class="rank-num-append">篇</text>';
+            html += '       </div>';
+            html += '   </div>';
+            html += '   <div class="col-xs-3 like-img-div">';
+            html += '       <img src="/static/img/'+like_str+'" class="like-img" id="like-'
+                +rank_item["uid"]+'" onclick="like_user('+rank_item["uid"]+')">'
+                +'<text class="like-num" id="like-num-'+rank_item["uid"]+'">'+rank_item["like_number"]+'</text>';
+            html += '   </div>';
+            html += '</div>';
+            return html;
+        }
+        function get_show_rank(rank_type, scale) {
+            var rank_begin = 0, rank_end;
+            if (scale == "small")
+                rank_end = 10;
+            else
+                rank_end = -1;
+            var post = {rank_begin: rank_begin, rank_end: rank_end, rank_type: rank_type};
+            var json_str = $.toJSON(post);
+            postJSON("/reviewer/rank/", json_str, function (response) {
+                var rank_list = $("#reviewer-rank-list");
+                rank_list.empty();
+                rank_list.sort(function (a, b) { return a["rank"] < b["rank"]; });
+                for (var i = 0; i < response["body"].length; i++)
+                    rank_list.append(get_rank_item(response["body"][i]));
+            });
+        }
+        function like_user(uid) {
+            var post = {uid: uid};
+            var json_str = $.toJSON(post);
+            postJSON("/user/reverse-like/", json_str, function (response) {
+                if (response["body"]["result"] == null)
+                    $("#like-"+uid).attr("src", "/static/img/unlike.png");
+                else
+                    $("#like-"+uid).attr("src", "/static/img/like.png");
+                $("#like-num-"+uid).text(response["body"]["like_number"]);
+            });
+        }
+        $(document).ready(function () {
+            get_show_rank("total_review", "small");
+            $("#rank-type-switch").bootstrapSwitch().on('switchChange.bootstrapSwitch', function (e, state) {
+                if (state) {
+                    get_show_rank("total_upload", "small");
+                } else {
+                    get_show_rank("total_review", "small");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+    <div class="row clearfix">
+    <div class="col-xs-12 column">
+        <div class="rank-title">
+            <h1>审稿员排行榜</h1>
+            <h4>RANK IN RECEIVERS</h4>
+            <hr/>
+            <div class="switch" data-animated="false">
+                <input type="checkbox" id="rank-type-switch" data-on-text="上传排行" data-off-text="审阅排行"/>
+            </div>
+        </div>
+        <div class="rank-list" id="reviewer-rank-list"></div>
+    </div>
+    </div>
+    </div>
+</body>
