@@ -264,26 +264,33 @@
         function refresh_page() {
             postJSON("/user/info/", "", function (response) {
                 var nickname = response["body"]["nickname"];
+                var no_pwd_explain = $("#no-pwd-explain"),
+                    old_password_block = $("#old-password-block"),
+                    new_password_block = $("#new-password-block"),
+                    password_block = $("#password-block"),
+                    old_username_block = $("#old-username-block"),
+                    switch_pwd_login = $("#switch-pwd-login");
+
                 window.pwd_login = response["body"]["pwd_login"];
                 if (nickname != null)
                         $("#nickname-input").val(nickname);
                 if (window.pwd_login == true) {
                     // 修改密码模块
-                    $("#no-pwd-explain").css("display", "none");
-                    $("#old-password-block").css("display", "block");
-                    $("#new-password-block").css("display", "block");
+                    no_pwd_explain.css("display", "none");
+                    old_password_block.css("display", "block");
+                    new_password_block.css("display", "block");
                     // 修改账号模块
-                    $("#old-username-block").css("display", "none");
-                    $("#password-block").css("display", "block");
+                    old_username_block.css("display", "none");
+                    password_block.css("display", "block");
                 } else {
-                    if ($("#switch-pwd-login").bootstrapSwitch('state') == false)
-                        $("#switch-pwd-login").bootstrapSwitch('toggleState');
-                    $("#no-pwd-explain").css("display", "block");
-                    $("#old-password-block").css("display", "none");
-                    $("#new-password-block").css("display", "none");
+                    if (switch_pwd_login.bootstrapSwitch('state') == false)
+                        switch_pwd_login.bootstrapSwitch('toggleState');
+                    no_pwd_explain.css("display", "block");
+                    old_password_block.css("display", "none");
+                    new_password_block.css("display", "none");
                     // 修改账号模块
-                    $("#old-username-block").css("display", "block");
-                    $("#password-block").css("display", "none");
+                    old_username_block.css("display", "block");
+                    password_block.css("display", "none");
                 }
             });
         }

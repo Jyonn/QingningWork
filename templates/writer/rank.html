@@ -164,8 +164,8 @@
                 rank_end = -1;
             var post = {rank_begin: rank_begin, rank_end: rank_end, rank_type: rank_type};
             var json_str = $.toJSON(post);
-            postJSON("/reviewer/rank/", json_str, function (response) {
-                var rank_list = $("#reviewer-rank-list");
+            postJSON("/writer/rank/", json_str, function (response) {
+                var rank_list = $("#writer-rank-list");
                 rank_list.empty();
                 rank_list.sort(function (a, b) { return a["rank"] < b["rank"]; });
                 for (var i = 0; i < response["body"].length; i++)
@@ -185,7 +185,7 @@
         }
         function get_rank_type() {
             var url = window.location.pathname;
-            var head = "/reviewer/rank.view/";
+            var head = "/writer/rank.view/";
             url = url.substring(head.length);
             url = url.substring(0, url.length - 1);
             return url;
@@ -194,15 +194,15 @@
             window.rank_type = get_rank_type();
             get_show_rank(window.rank_type, "small");
             var switch_checkbox = $("#rank-type-switch");
-            if (window.rank_type == "total_upload" && switch_checkbox.bootstrapSwitch('state') == false)
+            if (window.rank_type == "total_works" && switch_checkbox.bootstrapSwitch('state') == false)
                 switch_checkbox.bootstrapSwitch('toggleState');
-            if (window.rank_type == "total_review" && switch_checkbox.bootstrapSwitch('state') == true)
+            if (window.rank_type == "total_received" && switch_checkbox.bootstrapSwitch('state') == true)
                 switch_checkbox.bootstrapSwitch('toggleState');
             switch_checkbox.bootstrapSwitch().on('switchChange.bootstrapSwitch', function (e, state) {
                 if (state) {
-                    get_show_rank("total_upload", "small");
+                    get_show_rank("total_works", "small");
                 } else {
-                    get_show_rank("total_review", "small");
+                    get_show_rank("total_received", "small");
                 }
             });
         });
@@ -213,14 +213,14 @@
     <div class="row clearfix">
     <div class="col-xs-12 column">
         <div class="rank-title">
-            <h1>审稿员排行榜</h1>
-            <h4>RANK IN RECEIVERS</h4>
+            <h1>作者排行榜</h1>
+            <h4>RANK IN WRITERS</h4>
             <hr/>
             <div class="switch" data-animated="false">
-                <input type="checkbox" id="rank-type-switch" data-on-text="上传排行" data-off-text="审阅排行"/>
+                <input type="checkbox" id="rank-type-switch" data-on-text="发布排行" data-off-text="采纳排行"/>
             </div>
         </div>
-        <div class="rank-list" id="reviewer-rank-list"></div>
+        <div class="rank-list" id="writer-rank-list"></div>
     </div>
     </div>
     </div>

@@ -321,16 +321,6 @@
         });
     </script>
     <script type="application/javascript">
-        function status_return(response) {
-            if (response["body"] == "reviewer") {
-{#                self.location = "/reviewer/center.view/";#}
-                window.location.href = document.referrer;
-            }
-            else if (response["body"] == "writer") {
-{#                self.location = "/writer/center.view/";#}
-                window.location.href = document.referrer;
-            }
-        }
         function comment() {
             var result = $("#result").bootstrapSwitch('state');
             var comment = $("#comment").val();

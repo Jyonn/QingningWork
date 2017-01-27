@@ -313,11 +313,14 @@
                 refresh_panel_works(work_list_not_reviewed, "#not-reviewed-list");
                 refresh_panel_works(work_list_received, "#received-list");
                 refresh_panel_works(work_list_refused, "#refused-list");
-                refresh_panel_works(work_list_upload, "#upload-list");
+{#                refresh_panel_works(work_list_upload, "#upload-list");#}
             });
         }
     </script>
     <script type="application/javascript">
+        function rank(rank_type) {
+            window.location = "/writer/rank.view/"+rank_type+"/";
+        }
         $(document).ready(function () {
             refresh_page();
         });
@@ -368,12 +371,14 @@
                         <div class="col-xs-4 column">发布稿件</div>
                         <div class="col-xs-8 column">
                             <label id="total_works"></label>篇，排名第<label id="total_works_rank"></label>位
+                            &nbsp;&nbsp;<label onclick="rank('total_works')">查看排行 >>></label>
                         </div>
                     </div>
                     <div class="col-xs-12 column">
                         <div class="col-xs-4 column">采纳稿件</div>
                         <div class="col-xs-8 column">
                             <label id="total_received"></label>篇，排名第<label id="total_received_rank"></label>位
+                            &nbsp;&nbsp;<label onclick="rank('total_received')">查看排行 >>></label>
                         </div>
                     </div>
                 </div>
