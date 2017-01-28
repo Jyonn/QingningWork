@@ -320,6 +320,17 @@ def review_work(request):
         is_updated=False,
     )
 
+    comments = Comment.objects.filter(re_work=work, is_updated=False)
+    total_refused = comments.filter(result=False).count()
+    total_received = comments.filter(result=True).count()
+    total_reviewers = Reviewer.objects.filter(is_frozen=False).count()
+
+    if total_received >= total_reviewers * 4 / 9:
+        work.status = Work.STATUS_RECEIVED
+    elif total_refused >= total_reviewers * 4 / 9:
+        work.status = Work.STATUS_REFUSED
+    work.save()
+
     return response()
 
 
