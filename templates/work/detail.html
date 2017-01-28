@@ -184,10 +184,9 @@
         }
         .comment-textarea {
             color: #ffffff;
-            text-align: right;
             padding-top: 10px;
-            padding-right: 10px;
-            border-right: 5px solid #eee;
+            padding-left: 10px;
+{#            border-left: 5px solid #eee;#}
         }
     </style>
     <script type="application/javascript">
@@ -253,13 +252,13 @@
             html += '           <div class="col-xs-12 column nickname-front">';
             html += '               <kbd class="nickname">'+nickname+'</kbd><kbd class="status-process">第'+comment["times"]+'次</kbd><kbd class="'+result_tag+'">'+result_str+'</kbd>';
             html += '           </div>';
-            html += '           <div class="col-xs-12 column" style="text-align: right">';
-            html += '               <text class="work-time">于 '+comment["comment_time"]+'</text>';
+            html += '           <div class="col-xs-12 column">';
+            html += '               <textarea class="comment-textarea" readonly>'+content+'</textarea>';
             html += '           </div>';
             html += '       </div>';
             html += '   </div>';
             html += '   <div class="col-xs-12 column">';
-            html += '       <textarea class="comment-textarea" readonly>'+content+'</textarea>';
+            html += '       <text class="work-time">'+comment["comment_time"]+'</text>';
             html += '   </div>';
             html += '</div>';
             return html;
