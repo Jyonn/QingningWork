@@ -152,8 +152,21 @@ def rank(request):
         user = None
 
     return_list = []
-    for i in range(rank_begin, rank_end):
+    rank_num = 0
+    rank_rank = 0
+    for i in range(0, rank_end):
         writer = writers[i]
+        if i == 0:
+            rank_rank = 1
+            rank_num = getattr(writer, rank_type)
+        else:
+            this_num = getattr(writer, rank_type)
+            if rank_num > this_num:
+                rank_num = this_num
+                rank_rank = i + 1
+        if i < rank_begin:
+            continue
+
         if user is None:
             mine_like = None
         else:
@@ -165,7 +178,7 @@ def rank(request):
             except:
                 mine_like = None
         return_list.append(dict(
-            rank=i+1,
+            rank=rank_rank,
             uid=writer.uid,
             avatar=writer.avatar,
             nickname=writer.nickname,
