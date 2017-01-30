@@ -370,12 +370,12 @@ def get_rank(reviewer, order_by):
     attr = order_by
     if order_by[0] == '-':
         attr = attr[1:]
-    rank = 0
+    rank_rank = 0
     for ret_reviewer in reviewers:
-        rank += 1
+        rank_rank += 1
         if getattr(ret_reviewer, attr) == getattr(reviewer, attr):
             break
-    return rank
+    return rank_rank
 
 
 @require_POST
@@ -501,9 +501,23 @@ def rank(request):
     else:
         user = None
 
+    # 获取排名
     return_list = []
-    for i in range(rank_begin, rank_end):
+    rank_num = 0
+    rank_rank = 0
+    for i in range(0, rank_end):
         reviewer = reviewers[i]
+        if i == 0:
+            rank_rank = 1
+            rank_num = getattr(reviewer, rank_type)
+        else:
+            this_num = getattr(reviewer, rank_type)
+            if rank_num > this_num:
+                rank_num = this_num
+                rank_rank = i + 1
+        if i < rank_begin:
+            continue
+
         if user is None:
             mine_like = None
         else:
@@ -515,7 +529,7 @@ def rank(request):
             except:
                 mine_like = None
         return_list.append(dict(
-            rank=i+1,
+            rank=rank_rank,
             uid=reviewer.uid,
             avatar=reviewer.avatar,
             nickname=reviewer.nickname,
@@ -523,4 +537,5 @@ def rank(request):
             like_number=reviewer.total_likes,
             mine_like=mine_like,
         ))
+
     return response(body=return_list)
