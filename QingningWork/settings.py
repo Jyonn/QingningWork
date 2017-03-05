@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import platform
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -25,7 +27,7 @@ SECRET_KEY = '+_&^c((l!j04-j@y4c05m^r2q-xm%!0njosk2gwpt0o_0d05d2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -60,8 +62,7 @@ ROOT_URLCONF = 'QingningWork.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -129,20 +130,19 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-# def is_windows_system():
-#     import platform
-#     return 'Windows' in platform.system()
-#
-# if is_windows_system is True:
-#     MEDIA_ROOT = 'D:/Program/web/QingNingWork'
-# else:
-MEDIA_ROOT = 'D:/Program/web/QingNingWork'
-# MEDIA_ROOT = '/home/web/QingNingWork'
+if 'Linux' == platform.system():
+    MEDIA_ROOT = '/home/web/QingNingWork'
+else:
+    MEDIA_ROOT = 'D:/Program/web/QingNingWork'
+
+# STATIC_ROOT = 'D:/Program/Python/QingningWork/static_files'
+
 WORK_URL = os.path.join(MEDIA_ROOT, 'work', '')
 USER_URL = os.path.join(MEDIA_ROOT, 'user', '')
 AVATAR_URL = os.path.join(MEDIA_ROOT, 'avatar', '')
 
 STATIC_URL = '/static/'
+STATIC_FILE = os.path.join(BASE_DIR, "static_files")
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static_files"),

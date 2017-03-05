@@ -17,7 +17,7 @@ from django.conf.urls import url, include, static
 from django.contrib import admin
 from AbstractUser import front_views
 
-from QingningWork.settings import ICO_URL
+from QingningWork.settings import STATIC_FILE
 
 urlpatterns = [
     url(r'^$', front_views.login),
@@ -26,7 +26,8 @@ urlpatterns = [
     url(r'^reviewer/', include("Reviewer.urls")),
     url(r'^work/', include("Work.urls")),
     url(r'^writer/', include("Writer.urls")),
+    url(r'^base/', include("Base.urls")),
 ]
 
-urlpatterns += static.static('favicon.ico', document_root=ICO_URL)
+urlpatterns += static.static('/static/', document_root=STATIC_FILE)
 

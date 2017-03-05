@@ -1,3 +1,4 @@
+import datetime
 from django.http import HttpResponse
 from AbstractUser.models import AbstractUser
 from Writer.models import Writer
@@ -75,11 +76,50 @@ def get_address_by_ip_via_sina(ipv4, timeout=0.5):
     return ip_str
 
 
+def save_captcha(request, type, code):
+    """
+    保存验证码
+    :param request:
+    :param type: 验证码类型，分为 image 和 phone
+    :param code: 验证码值
+    :return: None
+    """
+    request.session["captcha_" + type + "_code"] = code
+    request.session["captcha_" + type + "_time"] = int(datetime.datetime.now().timestamp())
+    return None
+
+
+def confirm_captcha(request, type, code):
+    """
+    验证验证码
+    :param request:
+    :param type: 验证码类型，分为 image 和 phone
+    :param code: 输入的验证码值
+    :return: True / False
+    """
+    try:
+        if code is None:
+            return False
+        this_time = int(datetime.datetime.now().timestamp())
+        last_time = request.session["captcha_" + type + "_time"]
+        dist = this_time - last_time
+        if dist > 60 * 5 or dist < 0:
+            return False
+        correct_captcha = request.session["captcha_" + type + "_code"]
+        if correct_captcha != code:
+            request.session["captcha_" + type + "_code"] = None
+            return False
+        else:
+            return True
+    except:
+        pass
+    return False
+
+
 def login_to_session(request, user, user_type):
     """
     更新登录数据并添加到session
     """
-    import datetime
     user.login_times += 1
     user.last_login = user.this_login
     user.last_ipv4 = user.this_ipv4
@@ -118,23 +158,18 @@ def get_abstract_user_from_session(request):
     else:
         return None, None
 
+
 def get_user_from_session(request):
-    if request.session["role_type"] == AbstractUser.WRITER:
-        try:
+    try:
+        if request.session["role_type"] == AbstractUser.WRITER:
             user = Writer.objects.get(pk=request.session["role_id"])
-        except Exception as e:
-            print(Exception, ":", e)
-            return None, None
-        return user, AbstractUser.WRITER
-    elif request.session["role_type"] == AbstractUser.REVIEWER:
-        try:
+            return user, AbstractUser.WRITER
+        elif request.session["role_type"] == AbstractUser.REVIEWER:
             user = Reviewer.objects.get(pk=request.session["role_id"])
-        except Exception as e:
-            print(Exception, ":", e)
-            return None, None
-        return user, AbstractUser.REVIEWER
-    else:
-        return None, None
+            return user, AbstractUser.REVIEWER
+    except:
+        pass
+    return None, None
 
 
 def logout_from_session(request):

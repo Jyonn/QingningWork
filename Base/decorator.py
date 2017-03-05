@@ -53,7 +53,8 @@ def decorator_generator(verify_func, error_id):
 def require_login_func(request):
     if "login_in" not in request.session or "role_id" not in request.session or "role_type" not in request.session:
         return False
-    if request.session["login_in"] is None or request.session["role_id"] is None or request.session["role_type"] is None:
+    if request.session["login_in"] is None or request.session["role_id"] is None \
+            or request.session["role_type"] is None:
         return False
     return request.session["login_in"]
 
