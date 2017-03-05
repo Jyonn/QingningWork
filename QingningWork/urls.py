@@ -29,5 +29,5 @@ urlpatterns = [
     url(r'^base/', include("Base.urls")),
 ]
 
-urlpatterns += static.static('/static/', document_root=STATIC_FILE)
+urlpatterns += static.static('/', document_root=STATIC_FILE)
 

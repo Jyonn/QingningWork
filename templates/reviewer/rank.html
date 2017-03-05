@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <title>青柠审稿</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="shortcut icon" href="/favicon.ico">
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <script type="application/javascript"
             src="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
@@ -14,17 +14,17 @@
             src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
     <script type="application/javascript"
             src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="application/javascript" src="/static/js/jquery.json.js"></script>
-    <script type="application/javascript" src="/static/js/highlight.js"></script>
-    <script type="application/javascript" src="/static/js/main.js"></script>
-    <script type="application/javascript" src="/static/js/bootstrap-switch.min.js"></script>
-    <link href="/static/css/highlight.css" rel="stylesheet"/>
-    <link href="/static/css/bootstrap-switch.min.css" rel="stylesheet"/>
+    <script type="application/javascript" src="/js/jquery.json.js"></script>
+    <script type="application/javascript" src="/js/highlight.js"></script>
+    <script type="application/javascript" src="/js/main.js"></script>
+    <script type="application/javascript" src="/js/bootstrap-switch.min.js"></script>
+    <link href="/css/highlight.css" rel="stylesheet"/>
+    <link href="/css/bootstrap-switch.min.css" rel="stylesheet"/>
 
     <style type="text/css">
         @font-face {
             font-family: "CenturyGothic";
-            src: url("/static/font/CenturyGothic.ttf");
+            src: url("/font/CenturyGothic.ttf");
         }
         .avatar-img {
             border: 3px solid #cccccc;
@@ -149,7 +149,7 @@
             html += '       </div>';
             html += '   </div>';
             html += '   <div class="col-xs-3 like-img-div">';
-            html += '       <img src="/static/img/'+like_str+'" class="like-img" id="like-'
+            html += '       <img src="/img/'+like_str+'" class="like-img" id="like-'
                 +rank_item["uid"]+'" onclick="like_user('+rank_item["uid"]+')">'
                 +'<text class="like-num" id="like-num-'+rank_item["uid"]+'">'+rank_item["like_number"]+'</text>';
             html += '   </div>';
@@ -177,9 +177,9 @@
             var json_str = $.toJSON(post);
             postJSON("/user/reverse-like/", json_str, function (response) {
                 if (response["body"]["result"] == null)
-                    $("#like-"+uid).attr("src", "/static/img/unlike.png");
+                    $("#like-"+uid).attr("src", "/img/unlike.png");
                 else
-                    $("#like-"+uid).attr("src", "/static/img/like.png");
+                    $("#like-"+uid).attr("src", "/img/like.png");
                 $("#like-num-"+uid).text(response["body"]["like_number"]);
             });
         }
