@@ -8,9 +8,11 @@ https://docs.djangoproject.com/en/1.10/howto/deployment/wsgi/
 """
 
 import os
+import django.conf
+from django.core.handlers.wsgi import WSGIHandler
 
-from django.core.wsgi import get_wsgi_application
+django.conf.ENVIRONMENT_VARIABLE = 'DJANGO_QINGNINGWORK_SETTINGS_MODULE'
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "QingningWork.settings")
+os.environ.setdefault("DJANGO_QINGNINGWORK_SETTINGS_MODULE", "QingningWork.settings")
 
-application = get_wsgi_application()
+application = WSGIHandler()
