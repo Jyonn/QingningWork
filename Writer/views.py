@@ -1,7 +1,7 @@
 import datetime
 
 from AbstractUser.models import LikeUser
-from Base.decorator import *
+from BaseFunc.decorator import *
 from Work.models import Work
 from Comment.models import Comment
 from Writer.models import Writer

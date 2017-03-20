@@ -1,0 +1,23 @@
+body {
+    background: #EEE;
+    margin: 0;
+}
+
+.login-main {
+    position: fixed;
+    padding-top: 50px;
+    height: 100%;
+    width: 100%;
+}
+
+.login-main .login-rect {
+    color: #000000;
+    background: #444;
+    margin: 0 10%;
+    height: 60%;
+    width: 80%;
+    filter: alpha(opacity=20);
+    -moz-opacity: 0.2;
+    opacity: 0.2;
+    border-radius: 20px;
+}

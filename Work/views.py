@@ -1,6 +1,6 @@
 import datetime
 
-from Base.decorator import *
+from BaseFunc.decorator import *
 from Comment.models import Comment
 from QingningWork.settings import WORK_URL
 from Work.models import Work

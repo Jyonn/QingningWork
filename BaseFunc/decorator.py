@@ -1,4 +1,4 @@
-from Base.base import *
+from BaseFunc.base import *
 from functools import wraps
 from AbstractUser.models import AbstractUser
 from django.views.decorators import http

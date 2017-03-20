@@ -5,7 +5,7 @@ from Writer.models import Writer
 from Reviewer.models import Reviewer
 import json
 
-from Base.error import Error
+from BaseFunc.error import Error
 
 
 def get_readable_time_string(t):

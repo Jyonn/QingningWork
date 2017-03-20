@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,7 +6,7 @@
     <meta charset="utf-8">
     <title>青柠审稿</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="{% static "favicon.ico" %}">
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <script type="application/javascript"
             src="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
@@ -13,16 +14,16 @@
             src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
     <script type="application/javascript"
             src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="application/javascript" src="/js/jquery.json.js"></script>
-    <script type="application/javascript" src="/js/highlight.js"></script>
-    <script type="application/javascript" src="/js/main.js"></script>
-    <script type="application/javascript" src="/js/bootstrap-switch.min.js"></script>
-    <link href="/css/highlight.css" rel="stylesheet"/>
-    <link href="/css/bootstrap-switch.min.css" rel="stylesheet"/>
+    <script type="application/javascript" src="{% static "js/jquery.json.js" %}"></script>
+    <script type="application/javascript" src="{% static "js/highlight.js" %}"></script>
+    <script type="application/javascript" src="{% static "js/main.js" %}"></script>
+    <script type="application/javascript" src="{% static "js/bootstrap-switch.min.js" %}"></script>
+    <link href="{% static "css/highlight.css" %}" rel="stylesheet"/>
+    <link href="{% static "css/bootstrap-switch.min.css" %}" rel="stylesheet"/>
 
     <style type="text/css">
         body {
-            background: url('/bk.jpg') no-repeat center;
+            background: url('{% static "bk.jpg" %}') no-repeat center;
         }
         h1 {
             text-align: center;
@@ -80,8 +81,8 @@
         }
         function get_cookie(cookie_name)
         {
-            var name = cookie_name + "=";
-            var ca = document.cookie.split(';');
+            const name = cookie_name + "=";
+            const ca = document.cookie.split(';');
             for(var i = 0; i < ca.length; i++) {
                 var c = ca[i].trim();
                 if (c.indexOf(name) == 0)
@@ -100,18 +101,18 @@
             }
         }
         function login() {
-            var username = $("#username").val();
-            var password = $("#password").val();
-            var post = { username: username, password: password};
-            var json_str = $.toJSON(post);
+            const username = $("#username").val();
+            const password = $("#password").val();
+            const post = {username: username, password: password};
+            const json_str = $.toJSON(post);
             postJSON("/user/login/", json_str, status_return);
         }
         function register() {
-            var username = $("#username").val();
-            var password = $("#password").val();
-            var no_pwd = $("#switch").bootstrapSwitch('state');
-            var post = { username: username, password: password, no_pwd: no_pwd};
-            var json_str = $.toJSON(post);
+            const username = $("#username").val();
+            const password = $("#password").val();
+            const no_pwd = $("#switch").bootstrapSwitch('state');
+            const post = {username: username, password: password, no_pwd: no_pwd};
+            const json_str = $.toJSON(post);
             postJSON("/user/register/", json_str, status_return);
         }
 {#        function hide_pwd() {#}

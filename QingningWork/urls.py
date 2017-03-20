@@ -20,13 +20,13 @@ from AbstractUser import front_views
 from QingningWork.settings import STATIC_FILE
 
 urlpatterns = [
-    url(r'^$', front_views.login),
+    url(r'^$', front_views.login_v2),
     url(r'^admin/', admin.site.urls),
     url(r'^user/', include("AbstractUser.urls")),
     url(r'^reviewer/', include("Reviewer.urls")),
     url(r'^work/', include("Work.urls")),
     url(r'^writer/', include("Writer.urls")),
-    url(r'^base/', include("Base.urls")),
+    url(r'^base/', include("BaseFunc.urls")),
 ]
 
 urlpatterns += static.static('/', document_root=STATIC_FILE)

@@ -1,5 +1,5 @@
-from Base.decorator import *
-from Base.img_captcha import create_validate_code
+from BaseFunc.decorator import *
+from BaseFunc.img_captcha import create_validate_code
 
 
 @require_GET

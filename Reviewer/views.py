@@ -1,5 +1,5 @@
 import datetime
-from Base.decorator import *
+from BaseFunc.decorator import *
 from Work.models import Work
 from Comment.models import Comment
 from AbstractUser.models import LikeUser

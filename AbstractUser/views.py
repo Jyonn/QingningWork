@@ -1,6 +1,6 @@
 import datetime
 
-from Base.decorator import *
+from BaseFunc.decorator import *
 from Reviewer.models import Reviewer
 from Writer.models import Writer
 from AbstractUser.models import LikeUser
