@@ -1,9 +1,8 @@
-import datetime
+# coding=utf-8
 
 from AbstractUser.models import LikeUser
 from BaseFunc.decorator import *
 from Work.models import Work
-from Comment.models import Comment
 from Writer.models import Writer
 from Work.views import get_packed_work
 

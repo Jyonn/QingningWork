@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.db import models
 from AbstractUser.models import AbstractUser
 

@@ -1,3 +1,4 @@
+# coding=utf-8
 from BaseFunc.base import *
 from functools import wraps
 from AbstractUser.models import AbstractUser

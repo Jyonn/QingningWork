@@ -132,6 +132,8 @@ USE_TZ = False
 
 if 'Linux' == platform.system():
     MEDIA_ROOT = '/home/web/QingNingWork'
+elif 'Darwin' == platform.system():
+    MEDIA_ROOT = '/Users/adelliu/WebSource/QingNingWork'
 else:
     MEDIA_ROOT = 'D:/Program/web/QingNingWork'
 

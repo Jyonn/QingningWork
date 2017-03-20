@@ -30,4 +30,3 @@ urlpatterns = [
 ]
 
 urlpatterns += static.static('/', document_root=STATIC_FILE)
-

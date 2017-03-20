@@ -1,4 +1,4 @@
-import datetime
+# coding=utf-8
 from BaseFunc.decorator import *
 from Work.models import Work
 from Comment.models import Comment

@@ -1,3 +1,4 @@
+# coding=utf-8
 from BaseFunc.decorator import *
 from BaseFunc.img_captcha import create_validate_code
 

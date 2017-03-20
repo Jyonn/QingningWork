@@ -1,4 +1,8 @@
+# coding=utf-8
 class Error:
+    def __init__(self):
+        pass
+
     NOT_FOUND_USER_ID = 1028
     PARAM_FORMAT_ERROR = 1027
     UNDEFINED_RANK_TYPE = 1026

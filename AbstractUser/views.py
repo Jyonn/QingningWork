@@ -1,4 +1,4 @@
-import datetime
+# coding=utf-8
 
 from BaseFunc.decorator import *
 from Reviewer.models import Reviewer
@@ -58,7 +58,7 @@ def add_reviewer(request):
     )
     if pwd_login is True:
         reviewer.set_password(password).save()
-    login_to_session(request, writer, AbstractUser.WRITER)
+    login_to_session(request, reviewer, AbstractUser.WRITER)
     return response(body=AbstractUser.WRITER)
 
 
@@ -162,7 +162,6 @@ def unset_password(request):
         return error_response(Error.NO_PASSWORD_LOGIN)
     if not user.check_password(password):  # 检查密码是否正确
         return error_response(Error.WRONG_PASSWORD)
-    print("true");
     user.pwd_login = False
     user.save()
     print(user.pwd_login)

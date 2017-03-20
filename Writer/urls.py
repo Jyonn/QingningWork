@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^rank/$', views.rank, name="reviewer-rank"),
 ] + [
     url(r'^center.view/', front_views.center, name="front-page-reviewer-center"),
-url(r'^rank.view/(?P<rank_type>\w+)/$', front_views.rank, name="rank-of-reviewers"),
+    url(r'^rank.view/(?P<rank_type>\w+)/$', front_views.rank, name="rank-of-reviewers"),
 ]

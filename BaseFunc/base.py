@@ -1,4 +1,7 @@
+# coding=utf-8
 import datetime
+from multiprocessing import TimeoutError
+
 from django.http import HttpResponse
 from AbstractUser.models import AbstractUser
 from Writer.models import Writer
@@ -61,9 +64,9 @@ def get_address_by_ip_via_sina(ipv4, timeout=0.5):
         headers = {'content-type': 'application/json'}
         try:
             ret_pos = requests.get(url, headers=headers, timeout=timeout).json()
-        except TimeoutError as e:
+        except TimeoutError:
             return "无法获取"
-        except Exception as e:
+        except Exception:
             return "未知地址"
         if ret_pos["country"] != "中国":
             ip_str = ret_pos["country"]
@@ -76,24 +79,24 @@ def get_address_by_ip_via_sina(ipv4, timeout=0.5):
     return ip_str
 
 
-def save_captcha(request, type, code):
+def save_captcha(request, captcha_type, code):
     """
     保存验证码
     :param request:
-    :param type: 验证码类型，分为 image 和 phone
+    :param captcha_type: 验证码类型，分为 image 和 phone
     :param code: 验证码值
     :return: None
     """
-    request.session["captcha_" + type + "_code"] = code
-    request.session["captcha_" + type + "_time"] = int(datetime.datetime.now().timestamp())
+    request.session["captcha_" + captcha_type + "_code"] = code
+    request.session["captcha_" + captcha_type + "_time"] = int(datetime.datetime.now().timestamp())
     return None
 
 
-def confirm_captcha(request, type, code):
+def confirm_captcha(request, captcha_type, code):
     """
     验证验证码
     :param request:
-    :param type: 验证码类型，分为 image 和 phone
+    :param captcha_type: 验证码类型，分为 image 和 phone
     :param code: 输入的验证码值
     :return: True / False
     """
@@ -101,13 +104,13 @@ def confirm_captcha(request, type, code):
         if code is None:
             return False
         this_time = int(datetime.datetime.now().timestamp())
-        last_time = request.session["captcha_" + type + "_time"]
+        last_time = request.session["captcha_" + captcha_type + "_time"]
         dist = this_time - last_time
         if dist > 60 * 5 or dist < 0:
             return False
-        correct_captcha = request.session["captcha_" + type + "_code"]
+        correct_captcha = request.session["captcha_" + captcha_type + "_code"]
         if correct_captcha != code:
-            request.session["captcha_" + type + "_code"] = None
+            request.session["captcha_" + captcha_type + "_code"] = None
             return False
         else:
             return True

@@ -2,7 +2,7 @@ from django.db import models
 
 
 class AbstractUser(models.Model):
-    WRITER = "writer"
+    WRITER = "writerp"
     REVIEWER = "reviewer"
     uid = models.AutoField(
         verbose_name="用户编号",

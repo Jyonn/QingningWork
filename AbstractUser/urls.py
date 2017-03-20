@@ -20,4 +20,3 @@ urlpatterns = [
 ]
 
 urlpatterns += static.static('avatar/', document_root=AVATAR_URL)
-
