@@ -1,14 +1,22 @@
 {% load static %}
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href='http://cdn.webfont.youziku.com/webfonts/nomal/97176/47031/58cfbb69f629db0dac57bd48.css' rel='stylesheet' type='text/css'/>
     <title>Particles</title>
     <link href="{% static "v2/css/style.css" %}" rel="stylesheet" type="text/css"/>
 </head>
-<body style="overflow:hidden">
+<body>
     <div class="login-main">
-        <div class="login-rect">
-
-        </div>
+        <img src="{% static "img/slogan.png" %}">
+        <form>
+            <label for="InputUsername">
+                <input type="text" placeholder="手机号 / 邮箱"><hr/>
+                <input type="password" placeholder="密码">
+            </label>
+            <button class="btn-green">登录</button>
+            <button class="btn-white">注册</button>
+        </form>
     </div>
     <canvas id="bg-canvas"></canvas>
     <script src="{% static "v2/js/bg-canvas.js" %}"></script>

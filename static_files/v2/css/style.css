@@ -1,23 +1,91 @@
 body {
     background: #EEE;
     margin: 0;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    overflow: scroll;
+}
+
+::-webkit-scrollbar {
+    width: 0;
 }
 
 .login-main {
-    position: fixed;
+    position: absolute;
     padding-top: 50px;
     height: 100%;
     width: 100%;
 }
 
-.login-main .login-rect {
-    color: #000000;
-    background: #444;
-    margin: 0 10%;
-    height: 60%;
-    width: 80%;
-    filter: alpha(opacity=20);
-    -moz-opacity: 0.2;
-    opacity: 0.2;
+.login-main img {
+    width: 40%;
+    max-width: 360px;
+    margin: 20px 0 20px 10%;
+}
+
+form {
+    padding: 0 10%;
+    /*margin-bottom: 50px;*/
+}
+
+label {
+    display: block;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+input {
+    border: none;
+    background: none;
+    width: 100%;
+    font-size: 16px;
+    outline: none;
+    padding: 10px 20px;
+    letter-spacing: 1px;
+    font-family: 'COCOGOOSE9909d5dd917b98', sans-serif;
+    color: #3F9913;
+}
+
+.btn-white {
+    background: none;
+    color: #000;
+}
+
+.btn-white:hover {
+    background: #ddd;
+    color: #000;
+    filter: alpha(opacity=60);
+    -moz-opacity: 0.6;
+    opacity: 0.6;
+}
+
+.btn-green {
+    background: #3F9913;
+    color: #fff;
+}
+
+.btn-green:hover {
+    background: #367517;
+    color: #fff;
+}
+
+button {
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 16px;
     border-radius: 20px;
+    width: 100%;
+    height: 40px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    margin: 10px 0;
+}
+
+
+hr {
+    border-top: 1px solid #ddd;
+    margin: 0;
 }
