@@ -11,19 +11,6 @@ body {
     width: 0;
 }
 
-.login-main {
-    position: absolute;
-    padding-top: 50px;
-    height: 100%;
-    width: 100%;
-}
-
-.login-main img {
-    width: 40%;
-    max-width: 360px;
-    margin: 20px 0 20px 10%;
-}
-
 form {
     padding: 0 10%;
     /*margin-bottom: 50px;*/
@@ -42,7 +29,6 @@ input {
     width: 100%;
     font-size: 16px;
     outline: none;
-    padding: 10px 20px;
     letter-spacing: 1px;
     font-family: 'COCOGOOSE9909d5dd917b98', sans-serif;
     color: #3F9913;
@@ -80,7 +66,7 @@ button {
     height: 40px;
     cursor: pointer;
     letter-spacing: 1px;
-    padding: 10px 20px;
+    /*padding: 10px 20px;*/
     margin: 10px 0;
 }
 
@@ -89,3 +75,31 @@ hr {
     border-top: 1px solid #ddd;
     margin: 0;
 }
+
+
+.login-main {
+    position: absolute;
+    padding-top: 50px;
+    height: 100%;
+    width: 100%;
+}
+
+.login-main .slogan {
+    width: 40%;
+    max-width: 360px;
+    margin: 20px 0 20px 10%;
+}
+
+    .login-main form .input-container {
+        padding: 10px 20px;
+    }
+
+    .login-main form .captcha-container {
+        text-align: right;
+    }
+
+        .login-main form .captcha-container .captcha {
+            position: absolute;
+            right: calc(10% + 20px);
+            margin-top: -34px;
+        }

@@ -3,16 +3,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link href='http://cdn.webfont.youziku.com/webfonts/nomal/97176/47031/58cfbb69f629db0dac57bd48.css' rel='stylesheet' type='text/css'/>
-    <title>Particles</title>
+    <title>青柠文字社</title>
     <link href="{% static "v2/css/style.css" %}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <div class="login-main">
-        <img src="{% static "img/slogan.png" %}">
+        <img class="slogan" src="{% static "img/slogan.png" %}">
         <form>
             <label for="InputUsername">
-                <input type="text" placeholder="手机号 / 邮箱"><hr/>
-                <input type="password" placeholder="密码">
+                <div class="input-container">
+                    <input type="text" placeholder="手机号 / 邮箱">
+                </div>
+                <hr/>
+                <div class="input-container">
+                    <input type="password" placeholder="密码">
+                </div>
+                <hr/>
+                <div class="input-container">
+                    <input type="text" placeholder="验证码">
+                    <div class="captcha-container">
+                        <img class="captcha" src="/base/captcha/img/"/>
+                    </div>
+                </div>
             </label>
             <button class="btn-green">登录</button>
             <button class="btn-white">注册</button>
