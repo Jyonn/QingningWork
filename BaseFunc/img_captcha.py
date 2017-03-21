@@ -18,8 +18,8 @@ fontType = os.path.join(os.path.dirname(__file__), 'Keyboard.ttf')  # 要注意�
 def create_validate_code(size=(120, 30),
                          chars=init_chars,
                          img_type="GIF",
-                         mode="RGB",
-                         bg_color=(255, 255, 255),
+                         mode="RGBA",
+                         bg_color=(255, 255, 255, 1),
                          fg_color=(0, 0, 255),
                          font_size=18,
                          font_type=fontType,
@@ -32,7 +32,7 @@ def create_validate_code(size=(120, 30),
     :todo: 生成验证码图片
     :param size: 图片的大小(宽,高),默认为(120,30)
     :param chars: 允许的字符集
-    :param img_type: 图片格式,默认为git,另外还有jpeg, tiff, png
+    :param img_type: 图片格式,默认为gif,另外还有jpeg, tiff, png
     :param mode: 图片模式,默认为RGB
     :param bg_color: 背景颜色,默认为白色#ffffff
     :param fg_color: 前景色,默认为蓝色#0000ff

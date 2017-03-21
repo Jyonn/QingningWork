@@ -11,8 +11,8 @@ def get_image_captcha(request):
     captcha_img_correct, img_pil = create_validate_code(point_chance=1)
     save_captcha(request, "image", captcha_img_correct)
 
-    resp = HttpResponse('', content_type='image/jpg')
-    img_pil.save(resp, format='jpeg')  # 将图片PIL写入到响应中
+    resp = HttpResponse('', content_type='image/png')
+    img_pil.save(resp, format='png')  # 将图片PIL写入到响应中
     # 在响应头部告诉浏览器不要缓存这个图片
     resp['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate'
     return resp
