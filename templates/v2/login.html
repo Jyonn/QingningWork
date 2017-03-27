@@ -2,14 +2,17 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link href='http://cdn.webfont.youziku.com/webfonts/nomal/97176/47031/58cfbb69f629db0dac57bd48.css' rel='stylesheet' type='text/css'/>
+    <link href='https://cdn.webfont.youziku.com/webfonts/nomal/97176/47031/58cfbb69f629db0dac57bd48.css' rel='stylesheet' type='text/css'/>
+    <link href='https://cdn.webfont.youziku.com/webfonts/nomal/97176/19817/58d368c8f629d80ec49633b3.css' rel='stylesheet' type='text/css' />
+{#    <link href='http://cdn.webfont.youziku.com/webfonts/nomal/97176/19817/58d36a3ff629d80ec49633b5.css' rel='stylesheet' type='text/css' />#}
     <title>青柠文字社</title>
     <link href="{% static "v2/css/style.css" %}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <div class="login-main">
         <img class="slogan" src="{% static "img/slogan.png" %}">
-        <form>
+        <div class="leading">纵若在青山，欲我驾鹤南。</div>
+        <div class="input-form">
             <label for="InputUsername">
                 <div class="input-container">
                     <input type="text" placeholder="手机号 / 邮箱">
@@ -26,10 +29,17 @@
                     </div>
                 </div>
             </label>
-            <button class="btn-green">登录</button>
-            <button class="btn-white">注册</button>
-        </form>
+            <button class="btn-green" id="login-act">登录</button>
+            <button class="btn-white" id="signup-act">注册</button>
+        </div>
     </div>
     <canvas id="bg-canvas"></canvas>
     <script src="{% static "v2/js/bg-canvas.js" %}"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script src="{% static "v2/js/script.js" %}"></script>
+{#    <script>#}
+{#        $(document).ready(function () {#}
+{#            var login_act = $('#login.act')#}
+{#        });#}
+{#    </script>#}
 </body>
