@@ -201,15 +201,35 @@ hr {
         border: none;
     }
         .work-list .work-item label .work-title {
+            color: #333333;
             font-size: 14px;
             margin: 0 0 0 10px;
         }
         .work-list .work-item label .preview-content {
-            padding: 10px 10px 0 10px;
+            color: #333333;
+            padding: 3px 10px 0 10px;
             display: block;
             width: 100%;
+            max-width: 100%;
             border: none;
             outline: none;
             font-size: 14px;
             font-family: "PingFang SC", "San Francisco", "等线", "STHeiti", serif!important;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            resize: none;
         }
+        .work-list .work-item label .foot-info {
+            margin: 0;
+            padding: 3px 10px 0 10px;
+        }
+            .work-list .work-item label .foot-info i {
+                padding-left: 2px;
+                font-size: 12px;
+                color: #888888;
+            }
+            .work-list .work-item label .foot-info .read-count {
+                font-size: 12px;
+                color: #888888;
+                display: inline;
+            }
