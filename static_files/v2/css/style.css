@@ -157,12 +157,13 @@ hr {
     margin-top: 50px;
     overflow-y:scroll;
 }
-    .work-list .work-item {
-        margin-top: 10px;
-        padding-top: 10px;
-        background: #FFF;
-        height: 90px;
-    }
+.work-list .work-item {
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #FFF;
+    /*height: 90px;*/
+}
     .work-list .work-item .writer-avatar {
         position: absolute;
         left: 0;
@@ -175,11 +176,40 @@ hr {
         margin: 0;
         font-size: 16px;
     }
-    .work-list .work-item .work-time {
+    .work-list .work-item .sub-title {
         position: absolute;
         left: 60px;
-        color: #888888;
-        font-size: 12px;
         margin-top: 20px;
         margin-bottom: 0;
+        font-size: 11px;
+        white-space: nowrap;
     }
+        .work-list .work-item .sub-title .work-time {
+            color: #888888;
+            margin: 0;
+            display: inline;
+        }
+        .work-list .work-item .sub-title .introduce {
+            color: #1422CC;
+            margin: 0;
+            display: inline;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    .work-list .work-item label {
+        margin: 40px 10px 0;
+        border: none;
+    }
+        .work-list .work-item label .work-title {
+            font-size: 14px;
+            margin: 0 0 0 10px;
+        }
+        .work-list .work-item label .preview-content {
+            padding: 10px 10px 0 10px;
+            display: block;
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-family: "PingFang SC", "San Francisco", "等线", "STHeiti", serif!important;
+        }
