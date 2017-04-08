@@ -190,7 +190,7 @@ hr {
             display: inline;
         }
         .work-list .work-item .sub-title .introduce {
-            color: #1422CC;
+            color: #7BB00D;
             margin: 0;
             display: inline;
             text-overflow: ellipsis;
@@ -203,18 +203,20 @@ hr {
         .work-list .work-item label .work-title {
             color: #333333;
             font-size: 14px;
-            margin: 0 0 0 10px;
+            margin: 0;
             font-weight: bold;
+            display: inline;
         }
         .work-list .work-item label .modify-times {
             color: #333333;
-            font-size: 14px;
-            margin: -14px 20px 0 0;
-            text-align: right;
+            font-size: 12px;
+            display: inline;
+            /*margin: -18px 10px 0 0;*/
+            /*text-align: right;*/
         }
         .work-list .work-item label .preview-content {
             color: #333333;
-            padding: 3px 10px 0 10px;
+            padding: 3px 0 0 0;
             display: block;
             width: 100%;
             max-width: 100%;
@@ -222,26 +224,47 @@ hr {
             outline: none;
             font-size: 14px;
             font-family: "PingFang SC", "San Francisco", "等线", "STHeiti", serif!important;
-            text-overflow: ellipsis;
+            text-overflow: clip;
             overflow: hidden;
             resize: none;
+            text-align: justify;
         }
-        .work-list .work-item label .foot-info {
+        .work-list .work-item label .read-more {
             margin: 0;
-            padding: 3px 20px 0 20px;
+            text-align: right;
+            font-size: 14px;
+            color: #2A660D;
+        }
+        .work-list .work-item .foot-info {
+            margin: 0;
+            padding: 0 20px;
             text-align: right;
         }
-            .work-list .work-item label .foot-info i {
+            .work-list .work-item .foot-info i {
                 padding-left: 15px;
                 font-size: 18px;
                 color: #888888;
             }
-        .work-list .work-item label .read-num {
-            margin: -15px 0 0 0;
+        .work-list .work-item .read-num {
+            margin: -20px 0 0 0;
             padding: 0 10px;
             color: #888888;
             font-size: 12px;
         }
     .work-list .work-item hr {
-        margin: 10px 20px 0 20px;
+        margin: 10px 0;
     }
+    .work-list .work-item .thumb-list-container {
+        margin: 0 10px;
+    }
+        .work-list .work-item .thumb-list-container i {
+            color: #2A660D;
+        }
+        .work-list .work-item .thumb-list-container p {
+            display: inline;
+            font-size: 14px;
+            color: #888888;
+        }
+        .work-list .work-item .thumb-list-container .thumb-list {
+            color: #2A660D;
+        }
