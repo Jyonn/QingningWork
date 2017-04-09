@@ -152,31 +152,31 @@ hr {
         margin: 10px;
     }
 
-.work-list {
+.event-list {
     width: 100%;
     margin-top: 50px;
     overflow-y:scroll;
 }
-.work-list .work-item {
+.event-list .event-item {
     margin-top: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
     background: #FFF;
     /*height: 90px;*/
 }
-    .work-list .work-item .writer-avatar {
+    .event-list .event-item .writer-avatar {
         position: absolute;
         left: 0;
         margin: 0 10px;
         height: 40px;
     }
-    .work-list .work-item .writer-name {
+    .event-list .event-item .writer-name {
         position: absolute;
         left: 60px;
         margin: 0;
         font-size: 16px;
     }
-    .work-list .work-item .sub-title {
+    .event-list .event-item .sub-title {
         position: absolute;
         left: 60px;
         margin-top: 20px;
@@ -184,37 +184,37 @@ hr {
         font-size: 11px;
         white-space: nowrap;
     }
-        .work-list .work-item .sub-title .work-time {
+        .event-list .event-item .sub-title .work-time {
             color: #888888;
             margin: 0;
             display: inline;
         }
-        .work-list .work-item .sub-title .introduce {
+        .event-list .event-item .sub-title .introduce {
             color: #7BB00D;
             margin: 0;
             display: inline;
             text-overflow: ellipsis;
             overflow: hidden;
         }
-    .work-list .work-item label {
+    .event-list .event-item label {
         margin: 44px 10px 0;
         border: none;
     }
-        .work-list .work-item label .work-title {
+        .event-list .event-item label .work-title {
             color: #333333;
             font-size: 14px;
             margin: 0;
             font-weight: bold;
             display: inline;
         }
-        .work-list .work-item label .modify-times {
+        .event-list .event-item label .modify-times {
             color: #333333;
             font-size: 12px;
             display: inline;
             /*margin: -18px 10px 0 0;*/
             /*text-align: right;*/
         }
-        .work-list .work-item label .preview-content {
+        .event-list .event-item label .preview-content {
             color: #333333;
             padding: 3px 0 0 0;
             display: block;
@@ -229,42 +229,53 @@ hr {
             resize: none;
             text-align: justify;
         }
-        .work-list .work-item label .read-more {
-            margin: 0;
+        .event-list .event-item label .read-more {
+            margin: 10px 0 0 0;
             text-align: right;
             font-size: 14px;
             color: #2A660D;
         }
-        .work-list .work-item .foot-info {
+        .event-list .event-item .foot-info {
             margin: 0;
-            padding: 0 20px;
-            text-align: right;
-        }
-            .work-list .work-item .foot-info i {
-                padding-left: 15px;
-                font-size: 18px;
-                color: #888888;
-            }
-        .work-list .work-item .read-num {
-            margin: -20px 0 0 0;
             padding: 0 10px;
-            color: #888888;
-            font-size: 12px;
+            text-align: right;
+            height: 44px;
         }
-    .work-list .work-item hr {
-        margin: 10px 0;
+            .event-list .event-item .foot-info div {
+                display: inline-block;
+                margin: 0;
+                padding: 0;
+                height: 44px;
+                width: 44px;
+                text-align: center;
+            }
+                .event-list .event-item .foot-info div i {
+                    padding-top: 13px;
+                    padding-bottom: 13px;
+                    font-size: 18px;
+                    color: #888888;
+                }
+                .event-list .event-item .foot-info .read-num {
+                    position: absolute;
+                    margin: -28px 0 0 0;
+                    padding: 0;
+                    color: #888888;
+                    font-size: 12px;
+                }
+    .event-list .event-item hr {
+        margin: 0;
     }
-    .work-list .work-item .thumb-list-container {
-        margin: 0 10px;
+    .event-list .event-item .thumb-list-container {
+        margin: 10px 10px 0;
     }
-        .work-list .work-item .thumb-list-container i {
+        .event-list .event-item .thumb-list-container i {
             color: #2A660D;
         }
-        .work-list .work-item .thumb-list-container p {
+        .event-list .event-item .thumb-list-container p {
             display: inline;
             font-size: 14px;
             color: #888888;
         }
-        .work-list .work-item .thumb-list-container .thumb-list {
+        .event-list .event-item .thumb-list-container .thumb-list {
             color: #2A660D;
         }

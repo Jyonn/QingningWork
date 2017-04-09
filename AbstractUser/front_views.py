@@ -1,6 +1,10 @@
 from django.shortcuts import render
 
 
+def work(request):
+    return render(request, "v2/work.html")
+
+
 def center(request):
     return render(request, "v2/center.html")
 
