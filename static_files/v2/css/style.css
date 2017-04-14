@@ -279,3 +279,7 @@ hr {
         .event-list .event-item .thumb-list-container .thumb-list {
             color: #2A660D;
         }
+    .event-list .event-item .comment-container .comment .user--avatar {
+        height: 30px;
+        width: 30px;
+    }
