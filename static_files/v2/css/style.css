@@ -170,19 +170,22 @@ hr {
         margin: 0 10px;
         height: 40px;
     }
+    .event-list .event-item .writer-avatar {
+        position: absolute;
+        left: 30px;
+        height: 20px;
+        margin: 0 10px;
+        border: solid 2px #dddddd;
+    }
     .event-list .event-item .event-owner-name {
         position: absolute;
-        left: 60px;
+        left: 80px;
         margin: 0;
         font-size: 16px;
     }
-    .event-list .event-item .writer-avatar {
-        height: 16px;
-        margin: 0 5px;
-    }
     .event-list .event-item .sub-title {
         position: absolute;
-        left: 60px;
+        left: 80px;
         margin-top: 20px;
         margin-bottom: 0;
         font-size: 11px;
