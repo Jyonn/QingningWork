@@ -287,7 +287,33 @@ hr {
         .event-list .event-item .thumb-list-container .thumb-list {
             color: #2A660D;
         }
-    .event-list .event-item .comment-container .comment .user--avatar {
-        height: 30px;
-        width: 30px;
+    .event-list .event-item .comment-container .comment {
+        position: relative;
+        margin-top: 5px;
+        letter-spacing: 1px;
+    }
+    .event-list .event-item .comment-container .comment .user-comment-avatar {
+        height: 40px;
+        width: 40px;
+        margin-left: 10px;
+    }
+    .event-list .event-item .comment-container .comment .user-comment-name {
+        position: absolute;
+        left: 60px;
+        top: 3px;
+        font-size: 12px;
+        margin: 0;
+    }
+    .event-list .event-item .comment-container .comment .user-comment-time {
+        position: absolute;
+        left: 60px;
+        top: 20px;
+        font-size: 12px;
+        color: #888888;
+        margin: 0;
+    }
+    .event-list .event-item .comment-container .comment .user-comment-content {
+        font-size: 14px;
+        margin: 0 10px 0 30px;
+
     }
