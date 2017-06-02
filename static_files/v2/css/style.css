@@ -145,11 +145,60 @@ hr {
         height: 24px;
         padding: 13px;
     }
+    .navigation .back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 36px;
+        padding: 7px;
+    }
     .navigation .user-avatar {
         height: 30px;
         position: fixed;
         right: 0;
         margin: 10px;
+    }
+    .navigation .title {
+        line-height: 50px;
+        height: 50px;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        color: #fff;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 20px;
+        letter-spacing: 2px;
+    }
+
+.sidebar-container {
+    position: fixed;
+    top: 0;
+    right: -200px;
+    width: 200px;
+    height: 100%;
+    background: #3F9913;
+    z-index: 1;
+    text-align: center;
+}
+    .sidebar-container .user-avatar {
+        margin-top: 50px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50px;
+    }
+    .sidebar-container .user-name {
+        margin: 10px 0;
+        color: #fff;
+        letter-spacing: 2px;
+        font-weight: bold;
+    }
+    #sidebar-fold-btn {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 16px;
+        padding: 15px 10px;
     }
 
 .event-list {
@@ -209,7 +258,7 @@ hr {
     }
         .event-list .event-item label .work-title {
             color: #333333;
-            font-size: 14px;
+            font-size: 16px;
             margin: 0;
             font-weight: bold;
             display: inline;
@@ -236,6 +285,7 @@ hr {
             resize: none;
             text-align: justify;
             letter-spacing: 2px;
+            line-height: 20px;
         }
         .event-list .event-item label .read-more {
             margin: 10px 0 0 0;
@@ -304,6 +354,10 @@ hr {
         font-size: 12px;
         margin: 0;
     }
+        .event-list .event-item .comment-container .comment .user-comment-name i {
+            color: #3F9913;
+            margin-left: 5px;
+        }
     .event-list .event-item .comment-container .comment .user-comment-time {
         position: absolute;
         left: 60px;
@@ -315,5 +369,91 @@ hr {
     .event-list .event-item .comment-container .comment .user-comment-content {
         font-size: 14px;
         margin: 0 10px 0 30px;
+    }
 
+#like-page-list-container {
+    position: absolute;
+    margin-top: 50px;
+    width: 100%;
+}
+    #work-like-item {
+        position: relative;
+        height: 100px;
+        width: 100%;
+        margin-top: 10px;
+        background: #fff;
+    }
+    #work-like-item .user-avatar {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100px;
+        height: 100px;
+    }
+    #work-like-item .user-quote {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 44px;
+        margin: 0;
+        color: #ddd;
+    }
+    #work-like-item .user-quote-content {
+        position: absolute;
+        top: 30px;
+        left: 50px;
+        width: calc(100% - 160px);
+        font-size: 14px;
+        margin: 0;
+        letter-spacing: 2px;
+    }
+    #work-like-item .user-name {
+        position: absolute;
+        right: 120px;
+        top: 70px;
+        font-size: 14px;
+        letter-spacing: 2px;
+        margin: 0;
+    }
+
+
+#comment-page-list-container {
+    position: absolute;
+    margin-top: 30px;
+    width: 100%;
+}
+    #work-comment-item {
+        position: relative;
+        width: 100%;
+        margin-top: 30px;
+        background: #fff;
+    }
+    #work-comment-item .user-quote {
+        font-size: 44px;
+        margin: 0;
+        color: #ddd;
+    }
+    #work-comment-item .user-comment-content {
+        margin: -30px 40px 0 50px;
+        font-size: 14px;
+        letter-spacing: 2px;
+    }
+    #work-comment-item .user-name {
+        width: calc(100% - 40px);
+        text-align: right;
+        margin: 5px 0;
+        padding-bottom: 10px;
+        height: 20px;
+        line-height: 20px;
+        vertical-align: middle;
+        letter-spacing: 2px;
+    }
+    #work-comment-item .user-avatar {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border-radius: 40px;
+        bottom: -20px;
+        left: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
     }

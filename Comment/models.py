@@ -1,4 +1,3 @@
-# coding=utf-8
 from django.db import models
 from Work.models import Work
 from Reviewer.models import Reviewer
@@ -65,6 +64,11 @@ class WriterComment(models.Model):
         max_length=500,
         default=None,
     )
+    create_time = models.DateTimeField(
+        verbose_name='创建时间',
+        auto_now=True,
+        auto_created=True,
+    )
     is_deleted = models.BooleanField(
         verbose_name="是否被删除",
         default=False,
@@ -72,6 +76,36 @@ class WriterComment(models.Model):
 
     @classmethod
     def create(cls, *args, **kwargs):
-        comment = cls(*args, **kwargs)
-        comment.save()
-        return comment
+        w_comment = cls(*args, **kwargs)
+        w_comment.save()
+        return w_comment
+
+
+class WriterLike(models.Model):
+    re_work = models.ForeignKey(
+        Work,
+        verbose_name="关联作品",
+        blank=False,
+        db_index=True,
+    )
+    re_writer = models.ForeignKey(
+        Writer,
+        verbose_name="关联作者",
+        blank=False,
+        db_index=True,
+    )
+    create_time = models.DateTimeField(
+        verbose_name='创建时间',
+        auto_now=True,
+        auto_created=True,
+    )
+    is_deleted = models.BooleanField(
+        verbose_name="是否被删除",
+        default=False,
+    )
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        w_like = cls(*args, **kwargs)
+        w_like.save()
+        return w_like

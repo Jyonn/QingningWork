@@ -23,6 +23,14 @@ class Writer(AbstractUser):
         verbose_name="被驳回的投稿作品数",
         default=0,
     )
+    total_follow = models.IntegerField(
+        verbose_name='我的关注',
+        default=0,
+    )
+    total_followed = models.IntegerField(
+        verbose_name='我的粉丝',
+        default=0,
+    )
     total_fee = models.FloatField(
         verbose_name="全部稿费",
         default=0,
@@ -48,3 +56,30 @@ class Writer(AbstractUser):
         writer.avatar = "default-avatar-" + avatar_img + ".jpg"
         writer.save()
         return writer
+
+
+class Follow(models.Model):
+    followee = models.ForeignKey(
+        Writer,
+        verbose_name='关注者',
+        related_name='followee',
+    )
+    follower = models.ForeignKey(
+        Writer,
+        verbose_name='追随者',
+        related_name='follower',
+    )
+    create_time = models.DateTimeField(
+        auto_now=True,
+        auto_created=True,
+    )
+    is_delete = models.BooleanField(
+        verbose_name='是否删除（取消关注）',
+        default=False,
+    )
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        follow = cls(*args, **kwargs)
+        follow.save()
+        return follow

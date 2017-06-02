@@ -1,5 +1,12 @@
 {% load static %}
     <div class="navigation">
         <img class="slogan" src="{% static "img/slogan-white.png" %}">
-        <img class="avatar user-avatar" src="/user/avatar/default-avatar-01.jpg">
+        <img class="avatar user-avatar" id="nav-user-avatar" src="/user/avatar/default-avatar-01.jpg">
     </div>
+    <div class="sidebar-container">
+        <img id="sidebar-fold-btn" src="{% static 'img/fold.png' %}">
+        <img class="user-avatar" src="/user/avatar/default-avatar-08.jpg">
+        <div class="user-name">工刀</div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="{% static 'v2/js/nav.js' %}"></script>

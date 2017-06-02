@@ -1,6 +1,10 @@
 from django.shortcuts import render
 
 
+def user(request):
+    return render(request, 'v2/comment-list.html')
+
+
 def work(request):
     return render(request, "v2/work.html")
 
