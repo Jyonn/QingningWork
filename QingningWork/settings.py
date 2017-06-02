@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'Work',
     'Comment',
     'Magazine',
+    'Timeline',
 ]
 
 MIDDLEWARE = [

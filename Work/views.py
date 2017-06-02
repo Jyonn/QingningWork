@@ -1,5 +1,5 @@
 # coding=utf-8
-import datetime
+# import datetime
 
 from BaseFunc.decorator import *
 from Comment.models import Comment
@@ -117,16 +117,12 @@ def get_work_detail(request):
     if work.is_public is False and work_detail["is_mine"] is False:
         return error_response(Error.WORK_IS_PRIVATE)
 
-    if work.work_type == Work.WORK_TYPE_TEXT:
-        file_path = WORK_URL + work.work_store
-        with open(file_path, "rb+") as f:
-            content = f.read().decode()
-            f.close()
-        work_detail["content"] = content
-        work_detail["url"] = None
-    else:
-        work_detail["content"] = None
-        work_detail["url"] = "/work/upload_files/" + work.work_store
+    file_path = WORK_URL + work.work_store
+    with open(file_path, "rb+") as f:
+        content = f.read().decode()
+        f.close()
+    work_detail["content"] = content
+    work_detail["url"] = None
 
     return response(body=work_detail)
 
@@ -179,7 +175,7 @@ def create_work(request):
     """
     创建作品
     """
-    work_type = request.POST["work_type"]  # 作品类型（WORK_TYPE_FILE文件上传; WORK_TYPE_TEXT文本上传）
+    # work_type = request.POST["work_type"]  # 作品类型（WORK_TYPE_FILE文件上传; WORK_TYPE_TEXT文本上传）
     work_name = request.POST["work_name"]  # 作品名称，指题目
     writer_name = request.POST["writer_name"]  # 作者名称
     content = request.POST["content"]
@@ -191,24 +187,24 @@ def create_work(request):
     if len(writer_name) > 6:
         return None, Error.NICKNAME_TOO_LONG
     
-    #  获取作品类型
-    try:
-        work_type = int(work_type)
-    except:
-        return None, Error.NOT_FOUND_WORK_TYPE
-    if work_type not in [Work.WORK_TYPE_FILE, Work.WORK_TYPE_TEXT]:
-        # 不存在的作品类型
-        return None, Error.NOT_FOUND_WORK_TYPE
+    # #  获取作品类型
+    # try:
+    #     work_type = int(work_type)
+    # except:
+    #     return None, Error.NOT_FOUND_WORK_TYPE
+    # if work_type not in [Work.WORK_TYPE_FILE, Work.WORK_TYPE_TEXT]:
+    #     # 不存在的作品类型
+    #     return None, Error.NOT_FOUND_WORK_TYPE
 
-    if work_type == Work.WORK_TYPE_FILE:
-        # 如果是文件，获取文件扩展名
-        if request.FILES.get("file") is None:
-            return None, Error.NOT_FOUND_FILE
-        str_name = request.FILES.get("file").name
-        ext_name = "" if str_name.find(".") == -1 else "." + str_name.split(".")[-1]
-    else:
-        # 如果是文本，默认扩展名为txt
-        ext_name = ".txt"
+    # if work_type == Work.WORK_TYPE_FILE:
+    #     # 如果是文件，获取文件扩展名
+    #     if request.FILES.get("file") is None:
+    #         return None, Error.NOT_FOUND_FILE
+    #     str_name = request.FILES.get("file").name
+    #     ext_name = "" if str_name.find(".") == -1 else "." + str_name.split(".")[-1]
+    # else:
+    #     # 如果是文本，默认扩展名为txt
+    ext_name = ".txt"
 
     moment = datetime.datetime.now()
     create_time = moment.strftime("%Y-%m-%d %H:%M:%S")  # 创建时间
@@ -219,33 +215,33 @@ def create_work(request):
     # 保存的文件路径
     file_path = WORK_URL + filename
 
-    if work_type == Work.WORK_TYPE_FILE:
-        # 上传文件，使用chunk保存
-        save_file = request.FILES.get("file")
-        with open(file_path, "wb+") as f:
-            for chunk in save_file.chunks():
-                f.write(chunk)
-            f.close()
-    else:
-        # Base64解码并HTML转义特殊字符后Base64编码
-        # import base64
-        # content = base64.decodebytes(bytes(content, encoding="utf8"))
-        # content = content.decode()
-        # from pydoc import html
-        # content = html.escape(content)
-        # content = base64.encodebytes(bytes(content, encoding="utf-8"))
-        content = bytes(content, encoding="utf-8")
-        # 保存文本文件
-        with open(file_path, "wb+") as f:
-            f.write(content)
-            f.close()
+    # if work_type == Work.WORK_TYPE_FILE:
+    #     # 上传文件，使用chunk保存
+    #     save_file = request.FILES.get("file")
+    #     with open(file_path, "wb+") as f:
+    #         for chunk in save_file.chunks():
+    #             f.write(chunk)
+    #         f.close()
+    # else:
+    # Base64解码并HTML转义特殊字符后Base64编码
+    # import base64
+    # content = base64.decodebytes(bytes(content, encoding="utf8"))
+    # content = content.decode()
+    # from pydoc import html
+    # content = html.escape(content)
+    # content = base64.encodebytes(bytes(content, encoding="utf-8"))
+    content = bytes(content, encoding="utf-8")
+    # 保存文本文件
+    with open(file_path, "wb+") as f:
+        f.write(content)
+        f.close()
 
     # 存入数据库
     work = Work.create(
         writer_name=writer_name,
         work_name=work_name,
         work_store=filename,
-        work_type=work_type,
+        # work_type=work_type,
         is_public=True,
         status=Work.STATUS_UNDER_REVIEW,
         create_time=create_time,
@@ -364,4 +360,3 @@ def delete(request):
         return error_response(ret_code)
 
     return response()
-

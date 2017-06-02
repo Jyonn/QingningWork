@@ -25,6 +25,8 @@ urlpatterns = [
     url(r'^center/$', front_views.center),
     url(r'^work/$', front_views.work),
 
+    url(r'^legacy/', include("Work.legacy_urls")),
+
     url(r'^admin/', admin.site.urls),
     url(r'^user/', include("AbstractUser.urls")),
     url(r'^reviewer/', include("Reviewer.urls")),
