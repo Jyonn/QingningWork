@@ -24,12 +24,14 @@ class Work(models.Model):
     re_writer = models.ForeignKey(
         Writer,
         verbose_name='关联作者',
+        db_index=True,
         default=None,
         null=True,
     )
     re_reviewer = models.ForeignKey(
         Reviewer,
         verbose_name='关联审稿',
+        db_index=True,
         default=None,
         null=True,
     )
@@ -37,12 +39,14 @@ class Work(models.Model):
     # 作品字段
     writer_name = models.CharField(
         verbose_name='笔名',
+        db_index=True,
         max_length=10,
         default=None,
         null=True,
     )
     work_name = models.CharField(
         verbose_name='标题',
+        db_index=True,
         max_length=20,
         default=None,
     )
@@ -98,6 +102,14 @@ class Work(models.Model):
     version_num = models.IntegerField(
         verbose_name='作品第几版',
         default=1,
+    )
+    is_updated = models.BooleanField(
+        verbose_name="是否有更新（此条无效）",
+        default=False,
+    )
+    total_visit = models.IntegerField(
+        verbose_name='阅读人数',
+        default=0,
     )
 
     @classmethod

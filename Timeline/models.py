@@ -36,9 +36,18 @@ class Timeline(models.Model):
         verbose_name='时间线内容类型',
         choices=TYPE_TABLE,
     )
+    is_delete = models.BooleanField(
+        verbose_name='是否删除',
+        default=False,
+    )
 
     @classmethod
-    def create(cls, *args, **kwargs):
-        event = cls(*args, **kwargs)
+    def create(cls, related_writer, related_work, tl_type, **kwargs):
+        event = cls(
+            related_work=related_work,
+            related_writer=related_writer,
+            type=tl_type,
+            **kwargs,
+        )
         event.save()
         return event

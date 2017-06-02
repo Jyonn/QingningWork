@@ -53,7 +53,7 @@ class Writer(AbstractUser):
         avatar_int = randint(1, 10)
         avatar_img = "0" if avatar_int < 10 else ""
         avatar_img += str(avatar_int)
-        writer.avatar = "default-avatar-" + avatar_img + ".jpg"
+        writer.avatar = "img/avatar/default-" + avatar_img + ".jpg"
         writer.save()
         return writer
 

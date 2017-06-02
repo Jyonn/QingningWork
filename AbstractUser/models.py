@@ -2,7 +2,7 @@ from django.db import models
 
 
 class AbstractUser(models.Model):
-    WRITER = "writerp"
+    WRITER = "writer"
     REVIEWER = "reviewer"
     uid = models.AutoField(
         verbose_name="用户编号",
@@ -90,6 +90,13 @@ class AbstractUser(models.Model):
         verbose_name="是否被冻结",
         default=False,
     )
+    introduce = models.CharField(
+        verbose_name='一句话介绍',
+        max_length=20,
+        default=None,
+        blank=True,
+        null=True,
+    )
 
     @staticmethod
     def sha_text(salted_raw_password):
@@ -113,6 +120,10 @@ class AbstractUser(models.Model):
         self.salt = salt
         self.password = encrypted
         return self
+
+    def get_avatar(self):
+        from BaseFunc.cdn import QiNiu
+        return QiNiu.host + '/' + self.avatar
 
 
 class LikeUser(models.Model):

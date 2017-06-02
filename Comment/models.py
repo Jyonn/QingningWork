@@ -21,8 +21,13 @@ class Comment(models.Model):
         blank=False,
         db_index=True,
     )
-    content = models.CharField(
+    content_base64 = models.CharField(
         verbose_name="评论",
+        max_length=500,
+        default=None,
+    )
+    content = models.CharField(
+        verbose_name='评论（v2）',
         max_length=500,
         default=None,
     )
@@ -33,6 +38,7 @@ class Comment(models.Model):
     comment_time = models.DateTimeField(
         verbose_name="审稿时间",
         auto_created=True,
+        auto_now=True,
     )
     is_updated = models.BooleanField(
         verbose_name="是否有更新（此条无效）",
