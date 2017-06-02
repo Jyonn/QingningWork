@@ -2,7 +2,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>{{ title }}</title>
+    <title>{{ work.title }} - {{ work.writer }}</title>
     <link href="{% static "v2/css/style.css" %}" rel="stylesheet" type="text/css"/>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -61,12 +61,6 @@
                     <p class="user-comment-content">{{ comment.content }}</p>
                 </div>
                 {% endfor %}
-{#                <div class="comment">#}
-{#                    <img class="avatar user-comment-avatar" src="/user/avatar/default-avatar-02.jpg">#}
-{#                    <p class="user-comment-name">工刀<i class="fa fa-vcard"></i></p>#}
-{#                    <p class="user-comment-time">11:15</p>#}
-{#                    <p class="user-comment-content">我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论</p>#}
-{#                </div>#}
             </div>
         </div>
         <div class="event-item"></div>

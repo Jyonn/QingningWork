@@ -7,7 +7,9 @@ function resize_content(content) {
 }
 
 $(document).ready(function () {
-    $('#work-content').each(function () {
+    // console.log($('.preview-content').length);
+    alert(">>>");
+    $('.preview-content').each(function () {
         this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;');
     }).on('input', function () {
         this.style.height = "auto";
