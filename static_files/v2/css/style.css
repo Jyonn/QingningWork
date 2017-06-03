@@ -393,9 +393,9 @@ hr {
     }
     #user-info-card .user-quote {
         position: absolute;
-        top: 0;
-        left: 0;
-        font-size: 44px;
+        top: 10px;
+        left: 20px;
+        font-size: 24px;
         margin: 0;
         color: #ddd;
     }
@@ -432,8 +432,9 @@ hr {
         background: #fff;
     }
     #work-comment-item .user-quote {
-        font-size: 44px;
-        margin: 0;
+        /*margin-top: 20px;*/
+        font-size: 24px;
+        margin: 10px 0 14px 20px;
         color: #ddd;
     }
     #work-comment-item .user-comment-content {
