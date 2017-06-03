@@ -10,21 +10,24 @@
 <body>
 {#    {% include "v2/nav.html" %}#}
     <div class="navigation">
-        <div class="title">12人评价了作品</div>
+        <div class="title">{{ count }}人评价了作品</div>
         <img class="back" src="{% static 'img/back.png' %}"/>
     </div>
     <div id="comment-page-list-container">
+        {% for item in comment_list %}
         <div id="work-comment-item">
             <p class="user-quote">“</p>
-            <p class="user-comment-content">我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论</p>
-            <p class="user-name"><b>审稿</b> | 几只鸡的小鸟</p>
-            <img class="user-avatar" src="/user/avatar/default-avatar-08.jpg">
+            <p class="user-comment-content">{{ item.content }}</p>
+            <p class="user-name"><b>{% if item.is_reviewer %}审稿{% else %}作者{% endif %}</b> | {{ item.nickname }}</p>
+            <p class="comment-time">{{ item.time }}</p>
+            <img class="user-avatar" src="{{ item.avatar }}">
         </div>
-        <div class="display-item" id="work-comment-item">
-            <p class="user-quote">“</p>
-            <p class="user-comment-content">我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论</p>
-            <p class="user-name"><b>审稿</b> | 几只鸡的小鸟</p>
-            <img class="user-avatar" src="/user/avatar/default-avatar-08.jpg">
-        </div>
+        {% endfor %}
+{#        <div class="display-item" id="work-comment-item">#}
+{#            <p class="user-quote">“</p>#}
+{#            <p class="user-comment-content">我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论我要评论</p>#}
+{#            <p class="user-name"><b>审稿</b> | 几只鸡的小鸟</p>#}
+{#            <img class="user-avatar" src="/user/avatar/default-avatar-08.jpg">#}
+{#        </div>#}
     </div>
 </body>

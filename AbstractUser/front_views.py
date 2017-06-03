@@ -3,6 +3,7 @@ from django.shortcuts import render
 from BaseFunc.base import get_readable_time_string
 from Comment.models import WriterLike, Comment, WriterComment
 from Timeline.models import Timeline
+from Work.models import Work
 
 
 def get_packed_event(event, need_comment=True, full_content=True):
@@ -47,7 +48,7 @@ def get_packed_event(event, need_comment=True, full_content=True):
             title=re_work.work_name if re_work.work_name is not None and len(re_work.work_name) > 0 else '未命名',
             writer=re_work.writer_name,
             version=re_work.version_num,
-            content=re_work.content if full_content else re_work.content[:200] + '……',
+            content=re_work.content if full_content else re_work.content[:120] + '……',
             visit=re_work.total_visit,
             thumbs=len(reviewer_likes) + len(writer_likes),
             thumb_list=like_list,
@@ -76,6 +77,67 @@ def user(request):
     return render(request, 'v2/comment-list.html')
 
 
+def thumb_page(request, work_id):
+    try:
+        work = Work.objects.get(pk=work_id, is_delete=False, is_public=True)
+    except:
+        return render(request, 'v2/login.html')
+
+    reviewer_likes = Comment.objects.filter(re_work=work, is_updated=False, result=True)
+    writer_likes = WriterLike.objects.filter(re_work=work, is_deleted=False)
+    like_list = []
+    for like in reviewer_likes:
+        like_list.append(dict(
+            nickname=like.re_reviewer.nickname,
+            introduce='他还没有填写介绍。' if like.re_reviewer.introduce in [None, ''] else like.re_reviewer.introduce,
+            avatar=like.re_reviewer.get_avatar(),
+            is_reviewer=True,
+        ))
+    for like in writer_likes:
+        like_list.append(dict(
+            nickname=like.re_writer.nickname,
+            introduce=like.re_writer.introduce,
+            avatar=like.re_writer.get_avatar(),
+            is_reviewer=False,
+        ))
+
+    return render(request, 'v2/like-list.html', dict(like_list=like_list, count=len(like_list)))
+
+
+def comment_page(request, work_id):
+    try:
+        work = Work.objects.get(pk=work_id, is_delete=False, is_public=True)
+    except:
+        return render(request, 'v2/login.html')
+
+    reviewer_comments = Comment.objects.filter(re_work=work, is_updated=False)
+
+    comment_count = 0
+    comment_list = []
+    writer_comments = WriterComment.objects.filter(re_work=work, is_deleted=False)
+    for comment in reviewer_comments:
+        if len(comment.content) > 0:
+            comment_count += 1
+            comment_list.append(dict(
+                avatar=comment.re_reviewer.get_avatar(),
+                nickname=comment.re_reviewer.nickname,
+                time=get_readable_time_string(comment.comment_time),
+                content=comment.content,
+                is_reviewer=True,
+            ))
+    comment_count += len(writer_comments)
+    for comment in writer_comments:
+        comment_list.append(dict(
+            avatar=comment.re_writer.get_avatar(),
+            nickname=comment.re_writer.nickname,
+            time=get_readable_time_string(comment.create_time),
+            content=comment.content,
+            is_reviewer=False,
+        ))
+
+    return render(request, 'v2/comment-list.html', dict(comment_list=comment_list, count=comment_count))
+
+
 def work_page(request, writer_id, work_id, event_id):
     try:
         event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, related_writer__pk=writer_id)
@@ -92,7 +154,12 @@ def work_page(request, writer_id, work_id, event_id):
 
 
 def center(request):
-    events = Timeline.objects.filter(is_delete=False).order_by('-pk')[:20]
+    events = Timeline.objects.filter(
+        is_delete=False,
+        related_work__is_updated=False,
+        related_work__is_delete=False,
+        related_work__is_public=True,
+    ).order_by('-pk')[:20]
     event_list = []
     for event in events:
         event_list.append(get_packed_event(event, need_comment=False, full_content=False))

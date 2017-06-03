@@ -2,17 +2,17 @@
  * Created by adelliu on 2017/4/18.
  */
 
-function resize_content(content) {
-
-}
-
-$(document).ready(function () {
-    // console.log($('.preview-content').length);
-    alert(">>>");
+function resize() {
     $('.preview-content').each(function () {
-        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;');
+        this.style.height = "auto";
+        this.style.height = (this.scrollHeight) + 'px';
     }).on('input', function () {
         this.style.height = "auto";
         this.style.height = (this.scrollHeight) + 'px';
     });
+}
+
+$(document).ready(function () {
+    resize();
+    window.onresize = resize;
 });

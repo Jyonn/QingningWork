@@ -10,16 +10,17 @@
 <body>
 {#    {% include "v2/nav.html" %}#}
     <div class="navigation">
-        <div class="title">12人觉得很赞</div>
+        <div class="title">{{ count }}人觉得很赞</div>
         <img class="back" src="{% static 'img/back.png' %}"/>
     </div>
     <div id="like-page-list-container">
+        {% for item in like_list %}
         <div id="work-like-item">
             <p class="user-quote">“</p>
-            <p class="user-quote-content">每个人都有他的花果山。</p>
-            <p class="user-name"><b>审稿</b> | 几只鸡的小鸟</p>
-            <img class="user-avatar" src="/user/avatar/default-avatar-08.jpg">
+            <p class="user-quote-content">{{ item.introduce }}</p>
+            <p class="user-name"><b>{% if item.is_reviewer %}审稿{% else %}作者{% endif %}</b> | {{ item.nickname }}</p>
+            <img class="user-avatar" src="{{ item.avatar }}">
         </div>
-        <div class="display-item"></div>
+        {% endfor %}
     </div>
 </body>

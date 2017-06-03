@@ -374,6 +374,8 @@ hr {
     position: absolute;
     margin-top: 50px;
     width: 100%;
+    overflow-y: scroll;
+    padding-bottom: 10px;
 }
     #work-like-item {
         position: relative;
@@ -420,6 +422,8 @@ hr {
     position: absolute;
     margin-top: 30px;
     width: 100%;
+    overflow-y: scroll;
+    padding-bottom: 30px;
 }
     #work-comment-item {
         position: relative;
@@ -433,15 +437,24 @@ hr {
         color: #ddd;
     }
     #work-comment-item .user-comment-content {
-        margin: -30px 40px 0 50px;
+        margin: -20px 40px 0 50px;
         font-size: 14px;
         letter-spacing: 2px;
+    }
+    #work-comment-item .comment-time {
+        position: absolute;
+        top: 13px;
+        right: 20px;
+        margin: 0;
+        letter-spacing: 2px;
+        color: #999;
+        font-size: 12px;
     }
     #work-comment-item .user-name {
         width: calc(100% - 40px);
         text-align: right;
         margin: 5px 0;
-        padding-bottom: 10px;
+        padding-bottom: 20px;
         height: 20px;
         line-height: 20px;
         vertical-align: middle;

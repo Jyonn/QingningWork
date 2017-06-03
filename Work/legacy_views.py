@@ -57,6 +57,7 @@ def create_qn_writer(request):
     w = Writer.create(
         username='青柠',
         pwd_login=True,
+        introduce='以梦为马，不负韶华。',
     )
     w.set_password('QingNing2017').save()
     return response()
