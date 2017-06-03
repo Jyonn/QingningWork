@@ -14,7 +14,7 @@
     <label for="textarea">
         <p class="work-title">「{{ event.work.title }}」</p>
         {% if event.work.version > 1 %}<p class="modify-times">第{{ event.work.version }}稿</p>{% endif %}
-        <textarea id="work-content" class="preview-content" readonly>{{ event.work.content }}</textarea>
+        <textarea class="preview-content" readonly>{{ event.work.content }}</textarea>
     </label>
     <div class="foot-info">
         <div id="share-btn"><i class="fa fa-share-alt"></i></div>
