@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^create-qn-writer$', legacy_views.create_qn_writer),
     url(r'^update-work-create-to-timeline$', legacy_views.update_work_create_to_timeline),
     url(r'^comment-decode-base64$', legacy_views.comment_decode_base64),
+    url(r'^update-abstract-user-type$', legacy_views.update_abstract_user_type),
 ]

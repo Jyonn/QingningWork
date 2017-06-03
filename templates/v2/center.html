@@ -11,81 +11,8 @@
     {% include "v2/nav.html" %}
     <div class="event-list">
     {% for event in event_list %}
-        <div class="event-item">
-            <img class="avatar event-owner-avatar" src="{{ event.info.event_owner_avatar }}">
-        {% if event.info.type.repost %}
-            <img class="avatar writer-avatar" src="{{ event.info.work_owner_avatar }}">
-            <p class="event-owner-name">{{ event.info.event_owner_nickname }} <small>分享<b>{{ event.work.writer }}</b>的文章</small></p>
-        {% elif event.info.type.create %}
-            <p class="event-owner-name">{{ event.work.writer }} <small>发表文章</small></p>
-        {% elif event.info.type.modify %}
-            <p class="event-owner-name">{{ event.work.writer }} <small>修改文章</small></p>
-        {% endif %}
-            <div class="sub-title">
-                <p class="work-time">{{ event.info.time }}</p>
-                <p class="introduce">{{ event.info.intro }}</p>
-            </div>
-            <label for="textarea">
-                <p class="work-title">「{{ event.work.title }}」</p>
-                {% if work.version > 1 %}<p class="modify-times">第{{ event.work.version }}稿</p>{% endif %}
-                <textarea id="work-content" class="preview-content" readonly>{{ event.work.content }}</textarea>
-            </label>
-            <div class="foot-info">
-                <div id="share-btn"><i class="fa fa-share-alt"></i></div>
-{#                <div id="mark-btn"><i class="fa fa-star"></i></div>#}
-                <div id="comment-btn"><i class="fa fa-comment-o"></i></div>
-                <div id="thumb-btn"><i class="fa fa-thumbs-o-up"></i></div>
-                <p class="read-num">{{ event.work.visit }}人阅读</p>
-            </div>
-            <hr>
-            <div class="thumb-list-container">
-                <i class="fa fa-thumbs-up"></i>
-                    <p class="thumb-list">
-                        {% for thumb in event.work.thumb_list %}
-                            {% if not forloop.first %}、{% endif %}
-                            {{ thumb }}
-                        {% endfor %}
-                    </p>
-                {% if event.work.thumbs > 0 %}
-                    <p>等{{ event.work.thumbs }}人觉得赞</p>
-                {% else %}
-                    <p>成为第一个赞的人吧</p>
-                {% endif %}
-            </div>
-        </div>
+        {% include 'v2/event/event-item.html' %}
     {% endfor %}
-{##}
-{#        <div class="event-item">#}
-{#            <img class="avatar event-owner-avatar" src="/user/avatar/default-avatar-08.jpg">#}
-{#            <p class="event-owner-name">徐森耳 <small>发表了稿件</small></p>#}
-{#            <div class="sub-title">#}
-{#                <p class="work-time">2011年7月20日</p><script src="{% static "v2/js/work.js" %}"></script>#}
-{#                <p class="introduce">快乐总是蓬头垢面。</p>#}
-{#            </div>#}
-{#            <label for="textarea">#}
-{#                <p class="work-title">「海葬 第四章」</p>#}
-{#                <p class="modify-times">第3稿</p>#}
-{#                <textarea class="preview-content" rows="5" readonly>	你知道心底里没有希望和拥有希望有什么区别吗？#}
-{#	当心里没有希望的时候，看着这个纷纷扰扰的世界会像看一部黑白的战争电影，什么都是肮脏，面对岔路口，不仅仅不知道该去向哪里，还会不知道自己站在岔路口中央有什么意义。或许眼前飞过的花瓣在无望的人眼里只是一张张飞舞的冥币，没有美好，整个世界都布满了污秽和虫蚁。#}
-{#	可当心里有那么一束光闯入，它对你的心说，它叫希望。或许凝固的血液会再次流动，尘埃似乎空了，世界似乎没有那么令人厌恶了。眼里看到的不再是灰色，听到的不再是喧嚣，似乎更加坚定，似乎一切都像梦，美的不像现实。#}
-{#	“你应该走了。”鱼生避开了萧岚的目光。少年愣了愣，有些不知所措地攥着药瓶和创可贴：“不去医院吗？”鱼生有些不可置信地重新抬头看他。去医院？是个人看到她现在落魄的模样都应该把她归为乞丐一类吧，可这个干净得像晨露的少年，却对这样一个她，问是否要去医院。#}
-{#	换做别人，逃都来不及吧。</textarea>#}
-{#            </label>#}
-{#            <div class="foot-info">#}
-{#                <div><i class="fa fa-share-alt"></i></div>#}
-{#                <div><i class="fa fa-star"></i></div>#}
-{#                <div><i class="fa fa-comment-o"></i></div>#}
-{#                <div><i class="fa fa-thumbs-o-up"></i></div>#}
-{#                <p class="read-num">22人阅读</p>#}
-{#            </div>#}
-{#            <hr>#}
-{#            <div class="thumb-list-container">#}
-{#                <i class="fa fa-thumbs-up"></i>#}
-{#                <p class="thumb-list">工刀</p>#}
-{#                <p>等8人觉得赞</p>#}
-{#            </div>#}
-{#        </div>#}
-
         <div class="event-item"></div>
     </div>
     <script src="{% static "v2/js/work.js" %}"></script>

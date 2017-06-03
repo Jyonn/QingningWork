@@ -149,8 +149,8 @@ hr {
         position: absolute;
         top: 0;
         left: 0;
-        height: 36px;
-        padding: 7px;
+        height: 26px;
+        padding: 12px;
     }
     .navigation .user-avatar {
         height: 30px;
@@ -377,21 +377,21 @@ hr {
     overflow-y: scroll;
     padding-bottom: 10px;
 }
-    #work-like-item {
+    #user-info-card {
         position: relative;
         height: 100px;
         width: 100%;
         margin-top: 10px;
         background: #fff;
     }
-    #work-like-item .user-avatar {
+    #user-info-card .user-avatar {
         position: absolute;
         right: 0;
         top: 0;
         width: 100px;
         height: 100px;
     }
-    #work-like-item .user-quote {
+    #user-info-card .user-quote {
         position: absolute;
         top: 0;
         left: 0;
@@ -399,7 +399,7 @@ hr {
         margin: 0;
         color: #ddd;
     }
-    #work-like-item .user-quote-content {
+    #user-info-card .user-quote-content {
         position: absolute;
         top: 30px;
         left: 50px;
@@ -408,7 +408,7 @@ hr {
         margin: 0;
         letter-spacing: 2px;
     }
-    #work-like-item .user-name {
+    #user-info-card .user-name {
         position: absolute;
         right: 120px;
         top: 70px;
@@ -469,3 +469,59 @@ hr {
         left: 30px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
     }
+
+#user-info-container {
+    position: absolute;
+    margin-top: 50px;
+    width: 100%;
+    overflow-y: scroll;
+    /*padding-bottom: 30px;*/
+}
+    #user-analyse {
+        position: relative;
+        height: 100px;
+        width: 100%;
+        margin-top: 10px;
+        background: #fff;
+    }
+    #user-analyse .analyse-item {
+        position: relative;
+        float: left;
+        height: 100px;
+        width: 33.3333%;
+    }
+        .analyse-item .item-name {
+            position: absolute;
+            font-size: 16px;
+            width: 100%;
+            top: 20px;
+            text-align: center;
+            border-right: 1px solid #888888;
+        }
+        @font-face {
+            font-family: 'DINCond-Bold';
+            src: url('http://ooj8t2ocf.bkt.clouddn.com/font/DINCond-Bold.otf');
+        }
+        .analyse-item .item-num {
+            position: absolute;
+            font-size: 40px;
+            width: 100%;
+            top: 40px;
+            text-align: center;
+            font-family: 'DINCond-Bold', serif;
+        }
+
+#user-work-list-container {
+    margin-top: 0;
+}
+
+#user-work-list-container .title {
+    width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#user-work-list-container .user-work-item {
+    margin-top: 10px;
+
+}

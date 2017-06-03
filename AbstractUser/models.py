@@ -4,12 +4,29 @@ from django.db import models
 class AbstractUser(models.Model):
     WRITER = "writer"
     REVIEWER = "reviewer"
+    TYPE_WRITER = 0
+    TYPE_REVIEWER = 1
+    TYPE_TABLE = (
+        (TYPE_WRITER, '作者'),
+        (TYPE_REVIEWER, '审稿'),
+    )
     uid = models.AutoField(
         verbose_name="用户编号",
         primary_key=True,
         db_index=True,
         auto_created=True,
         editable=False,
+    )
+    user_type = models.IntegerField(
+        verbose_name='用户身份',
+        default=TYPE_WRITER,
+        choices=TYPE_TABLE,
+    )
+    user_id = models.IntegerField(
+        verbose_name='身份表的用户编号',
+        default=0,
+        null=True,
+        blank=True,
     )
     nickname = models.CharField(
         verbose_name="笔名/称呼",
@@ -124,6 +141,12 @@ class AbstractUser(models.Model):
     def get_avatar(self):
         from BaseFunc.cdn import QiNiu
         return QiNiu.host + '/' + self.avatar
+
+    def get_introduce(self):
+        return '他还没有填写介绍。' if self.introduce in [None, ''] else self.introduce
+
+    def get_nickname(self):
+        return self.username[:-4]+'****' if self.nickname in [None, ''] else self.nickname
 
 
 class LikeUser(models.Model):

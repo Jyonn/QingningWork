@@ -1,0 +1,53 @@
+{% load static %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>青柠文字社</title>
+    <link href="{% static "v2/css/style.css" %}" rel="stylesheet" type="text/css"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+{#    {% include "v2/nav.html" %}#}
+    <div class="navigation">
+        <div class="title">{{ card_info.nickname }}的主页</div>
+        <img class="back" src="{% static 'img/back.png' %}"/>
+    </div>
+    <div id="user-info-container">
+        {% include 'v2/user-card.html' %}
+        <div id="user-analyse">
+        {% if card_info.is_reviewer %}
+            <div class="analyse-item">
+                <div class="item-name">上传数</div>
+                <div class="item-num">{{ work_info.total_upload }}</div>
+            </div>
+            <div class="analyse-item">
+                <div class="item-name">审稿数</div>
+                <div class="item-num">{{ work_info.total_review }}</div>
+            </div>
+            <div class="analyse-item">
+                <div class="item-name">喜欢他</div>
+                <div class="item-num">{{ work_info.total_likes }}</div>
+            </div>
+        {% else %}
+            <div class="analyse-item">
+                <div class="item-name">作品数</div>
+                <div class="item-num">{{ work_info.total_works }}</div>
+            </div>
+            <div class="analyse-item">
+                <div class="item-name">关注数</div>
+                <div class="item-num">{{ work_info.total_follow }}</div>
+            </div>
+            <div class="analyse-item">
+                <div class="item-name">粉丝数</div>
+                <div class="item-num">{{ work_info.total_followed }}</div>
+            </div>
+        {% endif %}
+        </div>
+        <div class="event-list" id="user-work-list-container">
+        {% for event in event_list %}
+            {% include 'v2/event/event-item.html' %}
+        {% endfor %}
+        </div>
+    </div>
+</body>

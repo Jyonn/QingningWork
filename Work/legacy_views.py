@@ -2,6 +2,7 @@ from AbstractUser.models import AbstractUser
 from BaseFunc.base import response
 from Comment.models import Comment
 from QingningWork.settings import WORK_URL
+from Reviewer.models import Reviewer
 from Work.models import Work
 from Timeline.models import Timeline
 
@@ -84,4 +85,20 @@ def comment_decode_base64(request):
     for comment in comments:
         comment.content = base64.decodebytes(bytes(comment.content_base64, encoding="utf8")).decode()
         comment.save()
+    return response()
+
+
+def update_abstract_user_type(request):
+    writers = Writer.objects.all()
+    for writer in writers:
+        writer.user_id = writer.wid
+        writer.user_type = AbstractUser.TYPE_WRITER
+        writer.save()
+
+    reviewers = Reviewer.objects.all()
+    for reviewer in reviewers:
+        reviewer.user_id = reviewer.rid
+        reviewer.user_type = AbstractUser.TYPE_REVIEWER
+        reviewer.save()
+
     return response()

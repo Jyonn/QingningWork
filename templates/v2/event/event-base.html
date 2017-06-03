@@ -1,0 +1,40 @@
+    <img class="avatar event-owner-avatar" src="{{ event.info.event_owner_avatar }}">
+{% if event.info.type.repost %}
+    <img class="avatar writer-avatar" src="{{ event.info.work_owner_avatar }}">
+    <p class="event-owner-name">{{ event.info.event_owner_nickname }} <small>分享<b>{{ event.work.writer }}</b>的文章</small></p>
+{% elif event.info.type.create %}
+    <p class="event-owner-name">{{ event.work.writer }} <small>发表文章</small></p>
+{% elif event.info.type.modify %}
+    <p class="event-owner-name">{{ event.work.writer }} <small>修改文章</small></p>
+{% endif %}
+    <div class="sub-title">
+        <p class="work-time">{{ event.info.time }}</p>
+        <p class="introduce">{{ event.info.intro }}</p>
+    </div>
+    <label for="textarea">
+        <p class="work-title">「{{ event.work.title }}」</p>
+        {% if event.work.version > 1 %}<p class="modify-times">第{{ event.work.version }}稿</p>{% endif %}
+        <textarea id="work-content" class="preview-content" readonly>{{ event.work.content }}</textarea>
+    </label>
+    <div class="foot-info">
+        <div id="share-btn"><i class="fa fa-share-alt"></i></div>
+{#                <div id="mark-btn"><i class="fa fa-star"></i></div>#}
+        <div id="comment-btn"><i class="fa fa-comment-o"></i></div>
+        <div id="thumb-btn"><i class="fa fa-thumbs-o-up"></i></div>
+        <p class="read-num">{{ event.work.visit }}人阅读</p>
+    </div>
+    <hr>
+    <div class="thumb-list-container">
+        <i class="fa fa-thumbs-up"></i>
+            <p class="thumb-list">
+                {% for thumb in event.work.thumb_list %}
+                    {% if not forloop.first %}、{% endif %}
+                    {{ thumb.nickname }}
+                {% endfor %}
+            </p>
+        {% if event.work.thumbs > 0 %}
+            <p>等{{ event.work.thumbs }}人觉得赞</p>
+        {% else %}
+            <p>成为第一个赞的人吧</p>
+        {% endif %}
+    </div>

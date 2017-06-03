@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^v2/work/(?P<writer_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.work_page),
     url(r'^v2/thumbs/(?P<work_id>\d+)', front_views.thumb_page),
     url(r'^v2/comments/(?P<work_id>\d+)', front_views.comment_page),
+    url(r'^v2/user/(?P<user_id>\d+)', front_views.user_home),
 
     url(r'^legacy/', include("Work.legacy_urls")),
 
