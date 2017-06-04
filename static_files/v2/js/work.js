@@ -18,4 +18,24 @@ function resize() {
 $(document).ready(function () {
     resize();
     window.onresize = resize;
+
+    var comment_btn = $('#comment-btn'),
+        comment_box = $('.comment-box'),
+        comment_content = $('.comment-content'),
+        comment_cancel = $('#comment-cancel'),
+        comment_mask = $('#comment-mask');
+    comment_btn.on('click', function () {
+        comment_box.animate({bottom: '0'}, function () {
+            comment_mask.css('display', 'inherit');
+        });
+        comment_content.focus();
+    });
+    comment_cancel.on('click', function () {
+        comment_mask.css('display', 'none');
+        comment_box.animate({bottom: '-180px'});
+    });
+    comment_mask.on('click', function () {
+        comment_mask.css('display', 'none');
+        comment_box.animate({bottom: '-180px'});
+    })
 });

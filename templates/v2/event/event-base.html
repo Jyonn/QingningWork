@@ -11,7 +11,7 @@
         <p class="work-time">{{ event.info.time }}</p>
         <p class="introduce">{{ event.info.intro }}</p>
     </div>
-    <label for="textarea">
+    <label for="textarea" {% if event.info.content_click %}onclick="window.location.href='{{ event.info.event_link }}'"{% endif %}>
         <p class="work-title">「{{ event.work.title }}」</p>
         {% if event.work.version > 1 %}<p class="modify-times">第{{ event.work.version }}稿</p>{% endif %}
         <textarea class="preview-content" readonly>{{ event.work.content }}</textarea>
@@ -24,7 +24,7 @@
         <p class="read-num">{{ event.work.visit }}人阅读</p>
     </div>
     <hr>
-    <div class="thumb-list-container">
+    <div class="thumb-list-container" {% if event.info.thumb_click %}onclick="window.location.href='{{ event.info.thumb_link }}'"{% endif %}>
         <i class="fa fa-thumbs-up"></i>
             <p class="thumb-list">
                 {% for thumb in event.work.thumb_list %}

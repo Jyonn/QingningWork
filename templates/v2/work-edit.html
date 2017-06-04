@@ -1,0 +1,38 @@
+{% load static %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>青柠文字社</title>
+    <link href="{% static "v2/css/style.css" %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static "v2/css/mui-switch.css" %}" rel="stylesheet" type="text/css"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    <div class="navigation">
+        <div class="t left">取消</div>
+        <div class="t right">发布</div>
+    </div>
+
+    <div id="work-edit-container">
+        <div class="work-edit-item">
+            <input type="text" id="work-edit-work-name-input" placeholder="文章名称" maxlength="20">
+        </div>
+
+        <div class="work-edit-item">
+            <input type="text" id="work-edit-writer-name-input" placeholder="作者" maxlength="10">
+        </div>
+
+        <div class="work-edit-item">
+            <label for="textarea">
+                <textarea id="work-edit-work-content" class="preview-content" placeholder="正文"></textarea>
+            </label>
+        </div>
+
+        <label for="input" class="switch-box work-edit-item">
+            <div class="switch-desc-large">设为私密文章</div>
+            <input class="mui-switch mui-switch-animbg" type="checkbox">
+        </label>
+    </div>
+
+    <script src="{% static "v2/js/work.js" %}"></script>
+</body>

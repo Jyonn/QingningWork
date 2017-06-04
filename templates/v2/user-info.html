@@ -8,7 +8,6 @@
 </head>
 
 <body>
-{#    {% include "v2/nav.html" %}#}
     <div class="navigation">
         <div class="title">{{ card_info.nickname }}的主页</div>
         <img class="back" src="{% static 'img/back.png' %}"/>
@@ -48,6 +47,7 @@
         {% for event in event_list %}
             {% include 'v2/event/event-item.html' %}
         {% endfor %}
+            <div class="event-item"></div>
         </div>
     </div>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>

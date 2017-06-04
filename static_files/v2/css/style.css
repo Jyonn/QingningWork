@@ -11,13 +11,17 @@ body {
     width: 0;
 }
 
+label {
+    display: block;
+    border: none;
+}
+
 .input-form {
     padding: 0 10%;
     margin-bottom: 50px;
 }
 
-label {
-    display: block;
+.input-form label {
     border-radius: 10px;
     border: 1px solid #ddd;
     margin-bottom: 20px;
@@ -37,6 +41,7 @@ input {
 .btn-white {
     background: none;
     color: #000;
+    transition: 0.2s;
 }
 
 .btn-white:hover {
@@ -45,16 +50,19 @@ input {
     filter: alpha(opacity=60);
     -moz-opacity: 0.6;
     opacity: 0.6;
+    transition: 0.2s;
 }
 
 .btn-green {
     background: #3F9913;
     color: #fff;
+    transition: 0.2s;
 }
 
 .btn-green:hover {
     background: #367517;
     color: #fff;
+    transition: 0.2s;
 }
 
 button {
@@ -88,6 +96,24 @@ hr {
     padding-top: 50px;
     /*height: 100%;*/
     width: 100%;
+}
+
+.login-main .btns {
+    position: relative;
+}
+
+#login-act {
+    position: absolute;
+}
+
+#signup-act {
+    position: absolute;
+    top: 60px;
+}
+
+#forget-act {
+    position: absolute;
+    top: 120px;
 }
 
 .login-main .slogan {
@@ -141,6 +167,23 @@ hr {
     background: #3F9913;
     z-index: 1;
 }
+    .navigation .t {
+        position: absolute;
+        top: 0;
+        height: 50px;
+        width: 70px;
+        line-height: 50px;
+        vertical-align: middle;
+        text-align: center;
+        font-size: 20px;
+        color: #fff;
+    }
+    .left {
+        left: 0;
+    }
+    .right {
+        right: 0;
+    }
     .navigation .slogan {
         height: 24px;
         padding: 13px;
@@ -171,6 +214,19 @@ hr {
         letter-spacing: 2px;
     }
 
+.body-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: none;
+    background: none;
+    border: none;
+    outline: none;
+}
+
 .sidebar-container {
     position: fixed;
     top: 0;
@@ -178,7 +234,7 @@ hr {
     width: 200px;
     height: 100%;
     background: #2A660D;
-    z-index: 1;
+    z-index: 2;
     text-align: center;
 }
     .sidebar-container .user-avatar {
@@ -203,7 +259,7 @@ hr {
 
 .event-list {
     width: 100%;
-    margin-top: 50px;
+    margin-top: 60px;
     /*overflow-y:scroll;*/
 }
 .event-list .event-item {
@@ -227,13 +283,13 @@ hr {
     }
     .event-list .event-item .event-owner-name {
         position: absolute;
-        left: 80px;
+        left: 70px;
         margin: 0;
         font-size: 16px;
     }
     .event-list .event-item .sub-title {
         position: absolute;
-        left: 80px;
+        left: 70px;
         margin-top: 20px;
         margin-bottom: 0;
         font-size: 11px;
@@ -269,7 +325,7 @@ hr {
             /*margin: -18px 10px 0 0;*/
             /*text-align: right;*/
         }
-        .event-list .event-item label .preview-content {
+        .preview-content {
             color: #333333;
             padding: 10px 0 0 0;
             display: block;
@@ -475,8 +531,6 @@ hr {
     position: absolute;
     margin-top: 50px;
     width: 100%;
-    /*overflow-y: scroll;*/
-    /*padding-bottom: 30px;*/
 }
     #user-analyse {
         position: relative;
@@ -524,5 +578,109 @@ hr {
 
 #user-work-list-container .user-work-item {
     margin-top: 10px;
-
 }
+
+#work-edit-container {
+    position: absolute;
+    margin-top: 50px;
+    width: 100%;
+}
+    .work-edit-item {
+        width: 100%;
+        margin-top: 10px;
+        background: #fff;
+    }
+    #work-edit-work-name-input {
+        font-size: 20px;
+        padding: 8px 10px;
+        color: #000;
+    }
+    #work-edit-writer-name-input {
+        font-size: 20px;
+        padding: 8px 10px;
+        color: #000;
+    }
+    .work-edit-item label {
+        padding: 0 10px 10px;
+        /*border: none;*/
+    }
+    .switch-box {
+        height: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+    }
+    .switch-box div {
+        float: left;
+        color: #333;
+        margin-left: 10px;
+    }
+    .switch-box .switch-desc-large {
+        font-size: 20px;
+    }
+    .switch-box .mui-switch {
+        float: right;
+        margin-right: 10px;
+    }
+
+.comment-box {
+    position: fixed;
+    bottom: -180px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 2;
+}
+    .comment-box .nav {
+        position: relative;
+        width: 100%;
+        height: 40px;
+        background: #eee;
+    }
+    .comment-box .nav .box-btn {
+        position: absolute;
+        top: 0;
+        width: 60px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        vertical-align: middle;
+        color: #333;
+    }
+    .comment-box .comment-input-label {
+        padding: 0 10px;
+    }
+    /*.comment-box .comment-input-label .hint {*/
+        /*letter-spacing: 2px;*/
+        /*text-align: right;*/
+        /*font-size: 14px;*/
+        /*padding-bottom: 10px;*/
+    /*}*/
+    .hint-danger {
+        color: #CC5A40!important;
+    }
+    .hint-success {
+        color: #3F9913!important;
+    }
+    #comment-do {
+        font-weight: bold;
+    }
+    .comment-content {
+        color: #333333;
+        padding: 10px 0 0 0;
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        border: none;
+        outline: none;
+        font-size: 14px;
+        font-family: "PingFang SC", "San Francisco", "等线", "STHeiti", serif!important;
+        text-overflow: clip;
+        resize: none;
+        text-align: justify;
+        letter-spacing: 2px;
+        line-height: 20px;
+        overflow: scroll;
+    }
+    .comment-box .switch-box {
+        margin: 5px 0;
+    }

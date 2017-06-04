@@ -1,0 +1,36 @@
+{% load static %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{{ event.work.title }} - {{ event.work.writer }}</title>
+    <link href="{% static "v2/css/style.css" %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static "v2/css/mui-switch.css" %}" rel="stylesheet" type="text/css"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    {% include "v2/nav.html" %}
+    <div class="event-list">
+        {% include 'v2/event/event-item-with-comment.html' %}
+        <div class="event-item"></div>
+    </div>
+    <div class="comment-box">
+        <hr>
+        <div class="nav">
+            <div class="box-btn left" id="comment-cancel">取消</div>
+            <div class="box-btn right" id="comment-do">评论</div>
+        </div>
+        <hr>
+        <label for="textarea" class="comment-input-label">
+            <textarea placeholder="此处输入评价……" class="comment-content" maxlength="500" rows="3"></textarea>
+{#            <div class="hint hint-danger">4/500</div>#}
+        </label>
+        <hr>
+        <label for="input" class="switch-box">
+            <div class="hint-danger" id="review-state">驳回作品（没有通过审核）</div>
+            <input class="mui-switch mui-switch-animbg" id="review-switcher" type="checkbox">
+        </label>
+    </div>
+    <div class="body-mask" id="comment-mask"></div>
+    <script src="{% static "v2/js/work.js" %}"></script>
+    <script src="{% static "v2/js/comment.js" %}"></script>
+</body>

@@ -73,47 +73,61 @@ def get_address_by_ip_via_sina(ipv4, timeout=0.5):
     return ip_str
 
 
-def save_captcha(request, captcha_type, code):
+def save_session(request, key, value):
+    request.session["saved_" + key] = value
+
+
+def load_session(request, key, once_delete=True):
+    value = request.session.get("saved_" + key)
+    if value is None:
+        return None
+    if once_delete:
+        del request.session["saved_" + key]
+    return value
+
+
+def save_captcha(request, captcha_type, code, last=300):
     """
     保存验证码
     :param request:
-    :param captcha_type: 验证码类型，分为 image 和 phone
+    :param last: 有效期限
+    :param captcha_type: 验证码类型，分为 image_register, image_forget 和 phone_register, phone_forget
     :param code: 验证码值
     :return: None
     """
-    request.session["captcha_" + captcha_type + "_code"] = code
+    request.session["captcha_" + captcha_type + "_code"] = str(code)
     request.session["captcha_" + captcha_type + "_time"] = int(datetime.datetime.now().timestamp())
+    request.session["captcha_" + captcha_type + "_last"] = last
     return None
 
 
-def confirm_captcha(request, captcha_type, code):
+def check_captcha(request, captcha_type, code):
     """
-    验证验证码
+    检验验证码
     :param request:
-    :param captcha_type: 验证码类型，分为 image 和 phone
-    :param code: 输入的验证码值
-    :return: True / False
+    :param captcha_type: 验证码类型，分为 image_register, image_forget 和 phone
+    :param code: 验证码值
+    :return: 相同返回True, 不同返回False
     """
+    correct_code = request.session.get("captcha_" + captcha_type + "_code")
+    correct_time = request.session.get("captcha_" + captcha_type + "_time")
+    correct_last = request.session.get("captcha_" + captcha_type + "_last")
+    current_time = int(datetime.datetime.now().timestamp())
+    print(correct_time, correct_last, correct_code, current_time)
     try:
-        if code is None:
-            return False
-        this_time = int(datetime.datetime.now().timestamp())
-        last_time = request.session["captcha_" + captcha_type + "_time"]
-        dist = this_time - last_time
-        if dist > 60 * 5 or dist < 0:
-            return False
-        correct_captcha = request.session["captcha_" + captcha_type + "_code"]
-        if correct_captcha != code:
-            request.session["captcha_" + captcha_type + "_code"] = None
-            return False
-        else:
-            return True
+        del request.session["captcha_" + captcha_type + "_code"]
+        del request.session["captcha_" + captcha_type + "_time"]
+        del request.session["captcha_" + captcha_type + "_last"]
     except:
         pass
-    return False
+    if None in [correct_code, correct_time, correct_last]:
+        return False
+    if current_time - correct_time > correct_last:
+        return False
+    return correct_code.upper() == str(code).upper()
 
 
-def login_to_session(request, user, user_type):
+def login_to_session(request, user):
     """
     更新登录数据并添加到session
     """
@@ -129,44 +143,18 @@ def login_to_session(request, user, user_type):
         request.session.cycle_key()
     except:
         pass
-    request.session["role_id"] = user.pk
-    request.session["role_type"] = user_type
-    request.session["login_in"] = True
+    save_session(request, 'user', user.pk)
     return None
 
 
-def get_abstract_user_from_session(request):
-    if request.session["role_type"] == AbstractUser.WRITER:
-        try:
-            user = Writer.objects.get(pk=request.session["role_id"])
-            user = AbstractUser.objects.get(pk=user.uid)
-        except Exception as e:
-            print(Exception, ":", e)
-            return None, None
-        return user, AbstractUser.WRITER
-    elif request.session["role_type"] == AbstractUser.REVIEWER:
-        try:
-            user = Reviewer.objects.get(pk=request.session["role_id"])
-            user = AbstractUser.objects.get(pk=user.uid)
-        except Exception as e:
-            print(Exception, ":", e)
-            return None, None
-        return user, AbstractUser.REVIEWER
-    else:
-        return None, None
-
-
 def get_user_from_session(request):
+    user_pk = load_session(request, 'user', once_delete=False)
+    if user_pk is None:
+        return None
     try:
-        if request.session["role_type"] == AbstractUser.WRITER:
-            user = Writer.objects.get(pk=request.session["role_id"])
-            return user, AbstractUser.WRITER
-        elif request.session["role_type"] == AbstractUser.REVIEWER:
-            user = Reviewer.objects.get(pk=request.session["role_id"])
-            return user, AbstractUser.REVIEWER
+        return AbstractUser.objects.get(pk=user_pk)
     except:
-        pass
-    return None, None
+        return None
 
 
 def logout_from_session(request):
@@ -195,8 +183,8 @@ def response(code=0, msg="ok", body=None):
     return http_resp
 
 
-def error_response(error_id):
+def error_response(error_id, append_msg=""):
     for error in Error.ERROR_DICT:
         if error_id == error[0]:
-            return response(code=error_id, msg=error[1])
+            return response(code=error_id, msg=error[1]+append_msg)
     return error_response(Error.NOT_FOUND_ERROR)

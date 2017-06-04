@@ -5,16 +5,17 @@ from BaseFunc.base import get_readable_time_string
 from Comment.models import WriterLike, Comment, WriterComment
 from Reviewer.models import Reviewer
 from Timeline.models import Timeline
-from Work.models import Work
 from Writer.models import Writer
 
 
-def get_user_card(o_user):
+def get_user_card(o_user, home_click=True):
     return dict(
         nickname=o_user.get_nickname(),
         introduce=o_user.get_introduce(),
         avatar=o_user.get_avatar(),
         is_reviewer=o_user.user_type == AbstractUser.TYPE_REVIEWER,
+        home_link='/v2/user/' + str(o_user.pk) + '/' + str(o_user.user_id),
+        home_click=home_click,
     )
 
 
@@ -58,7 +59,21 @@ def get_packed_work_comments(work, length=None):
     return comment_list, total_comments
 
 
-def get_packed_event(event, need_comment=True, full_content=True):
+def get_packed_event(event,
+                     need_comment=True,
+                     full_content=True,
+                     content_click=True,
+                     thumb_click=True,
+                     ):
+    """
+    获取事件（时间线）信息字典
+    :param thumb_click: 允许点击赞列表查看所有赞的人
+    :param event: TimeLine类
+    :param need_comment: 需要评论
+    :param full_content: 展示全部内容
+    :param content_click: 允许点击内容跳转至内容页面
+    :return:
+    """
     re_work = event.related_work
     re_writer = event.related_writer
 
@@ -93,6 +108,11 @@ def get_packed_event(event, need_comment=True, full_content=True):
             event_owner_nickname=re_writer.nickname,
             event_owner_id=re_writer.pk,
             work_owner_avatar=re_work.re_writer.get_avatar() if re_work.re_writer is not None else re_work.re_reviewer.get_avatar(),
+            event_link='/v2/event/'+str(re_writer.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
+            thumb_link='/v2/thumbs/'+str(re_writer.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
+            comment_link='/v2/comments/'+str(re_writer.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
+            content_click=content_click,
+            thumb_click=thumb_click,
         )
     )
     return event_info
@@ -102,9 +122,10 @@ def user(request):
     return render(request, 'v2/user-info.html')
 
 
-def thumb_page(request, work_id):
+def thumb_page(request, writer_id, work_id, event_id):
     try:
-        work = Work.objects.get(pk=work_id, is_delete=False, is_public=True)
+        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, related_writer__pk=writer_id)
+        work = event.related_work
     except:
         return render(request, 'v2/login.html')
     thumb_list, total_thumbs = get_packed_work_thumbs(work)
@@ -114,16 +135,17 @@ def thumb_page(request, work_id):
     ))
 
 
-def comment_page(request, work_id):
+def comment_page(request, writer_id, work_id, event_id):
     try:
-        work = Work.objects.get(pk=work_id, is_delete=False, is_public=True)
+        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, related_writer__pk=writer_id)
+        work = event.related_work
     except:
         return render(request, 'v2/login.html')
     comment_list, total_comments = get_packed_work_comments(work)
     return render(request, 'v2/comment-list.html', dict(comment_list=comment_list, count=total_comments))
 
 
-def work_page(request, writer_id, work_id, event_id):
+def event_page(request, writer_id, work_id, event_id):
     try:
         event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, related_writer__pk=writer_id)
     except:
@@ -133,9 +155,15 @@ def work_page(request, writer_id, work_id, event_id):
     re_work.total_visit += 1
     re_work.save()
 
-    event_info = get_packed_event(event, need_comment=True, full_content=True)
+    event_info = get_packed_event(
+        event,
+        need_comment=True,
+        full_content=True,
+        content_click=False,
+        thumb_click=True,
+    )
     # print(event_info)
-    return render(request, "v2/work.html", dict(event=event_info))
+    return render(request, "v2/event.html", dict(event=event_info))
 
 
 def center(request):
@@ -147,16 +175,22 @@ def center(request):
     ).order_by('-pk')[:20]
     event_list = []
     for event in events:
-        event_list.append(get_packed_event(event, need_comment=False, full_content=False))
+        event_list.append(get_packed_event(
+            event,
+            need_comment=False,
+            full_content=False,
+            content_click=True,
+            thumb_click=False,
+        ))
     return render(request, "v2/center.html", dict(event_list=event_list))
 
 
-def user_home(request, user_id):
+def user_home(request, user_id, role_id):
     try:
-        o_user = AbstractUser.objects.get(pk=user_id, is_frozen=False)
+        o_user = AbstractUser.objects.get(pk=user_id, is_frozen=False, user_id=role_id)
     except:
         return render(request, 'v2/login.html')
-    card_info = get_user_card(o_user)
+    card_info = get_user_card(o_user, home_click=False)
     # print(card_info)
     event_list = []
 
@@ -188,6 +222,10 @@ def user_home(request, user_id):
         card_info=card_info,
         work_info=work_info,
     ))
+
+
+def upload_work(request):
+    return render(request, 'v2/work-edit.html')
 
 
 def login_v2(request):
