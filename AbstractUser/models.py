@@ -10,6 +10,16 @@ class AbstractUser(models.Model):
         (TYPE_WRITER, '作者'),
         (TYPE_REVIEWER, '审稿'),
     )
+    L = {
+        'nickname': 20,
+        'username': 20,
+        'password': 40,
+        'salt': 8,
+        'phone': 20,
+        'email': 40,
+        'avatar': 32,
+        'introduce': 20,
+    }
     uid = models.AutoField(
         verbose_name="用户编号",
         primary_key=True,
@@ -30,26 +40,26 @@ class AbstractUser(models.Model):
     )
     nickname = models.CharField(
         verbose_name="笔名/称呼",
-        max_length=20,
+        max_length=L['nickname'],
         default=None,
         unique=True,
         null=True,
     )
     username = models.CharField(
         verbose_name="用户账号",
-        max_length=20,
+        max_length=L['username'],
         default=None,
         unique=True,
     )
     password = models.CharField(
         verbose_name="用户密码",
-        max_length=40,
+        max_length=L['password'],
         default=None,
         null=True,
     )
     salt = models.CharField(
         verbose_name="加盐哈希",
-        max_length=8,
+        max_length=L['salt'],
         default=None,
         null=True,
     )
@@ -84,19 +94,19 @@ class AbstractUser(models.Model):
     phone = models.CharField(
         verbose_name="联系方式",
         default=None,
-        max_length=20,
+        max_length=L['phone'],
         null=True,
     )
     email = models.EmailField(
         verbose_name="电子邮箱",
         default=None,
-        max_length=40,
+        max_length=L['email'],
         null=True,
     )
     avatar = models.CharField(
         verbose_name="头像地址",
         default=None,
-        max_length=32,
+        max_length=L['avatar'],
         null=True,
     )
     total_likes = models.IntegerField(
@@ -109,7 +119,7 @@ class AbstractUser(models.Model):
     )
     introduce = models.CharField(
         verbose_name='一句话介绍',
-        max_length=20,
+        max_length=L['introduce'],
         default=None,
         blank=True,
         null=True,

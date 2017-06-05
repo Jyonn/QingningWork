@@ -200,6 +200,8 @@ hr {
         position: fixed;
         right: 0;
         margin: 10px;
+        font-size: 30px;
+        color: #fff;
     }
     .navigation .title {
         line-height: 50px;
@@ -230,18 +232,19 @@ hr {
 .sidebar-container {
     position: fixed;
     top: 0;
-    right: -200px;
-    width: 200px;
+    right: -180px;
+    width: 180px;
     height: 100%;
     background: #2A660D;
     z-index: 2;
     text-align: center;
+    overflow-y: scroll;
 }
     .sidebar-container .user-avatar {
         margin-top: 50px;
         width: 80px;
         height: 80px;
-        border-radius: 50px;
+        border-radius: 50px;;
     }
     .sidebar-container .user-name {
         margin: 10px 0;
@@ -255,6 +258,25 @@ hr {
         left: 0;
         width: 16px;
         padding: 15px 10px;
+    }
+    .sidebar-container .btn-box {
+        margin-top: 20px;
+        letter-spacing: 2px;
+        text-align: left;
+    }
+    .sidebar-container .btn-box .btn {
+        position: relative;
+        height: 50px;
+        line-height: 50px;
+        width: calc(100% - 100px);
+        color: #fff;
+        padding: 0 40px;
+        vertical-align: middle;
+    }
+    .sidebar-container .btn-box .btn div {
+        position: absolute;
+        left: 70px;
+        top: 0;
     }
 
 .event-list {

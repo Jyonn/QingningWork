@@ -1,8 +1,8 @@
 # coding=utf-8
 class Error:
-    def __init__(self):
-        pass
-
+    PASSWORD_MATCH_ERROR = 1031
+    USERNAME_MATCH_ERROR = 1030
+    WRONG_CAPTCHA = 1029
     NOT_FOUND_USER_ID = 1028
     PARAM_FORMAT_ERROR = 1027
     UNDEFINED_RANK_TYPE = 1026
@@ -55,11 +55,11 @@ class Error:
         (WORK_IS_PRIVATE, "作品没有公开"),
         (NOT_UNDER_REVIEW, "作品不在审阅状态"),
         (NOT_YOUR_WORK, "不是你的作品"),
-        (FROZEN_USER, "账号被冻结，请联系社长"),
+        (FROZEN_USER, "用户被冻结，请联系社长"),
         (LOGIN_AGAIN, "重新登录"),
         (EXIST_NICKNAME, "已存在的昵称"),
         (WRONG_USERNAME, "错误的账号"),
-        (EXIST_USERNAME, "已存在的账号"),
+        (EXIST_USERNAME, "已存在的用户名"),
         (CAN_NOT_DELETE_CAUSE_CONFIRMED, "稿件已被确认收录，无法删除"),
         (NICKNAME_TOO_LONG, "笔名不能超过6个字符"),
         (WORK_NAME_TOO_LONG, "作品名称不能超过20个字符"),
@@ -67,4 +67,7 @@ class Error:
         (UNDEFINED_RANK_TYPE, "未定义的排序类型"),
         (PARAM_FORMAT_ERROR, "参数格式错误"),
         (NOT_FOUND_USER_ID, "不存在的用户"),
+        (WRONG_CAPTCHA, "错误的验证码"),
+        (USERNAME_MATCH_ERROR, "用户名存在非法字符，或长度不在6-20位之间"),
+        (PASSWORD_MATCH_ERROR, "密码存在非法字符，或长度不在6-20位之间"),
     ]

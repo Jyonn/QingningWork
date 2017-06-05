@@ -47,13 +47,18 @@ class Writer(AbstractUser):
     )
 
     @classmethod
-    def create(cls, *args, **kwargs):
-        writer = cls(*args, **kwargs)
+    def create(cls, username):
+        writer = cls(
+            username=username,
+            pwd_login=True,
+        )
         from random import randint
         avatar_int = randint(1, 10)
         avatar_img = "0" if avatar_int < 10 else ""
         avatar_img += str(avatar_int)
         writer.avatar = "img/avatar/default-" + avatar_img + ".jpg"
+        writer.user_id = writer.pk
+        writer.user_type = AbstractUser.TYPE_WRITER
         writer.save()
         return writer
 

@@ -4,11 +4,20 @@ from multiprocessing import TimeoutError
 
 from django.http import HttpResponse
 from AbstractUser.models import AbstractUser
-from Writer.models import Writer
-from Reviewer.models import Reviewer
 import json
+import re
 
 from BaseFunc.error import Error
+
+
+def username_regex(username):
+    r = r'[A-Za-z]\w{5,19}'
+    return re.fullmatch(r, username) is not None
+
+
+def password_regex(password):
+    r = r'[-\w!@#$%^&*_]{6,20}'
+    return re.fullmatch(r, password) is not None
 
 
 def get_readable_time_string(t):
@@ -95,29 +104,29 @@ def save_captcha(request, captcha_type, code, last=300):
     :param code: 验证码值
     :return: None
     """
-    request.session["captcha_" + captcha_type + "_code"] = str(code)
-    request.session["captcha_" + captcha_type + "_time"] = int(datetime.datetime.now().timestamp())
-    request.session["captcha_" + captcha_type + "_last"] = last
+    save_session(request, "captcha_" + captcha_type + "_code", str(code))
+    save_session(request, "captcha_" + captcha_type + "_time", int(datetime.datetime.now().timestamp()))
+    save_session(request, "captcha_" + captcha_type + "_last", last)
     return None
 
 
-def check_captcha(request, captcha_type, code):
+def check_captcha(request, captcha_name, code):
     """
     检验验证码
     :param request:
-    :param captcha_type: 验证码类型，分为 image_register, image_forget 和 phone
+    :param captcha_name: 验证码类型，分为 image, image_forget 和 phone
     :param code: 验证码值
     :return: 相同返回True, 不同返回False
     """
-    correct_code = request.session.get("captcha_" + captcha_type + "_code")
-    correct_time = request.session.get("captcha_" + captcha_type + "_time")
-    correct_last = request.session.get("captcha_" + captcha_type + "_last")
+    correct_code = load_session(request, "captcha_" + captcha_name + "_code")
+    correct_time = load_session(request, "captcha_" + captcha_name + "_time")
+    correct_last = load_session(request, "captcha_" + captcha_name + "_last")
     current_time = int(datetime.datetime.now().timestamp())
-    print(correct_time, correct_last, correct_code, current_time)
+
     try:
-        del request.session["captcha_" + captcha_type + "_code"]
-        del request.session["captcha_" + captcha_type + "_time"]
-        del request.session["captcha_" + captcha_type + "_last"]
+        del request.session["captcha_" + captcha_name + "_code"]
+        del request.session["captcha_" + captcha_name + "_time"]
+        del request.session["captcha_" + captcha_name + "_last"]
     except:
         pass
     if None in [correct_code, correct_time, correct_last]:

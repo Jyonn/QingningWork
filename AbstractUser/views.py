@@ -18,97 +18,107 @@ def get_user_by_id(uid):
 
 @require_POST
 @require_json
-@require_params(["username", "password", "no_pwd"])
+@require_params(['username', 'password', 'captcha'])
 def register(request):
     """
-    注册系统
+    注册作者账号
+    :return 0 OK
+            1030 用户名存在非法字符，或长度不在6-20位之间
+            1031 密码存在非法字符，或长度不在6-20位之间
+            1029 错误的验证码
+            1021 已存在的用户名
     """
-    username = request.POST["username"]
-    password = request.POST["password"]
-    pwd_login = request.POST["no_pwd"] is True
-    if AbstractUser.objects.filter(username=username).count() >= 1:
-        return error_response(Error.EXIST_USERNAME)
+    username = request.POST['username']
+    password = request.POST['password']
+    captcha = request.POST['captcha']
 
-    writer = Writer.create(
-        username=username,
-        pwd_login=pwd_login,
-    )
-    if pwd_login is True:
-        writer.set_password(password).save()
-    login_to_session(request, writer, AbstractUser.WRITER)
-    return response(body=AbstractUser.WRITER)
+    if not username_regex(username):
+        return error_response(Error.USERNAME_MATCH_ERROR)
+    if not password_regex(password):
+        return error_response(Error.PASSWORD_MATCH_ERROR)
+
+    if not check_captcha(request, 'image', captcha):
+        return error_response(Error.WRONG_CAPTCHA)
+
+    try:
+        AbstractUser.objects.get(username=username)
+        return error_response(Error.EXIST_USERNAME)
+    except:
+        pass
+
+    writer = Writer.create(username=username)
+    writer.set_password(password).save()
+    login_to_session(request, writer)
+    return response()
 
 
 @require_POST
 @require_json
-@require_params(["username", "password", "no_pwd"])
+@require_params(['username', 'password'])
 def add_reviewer(request):
     """
     添加审稿员
     """
-    username = request.POST["username"]
-    password = request.POST["password"]
-    pwd_login = request.POST["no_pwd"] is True
-    if AbstractUser.objects.filter(username=username).count() >= 1:
+    username = request.POST['username']
+    password = request.POST['password']
+    try:
+        AbstractUser.objects.get(username=username)
         return error_response(Error.EXIST_USERNAME)
+    except:
+        pass
 
     reviewer = Reviewer.create(
         username=username,
-        pwd_login=pwd_login,
+        pwd_login=True,
     )
-    if pwd_login is True:
-        reviewer.set_password(password).save()
-    login_to_session(request, reviewer, AbstractUser.WRITER)
+    reviewer.set_password(password).save()
+    login_to_session(request, reviewer)
     return response(body=AbstractUser.WRITER)
 
 
 @require_POST
 @require_json
-@require_params(["username", "password"])
-# @deny_login
+@require_params(['username', 'password', 'captcha'])
 def login(request):
     """
     登录系统
+    :return 0 OK
+            1029 错误的验证码
+            1017 账号被冻结，请联系社长
+            1004 用户名或密码错误
+            1003 不存在的用户名
     """
-    username = request.POST["username"]
-    password = request.POST["password"]
+    username = request.POST['username']
+    password = request.POST['password']
+    captcha = request.POST['captcha']
+
+    if not check_captcha(request, 'image', captcha):
+        return error_response(Error.WRONG_CAPTCHA)
 
     try:
-        reviewer = Reviewer.objects.get(username=username)
-        if reviewer.is_frozen is True:
+        o_user = AbstractUser.objects.get(username=username)
+        if o_user.is_frozen:
             return error_response(Error.FROZEN_USER)
-        if reviewer.pwd_login:  # 未开启免密登录，需要验证密码
-            if not reviewer.check_password(password):
+        if o_user.pwd_login:
+            if not o_user.check_password(password):
                 return error_response(Error.WRONG_PASSWORD)
-        login_to_session(request, reviewer, AbstractUser.REVIEWER)
-        return response(body=AbstractUser.REVIEWER)
-    except Exception as e:
-        print(Exception, ":", e)
-
-    try:
-        writer = Writer.objects.get(username=username)
-        if writer.pwd_login:
-            if not writer.check_password(password):
-                return error_response(Error.WRONG_PASSWORD)
-        login_to_session(request, writer, AbstractUser.WRITER)
-        return response(body=AbstractUser.WRITER)
-    except Exception as e:
-        print(Exception, ":", e)
-
-    return error_response(Error.NOT_FOUND_USERNAME)
+        login_to_session(request, o_user)
+        return response()
+    except:
+        return error_response(Error.NOT_FOUND_USERNAME)
 
 
 @require_POST
 @require_json
-@require_params(["old_username", "new_username", "password"])
+@require_params(['old_username', 'new_username', 'password'])
 @require_login
 def change_username(request):
     """
     修改用户账号
     """
-    old_username = request.POST["old_username"]
-    new_username = request.POST["new_username"]
-    password = request.POST["password"]
+    old_username = request.POST['old_username']
+    new_username = request.POST['new_username']
+    password = request.POST['password']
     user, user_type = get_user_from_session(request)
     if user is None:
         return error_response(Error.LOGIN_AGAIN)
@@ -125,14 +135,14 @@ def change_username(request):
 
 @require_POST
 @require_json
-@require_params(["old_password", "new_password"])
+@require_params(['old_password', 'new_password'])
 @require_login
 def change_password(request):
     """
     修改用户密码
     """
-    old_password = request.POST["old_password"]
-    new_password = request.POST["new_password"]
+    old_password = request.POST['old_password']
+    new_password = request.POST['new_password']
     user, user_type = get_user_from_session(request)
     if user is None:
         return error_response(Error.LOGIN_AGAIN)
@@ -148,13 +158,13 @@ def change_password(request):
 
 @require_POST
 @require_json
-@require_params(["password"])
+@require_params(['password'])
 @require_login
 def unset_password(request):
     """
     当前用户设为免密模式
     """
-    password = request.POST["password"]
+    password = request.POST['password']
     user, user_type = get_user_from_session(request)
     if user is None:
         return error_response(Error.UNKNOWN)
@@ -197,7 +207,7 @@ def status(request):
 def upload_prepare(request):
     now = datetime.datetime.now()
     user, user_type = get_user_from_session(request)
-    if user is not None and user_type == "writer":
+    if user is not None and user_type == 'writer':
         writer_name = user.nickname
     else:
         writer_name = None
@@ -238,7 +248,7 @@ def get_info(request):
 
 @require_POST
 @require_json
-@require_params(["nickname"])
+@require_params(['nickname'])
 @require_login
 def set_basic_info(request):
     """
@@ -247,7 +257,7 @@ def set_basic_info(request):
     user, user_type = get_user_from_session(request)
     if user is None:
         return error_response(Error.LOGIN_AGAIN)
-    nickname = request.POST["nickname"]
+    nickname = request.POST['nickname']
     nickname = ''.join(nickname.split(' '))
     if len(nickname) > 6:
         return error_response(Error.NICKNAME_TOO_LONG)
@@ -261,10 +271,10 @@ def set_basic_info(request):
 
 @require_POST
 @require_json
-@require_params(["uid"])
+@require_params(['uid'])
 @require_login
 def reverse_like(request):
-    uid = request.POST["uid"]
+    uid = request.POST['uid']
     user, user_type = get_abstract_user_from_session(request)
     if user is None:
         return error_response(Error.LOGIN_AGAIN)

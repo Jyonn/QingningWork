@@ -27,10 +27,7 @@
     <div class="thumb-list-container" {% if event.info.thumb_click %}onclick="window.location.href='{{ event.info.thumb_link }}'"{% endif %}>
         <i class="fa fa-thumbs-up"></i>
             <p class="thumb-list">
-                {% for thumb in event.work.thumb_list %}
-                    {% if not forloop.first %}、{% endif %}
-                    {{ thumb.nickname }}
-                {% endfor %}
+                {% for thumb in event.work.thumb_list %}{% if not forloop.first %}、{% endif %}{{ thumb.nickname }}{% endfor %}
             </p>
         {% if event.work.thumbs > 0 %}
             <p>等{{ event.work.thumbs }}人觉得赞</p>

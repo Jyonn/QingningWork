@@ -1,12 +1,22 @@
 {% load static %}
     <div class="navigation">
         <img class="slogan" src="{% static "img/slogan-white.png" %}" onclick="window.location.href='/v2/center'">
-        <img class="avatar user-avatar" id="nav-user-avatar" src="/user/avatar/default-avatar-01.jpg">
+{#        <img class="avatar user-avatar" id="nav-user-avatar" src="/user/avatar/default-avatar-08.jpg">#}
+        <i class="fa fa-user-circle-o avatar user-avatar" id="nav-user-login"></i>
     </div>
     <div class="sidebar-container">
         <img id="sidebar-fold-btn" src="{% static 'img/fold.png' %}">
         <img class="user-avatar" src="/user/avatar/default-avatar-08.jpg">
         <div class="user-name">工刀</div>
+        <div class="btn-box">
+            <i class="fa fa-heart-o btn"><div>好友动态</div></i>
+            <i class="fa fa-check btn"><div>待审文章</div></i>
+            <i class="fa fa-user-o btn"><div>个人主页</div></i>
+            <i class="fa fa-search btn"><div>发现空间</div></i>
+            <i class="fa fa-file-o btn"><div>发布文章</div></i>
+            <i class="fa fa-edit btn"><div>编辑信息</div></i>
+            <i class="fa fa-sign-out btn"><div>退出登录</div></i>
+        </div>
     </div>
     <div class="body-mask" id="sidebar-mask"></div>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>

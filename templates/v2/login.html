@@ -15,17 +15,17 @@
         <div class="input-form">
             <label for="InputUsername">
                 <div class="input-container">
-                    <input type="text" placeholder="用户名">
+                    <input type="text" id="username-input" placeholder="用户名">
                 </div>
                 <hr/>
                 <div class="input-container">
-                    <input type="password" placeholder="密码">
+                    <input type="password" id="password-input" placeholder="密码">
                 </div>
                 <hr/>
                 <div class="input-container">
-                    <input type="text" placeholder="验证码">
+                    <input type="text" id="captcha-input" placeholder="验证码">
                     <div class="captcha-container">
-                        <img class="captcha" src="/base/captcha/img/"/>
+                        <img class="captcha" src="{% url 'get-image-captcha' %}"/>
                     </div>
                 </div>
             </label>
@@ -40,6 +40,9 @@
     <canvas id="bg-canvas"></canvas>
     <script src="{% static "v2/js/bg-canvas.js" %}"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="{% static "v2/js/base64.min.js" %}"></script>
+    <script src="{% static "v2/js/jquery.json.js" %}"></script>
+    <script src="{% static "v2/js/base.js" %}"></script>
     <script src="{% static "v2/js/login.js" %}"></script>
 {#    <script>#}
 {#        $(document).ready(function () {#}
