@@ -11,7 +11,8 @@ from BaseFunc.error import Error
 
 
 def username_regex(username):
-    r = r'[A-Za-z]\w{5,19}'
+    # r = r'[A-Za-z]\w{5,19}'
+    r = r'\w{6,20}'
     return re.fullmatch(r, username) is not None
 
 
