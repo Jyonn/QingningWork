@@ -1,5 +1,5 @@
 var VELOCITY = 1,
-    PARTICLES = 200,
+    PARTICLES = 50,
     particles = [],
     colors = [
         "#019AA0",
