@@ -1,3 +1,4 @@
+<div class="event-item">
     <img class="avatar event-owner-avatar" src="{{ event.info.event_owner_avatar }}">
 {% if event.info.type.repost %}
     <img class="avatar writer-avatar" src="{{ event.info.work_owner_avatar }}">
@@ -11,7 +12,7 @@
         <p class="work-time">{{ event.info.time }}</p>
         <p class="introduce">{{ event.info.intro }}</p>
     </div>
-    <label for="textarea" {% if event.info.content_click %}onclick="window.location.href='{{ event.info.event_link }}'"{% endif %}>
+    <label for="textarea" {% if page_info.content_click %}onclick="window.location.href='{{ event.info.event_link }}'"{% endif %}>
         <p class="work-title">「{{ event.work.title }}」</p>
         {% if event.work.version > 1 %}<p class="modify-times">第{{ event.work.version }}稿</p>{% endif %}
         <textarea class="preview-content" readonly>{{ event.work.content }}</textarea>
@@ -19,14 +20,16 @@
     <div class="foot-info">
         <div id="share-btn"><i class="fa fa-share-alt"></i></div>
 {#                <div id="mark-btn"><i class="fa fa-star"></i></div>#}
+    {% if page_info.show_comment_icon %}
         <div id="comment-btn"><i class="fa fa-comment-o"></i></div>
+    {% endif %}
         <div id="thumb-btn"><i class="fa fa-thumbs-o-up"></i></div>
         <p class="read-num">{{ event.work.visit }}人阅读</p>
     </div>
     <hr>
-    <div class="thumb-list-container" {% if event.info.thumb_click %}onclick="window.location.href='{{ event.info.thumb_link }}'"{% endif %}>
-        <i class="fa fa-thumbs-up"></i>
-            <p class="thumb-list">
+    <div class="interact-list-container" id="thumb-list-container" {% if page_info.thumb_click %}onclick="window.location.href='{{ event.info.thumb_link }}'"{% endif %}>
+        <div class="icon-box"><i class="fa fa-thumbs-up"></i></div>
+            <p class="interact-list">
                 {% for thumb in event.work.thumb_list %}{% if not forloop.first %}、{% endif %}{{ thumb.nickname }}{% endfor %}
             </p>
         {% if event.work.thumbs > 0 %}
@@ -35,3 +38,31 @@
             <p>成为第一个赞的人吧</p>
         {% endif %}
     </div>
+{% if page_info.abstract_comment %}
+    <div class="interact-list-container" onclick="window.location.href='{{ event.info.event_link }}'">
+        <div class="icon-box"><i class="fa fa-comment"></i></div>
+            <p class="interact-list">
+                {% for thumb in event.work.comment_list %}{% if not forloop.first %}、{% endif %}{{ thumb.nickname }}{% endfor %}
+            </p>
+        {% if event.work.comments > 0 %}
+            <p>等{{ event.work.comments }}人评论了作品</p>
+        {% else %}
+            <p>成为第一个评论的人吧</p>
+        {% endif %}
+    </div>
+{% endif %}
+{% if page_info.list_comment %}
+    <div class="comment-container">
+    {% for comment in event.work.comment_list %}
+        <div class="comment">
+            <img class="avatar user-comment-avatar" src="{{ comment.avatar }}">
+            <p class="user-comment-name">{{ comment.nickname }}
+                {% if comment.is_reviewer %}<i class="fa fa-vcard"></i>{% endif %}
+            </p>
+            <p class="user-comment-time">{{ comment.time }}</p>
+            <p class="user-comment-content">{{ comment.content }}</p>
+        </div>
+    {% endfor %}
+    </div>
+{% endif %}
+</div>

@@ -21,8 +21,8 @@ from QingningWork.settings import STATIC_FILE
 
 urlpatterns = [
     url(r'^$', front_views.user),
-    url(r'^v2/login$', front_views.login_v2),
-    url(r'^v2/center$', front_views.center),
+    url(r'^v2/login$', front_views.login_v2, name='user-login-page'),
+    url(r'^v2/center$', front_views.center, name='center-page'),
     url(r'^v2/event/(?P<writer_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.event_page),
     url(r'^v2/thumbs/(?P<writer_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.thumb_page),
     url(r'^v2/comments/(?P<writer_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.comment_page),

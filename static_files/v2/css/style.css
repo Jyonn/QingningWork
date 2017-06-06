@@ -11,6 +11,13 @@ body {
     width: 0;
 }
 
+.slow {
+    transition: 0.2s;
+}
+.slow:hover {
+    transition: 0.2s;
+}
+
 label {
     display: block;
     border: none;
@@ -268,10 +275,14 @@ hr {
         position: relative;
         height: 50px;
         line-height: 50px;
-        width: calc(100% - 100px);
+        width: calc(100% - 80px);
         color: #fff;
         padding: 0 40px;
         vertical-align: middle;
+    }
+    .sidebar-container .btn-box .btn:hover {
+        background: #EEEEEE;
+        color: #2A660D;
     }
     .sidebar-container .btn-box .btn div {
         position: absolute;
@@ -400,18 +411,25 @@ hr {
     .event-list .event-item hr {
         margin: 0;
     }
-    .event-list .event-item .thumb-list-container {
-        margin: 10px 10px 0;
+    .event-list .event-item .interact-list-container {
+        margin: 0 10px;
     }
-        .event-list .event-item .thumb-list-container i {
+    #thumb-list-container {
+        margin-top: 5px;
+    }
+        .event-list .event-item .interact-list-container .icon-box {
+            width: 20px;
+            display: inline-table;
+        }
+        .event-list .event-item .interact-list-container i {
             color: #2A660D;
         }
-        .event-list .event-item .thumb-list-container p {
+        .event-list .event-item .interact-list-container p {
             display: inline;
             font-size: 14px;
             color: #888888;
         }
-        .event-list .event-item .thumb-list-container .thumb-list {
+        .event-list .event-item .interact-list-container .interact-list {
             color: #2A660D;
         }
     .event-list .event-item .comment-container .comment {
@@ -705,4 +723,25 @@ hr {
     }
     .comment-box .switch-box {
         margin: 5px 0;
+    }
+
+.hint-box {
+    display: none;
+    position: fixed;
+    top: calc(50% - 25px);
+    left: 0;
+    width: 100%;
+    text-align: center;
+    height: 50px;
+    z-index: 5;
+}
+    .hint-box .hint-body {
+        background: rgba(0, 0, 0, 0.8);
+        display: inline;
+        height: 50px;
+        line-height: 50px;
+        vertical-align: middle;
+        padding: 10px 20px;
+        border-radius: 5px;
+        color: #ddd;
     }

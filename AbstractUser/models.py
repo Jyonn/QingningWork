@@ -156,7 +156,7 @@ class AbstractUser(models.Model):
         return '他还没有填写介绍。' if self.introduce in [None, ''] else self.introduce
 
     def get_nickname(self):
-        return self.username[:-4]+'****' if self.nickname in [None, ''] else self.nickname
+        return self.username if self.nickname in [None, ''] else self.nickname
 
 
 class LikeUser(models.Model):
