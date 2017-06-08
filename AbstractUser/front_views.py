@@ -11,7 +11,11 @@ from Writer.models import Writer
 def get_user_info(request):
     o_user = get_user_from_session(request)
     if o_user is None:
-        return dict(is_login=False)
+        return dict(
+            is_login=False,
+            is_reviewer=False,
+            is_writer=False,
+        )
     else:
         return dict(
             is_login=True,
@@ -19,7 +23,7 @@ def get_user_info(request):
             is_reviewer=o_user.user_type == AbstractUser.TYPE_REVIEWER,
             is_writer=o_user.user_type == AbstractUser.TYPE_WRITER,
             avatar=o_user.get_avatar(),
-            nickname=o_user.nickname,
+            nickname=o_user.get_nickname(),
         )
 
 
@@ -57,7 +61,7 @@ def get_packed_work_comments(work, length=None):
             total_comments += 1
             comment_list.append(dict(
                 avatar=comment.re_reviewer.get_avatar(),
-                nickname=comment.re_reviewer.nickname,
+                nickname=comment.re_reviewer.get_nickname(),
                 time=get_readable_time_string(comment.comment_time),
                 content=comment.content,
                 is_reviewer=True,
@@ -65,9 +69,10 @@ def get_packed_work_comments(work, length=None):
             ))
     total_comments += len(writer_comments)
     for comment in writer_comments[:length]:
+        print(comment.re_writer.pk)
         comment_list.append(dict(
             avatar=comment.re_writer.get_avatar(),
-            nickname=comment.re_writer.nickname,
+            nickname=comment.re_writer.get_nickname(),
             time=get_readable_time_string(comment.create_time),
             content=comment.content,
             is_reviewer=False,
@@ -88,7 +93,7 @@ def get_packed_event(event,
     :return:
     """
     re_work = event.related_work
-    re_writer = event.related_writer
+    owner = event.owner
 
     like_list, total_likes = get_packed_work_thumbs(re_work, 5)
 
@@ -115,15 +120,17 @@ def get_packed_event(event,
                 modify=event.type == Timeline.TYPE_MODIFY_WORK,
                 repost=event.type == Timeline.TYPE_REPOST_WORK,
             ),
-            intro='' if re_writer.introduce is None else re_writer.introduce,
+            intro='' if owner.introduce is None else owner.introduce,
             time=get_readable_time_string(event.create_time),
-            event_owner_avatar=re_writer.get_avatar(),
-            event_owner_nickname=re_writer.nickname,
-            event_owner_id=re_writer.pk,
+            event_owner_avatar=owner.get_avatar(),
+            event_owner_nickname=owner.get_nickname(),
             work_owner_avatar=re_work.re_writer.get_avatar() if re_work.re_writer is not None else re_work.re_reviewer.get_avatar(),
-            event_link='/v2/event/'+str(re_writer.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
-            thumb_link='/v2/thumbs/'+str(re_writer.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
-            comment_link='/v2/comments/'+str(re_writer.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
+            event_link='/v2/event/'+str(owner.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
+            thumb_link='/v2/thumbs/'+str(owner.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
+            comment_link='/v2/comments/'+str(owner.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
+            event_id=event.pk,
+            work_id=re_work.pk,
+            owner_id=owner.pk,
         )
     )
     return event_info
@@ -133,9 +140,9 @@ def user(request):
     return render(request, 'v2/user-info.html')
 
 
-def thumb_page(request, writer_id, work_id, event_id):
+def thumb_page(request, owner_id, work_id, event_id):
     try:
-        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, related_writer__pk=writer_id)
+        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
         work = event.related_work
     except:
         return render(request, 'v2/login.html')
@@ -146,9 +153,9 @@ def thumb_page(request, writer_id, work_id, event_id):
     ))
 
 
-def comment_page(request, writer_id, work_id, event_id):
+def comment_page(request, owner_id, work_id, event_id):
     try:
-        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, related_writer__pk=writer_id)
+        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
         work = event.related_work
     except:
         return render(request, 'v2/login.html')
@@ -157,9 +164,9 @@ def comment_page(request, writer_id, work_id, event_id):
     return render(request, 'v2/comment-list.html', dict(comment_list=comment_list, count=total_comments))
 
 
-def event_page(request, writer_id, work_id, event_id):
+def event_page(request, owner_id, work_id, event_id):
     try:
-        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, related_writer__pk=writer_id)
+        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
     except:
         return render(request, 'v2/login.html')
 

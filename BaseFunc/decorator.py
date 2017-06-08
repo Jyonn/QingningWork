@@ -59,18 +59,14 @@ def decorator_generator(verify_func, error_id):
 
 
 def require_login_func(request):
-    if "login_in" not in request.session or "role_id" not in request.session or "role_type" not in request.session:
-        return False
-    if request.session["login_in"] is None or request.session["role_id"] is None \
-            or request.session["role_type"] is None:
-        return False
-    return request.session["login_in"]
+    o_user = get_user_from_session(request)
+    return o_user is not None
 
 
 def deny_login_func(request):
     return not require_login_func(request)
 
-require_login = decorator_generator(require_login_func, Error.NEED_LOGIN)
+require_login = decorator_generator(require_login_func, Error.REQUIRE_LOGIN)
 deny_login = decorator_generator(deny_login_func, Error.DENY_LOGIN)
 
 

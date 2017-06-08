@@ -18,12 +18,16 @@
         <textarea class="preview-content" readonly>{{ event.work.content }}</textarea>
     </label>
     <div class="foot-info">
+    {% if not user_info.is_reviewer %}
         <div id="share-btn"><i class="fa fa-share-alt"></i></div>
+    {% endif %}
 {#                <div id="mark-btn"><i class="fa fa-star"></i></div>#}
     {% if page_info.show_comment_icon %}
         <div id="comment-btn"><i class="fa fa-comment-o"></i></div>
     {% endif %}
+    {% if not user_info.is_reviewer %}
         <div id="thumb-btn"><i class="fa fa-thumbs-o-up"></i></div>
+    {% endif %}
         <p class="read-num">{{ event.work.visit }}人阅读</p>
     </div>
     <hr>

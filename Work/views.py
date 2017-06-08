@@ -2,9 +2,12 @@
 # import datetime
 
 from BaseFunc.decorator import *
-from Comment.models import Comment
+from Comment.models import Comment, WriterComment
 from QingningWork.settings import WORK_URL
+from Reviewer.models import Reviewer
+from Timeline.models import Timeline
 from Work.models import Work
+from Writer.models import Writer
 
 
 def work_is_mine(request, work):
@@ -359,4 +362,84 @@ def delete(request):
     if ret_code != Error.OK:
         return error_response(ret_code)
 
+    return response()
+
+
+@require_POST
+@require_json
+@require_params(['content', 'pass', 'event_id', 'work_id', 'owner_id'])
+@require_login
+def comment(request):
+    content = request.POST['content']
+    passed = request.POST['pass'] == 'true'
+    event_id = request.POST['event_id']
+    work_id = request.POST['work_id']
+    owner_id = request.POST['owner_id']
+    o_user = get_user_from_session(request)
+
+    if o_user.is_frozen:
+        return error_response(Error.FROZEN_USER)
+
+    if len(content) > WriterComment.L['content']:
+        return error_response(Error.COMMENT_ERROR)
+
+    try:
+        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
+        work = event.related_work
+    except:
+        return error_response(Error.NOT_FOUND_EVENT)
+
+    if o_user.user_type == AbstractUser.TYPE_WRITER:
+        if len(content) < 1:
+            return error_response(Error.COMMENT_ERROR)
+        writer = Writer.objects.get(pk=o_user.user_id)
+        WriterComment.create(work, writer, content)
+    elif o_user.user_type == AbstractUser.TYPE_REVIEWER:
+        reviewer = Reviewer.objects.get(pk=o_user.user_id)
+        writer = work.re_writer
+        try:
+            o_comment = Comment.objects.get(
+                re_work=work,
+                re_reviewer=reviewer,
+                is_updated=False,
+            )
+            o_comment.is_updated = True  # 原评论被更新标记
+            o_comment.save()
+            # 若评价结果不同，更新审稿员和作者数据
+            if o_comment.result != passed:
+                # 更新审稿员
+                if passed:
+                    reviewer.total_received += 1  # 审稿员接收量+1
+                    reviewer.total_refused -= 1  # 审稿员驳回量-1
+                else:
+                    reviewer.total_received -= 1  # 审稿员接收量-1
+                    reviewer.total_refused += 1  # 审稿员驳回量+1
+                reviewer.save()
+
+                # 更新作者
+                if writer is not None:
+                    if passed:
+                        writer.total_received += 1  # 作者接收量+1
+                        writer.total_refused -= 1  # 作者驳回量-1
+                    else:
+                        writer.total_received -= 1  # 作者接收量-1
+                        writer.total_refused += 1  # 作者驳回量+1
+                    writer.save()
+        except:
+            # 审稿员第一次评价
+            reviewer.total_review += 1  # 审稿员审稿总数+1
+            if passed:
+                reviewer.total_received += 1  # 审稿员接收量+1
+            else:
+                reviewer.total_refused += 1  # 审稿员驳回量-1
+            reviewer.save()
+            # 更新作者
+            if writer is not None:
+                if passed:
+                    writer.total_received += 1
+                else:
+                    writer.total_refused += 1
+                writer.save()
+
+        Comment.create(work, reviewer, content, passed)
     return response()

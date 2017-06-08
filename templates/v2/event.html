@@ -17,7 +17,7 @@
         <hr>
         <div class="nav">
             <div class="box-btn left" id="comment-cancel">取消</div>
-            <div class="box-btn right" id="comment-do">评论</div>
+            <div class="box-btn right" id="comment-do" data-event="{{ event.info.event_id }}" data-work="{{ event.info.work_id }}" data-owner="{{ event.info.owner_id }}">评论</div>
         </div>
         <hr>
         <label for="textarea" class="comment-input-label">
@@ -25,12 +25,21 @@
 {#            <div class="hint hint-danger">4/500</div>#}
         </label>
         <hr>
+    {% if user_info.is_reviewer %}
         <label for="input" class="switch-box">
             <div class="hint-danger" id="review-state">驳回作品（没有通过审核）</div>
             <input class="mui-switch mui-switch-animbg" id="review-switcher" type="checkbox">
         </label>
+    {% endif %}
     </div>
     <div class="body-mask" id="comment-mask"></div>
+    <div class="hint-box">
+        <div class="hint-body"></div>
+    </div>
     <script src="{% static "v2/js/work.js" %}"></script>
     <script src="{% static "v2/js/comment.js" %}"></script>
+    <script src="{% static "v2/js/hint.js" %}"></script>
+    <script src="{% static "v2/js/base.js" %}"></script>
+    <script src="{% static "v2/js/jquery.json.js" %}"></script>
+    <script src="{% static "v2/js/base64.min.js" %}"></script>
 </body>

@@ -21,11 +21,6 @@ class Comment(models.Model):
         blank=False,
         db_index=True,
     )
-    content_base64 = models.CharField(
-        verbose_name="评论",
-        max_length=500,
-        default=None,
-    )
     content = models.CharField(
         verbose_name='评论（v2）',
         max_length=500,
@@ -46,13 +41,21 @@ class Comment(models.Model):
     )
 
     @classmethod
-    def create(cls, *args, **kwargs):
-        comment = cls(*args, **kwargs)
+    def create(cls, re_work, re_reviewer, content, result):
+        comment = cls(
+            re_work=re_work,
+            re_reviewer=re_reviewer,
+            content=content,
+            result=result,
+        )
         comment.save()
         return comment
 
 
 class WriterComment(models.Model):
+    L = {
+        'content': 500,
+    }
     re_work = models.ForeignKey(
         Work,
         verbose_name="关联作品",
@@ -67,7 +70,7 @@ class WriterComment(models.Model):
     )
     content = models.CharField(
         verbose_name="评论",
-        max_length=500,
+        max_length=L['content'],
         default=None,
     )
     create_time = models.DateTimeField(
@@ -81,8 +84,12 @@ class WriterComment(models.Model):
     )
 
     @classmethod
-    def create(cls, *args, **kwargs):
-        w_comment = cls(*args, **kwargs)
+    def create(cls, re_work, re_writer, content):
+        w_comment = cls(
+            re_work=re_work,
+            re_writer=re_writer,
+            content=content,
+        )
         w_comment.save()
         return w_comment
 

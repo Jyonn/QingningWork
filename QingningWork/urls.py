@@ -23,9 +23,9 @@ urlpatterns = [
     url(r'^$', front_views.user),
     url(r'^v2/login$', front_views.login_v2, name='user-login-page'),
     url(r'^v2/center$', front_views.center, name='center-page'),
-    url(r'^v2/event/(?P<writer_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.event_page),
-    url(r'^v2/thumbs/(?P<writer_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.thumb_page),
-    url(r'^v2/comments/(?P<writer_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.comment_page),
+    url(r'^v2/event/(?P<owner_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.event_page),
+    url(r'^v2/thumbs/(?P<owner_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.thumb_page),
+    url(r'^v2/comments/(?P<owner_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.comment_page),
     url(r'^v2/user/(?P<user_id>\d+)/(?P<role_id>\d+)', front_views.user_home),
     url(r'^v2/work/upload$', front_views.upload_work),
 

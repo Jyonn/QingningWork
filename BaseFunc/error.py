@@ -1,5 +1,7 @@
 # coding=utf-8
 class Error:
+    COMMENT_ERROR = 1033
+    NOT_FOUND_EVENT = 1032
     PASSWORD_MATCH_ERROR = 1031
     USERNAME_MATCH_ERROR = 1030
     WRONG_CAPTCHA = 1029
@@ -26,7 +28,7 @@ class Error:
     REQUIRE_WRITER = 1008
     NO_PASSWORD_LOGIN = 1007
     DENY_LOGIN = 1006
-    NEED_LOGIN = 1005
+    REQUIRE_LOGIN = 1005
     WRONG_PASSWORD = 1004
     NOT_FOUND_USERNAME = 1003
     REQUIRE_PARAM = 1002
@@ -43,7 +45,7 @@ class Error:
         (REQUIRE_PARAM, "参数不完整"),
         (NOT_FOUND_USERNAME, "不存在的用户名"),
         (WRONG_PASSWORD, "用户名或密码错误"),
-        (NEED_LOGIN, "尚未登录"),
+        (REQUIRE_LOGIN, "尚未登录"),
         (DENY_LOGIN, "已经登录"),
         (NO_PASSWORD_LOGIN, "已开启免密登录"),
         (REQUIRE_WRITER, "需要作者登录"),
@@ -70,4 +72,6 @@ class Error:
         (WRONG_CAPTCHA, "错误的验证码"),
         (USERNAME_MATCH_ERROR, "用户名存在非法字符，或长度不在6-20位之间"),
         (PASSWORD_MATCH_ERROR, "密码存在非法字符，或长度不在6-20位之间"),
+        (NOT_FOUND_EVENT, '不存在的事件'),
+        (COMMENT_ERROR, '评论不能为空，长度应在500个字符以内'),
     ]

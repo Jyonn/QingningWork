@@ -22,7 +22,7 @@ class Timeline(models.Model):
         auto_created=True,
         auto_now=True,
     )
-    related_writer = models.ForeignKey(
+    owner = models.ForeignKey(
         Writer,
         verbose_name='所属用户',
         db_index=True,

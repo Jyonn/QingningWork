@@ -30,12 +30,13 @@ $(document).ready(function () {
         });
         comment_content.focus();
     });
-    comment_cancel.on('click', function () {
-        comment_mask.css('display', 'none');
-        comment_box.animate({bottom: '-180px'});
-    });
-    comment_mask.on('click', function () {
-        comment_mask.css('display', 'none');
-        comment_box.animate({bottom: '-180px'});
-    })
+    comment_cancel.on('click', hide_comment_box);
+    comment_mask.on('click', hide_comment_box);
 });
+
+function hide_comment_box() {
+    var comment_box = $('.comment-box'),
+        comment_mask = $('#comment-mask');
+    comment_mask.css('display', 'none');
+    comment_box.animate({bottom: '-180px'});
+}

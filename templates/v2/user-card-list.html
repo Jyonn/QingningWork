@@ -11,11 +11,12 @@
 {#    {% include "v2/nav.html" %}#}
     <div class="navigation">
         <div class="title">{{ title }}</div>
-        <img class="back" src="{% static 'img/back.png' %}"/>
+        <img class="back" src="{% static 'img/back.png' %}" onclick="window.history.back()"/>
     </div>
     <div id="like-page-list-container">
         {% for card_info in thumb_list %}
             {% include 'v2/user-card.html' %}
         {% endfor %}
     </div>
+    <script src="{% static "v2/js/base.js" %}"></script>
 </body>

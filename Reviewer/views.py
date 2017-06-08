@@ -1,5 +1,6 @@
 # coding=utf-8
 from BaseFunc.decorator import *
+from Reviewer.models import Reviewer
 from Work.models import Work
 from Comment.models import Comment
 from AbstractUser.models import LikeUser

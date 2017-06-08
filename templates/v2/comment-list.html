@@ -11,7 +11,7 @@
 {#    {% include "v2/nav.html" %}#}
     <div class="navigation">
         <div class="title">{{ count }}人评价了作品</div>
-        <img class="back" src="{% static 'img/back.png' %}"/>
+        <img class="back" src="{% static 'img/back.png' %}" onclick="window.history.back()"/>
     </div>
     <div id="comment-page-list-container">
         {% for item in comment_list %}

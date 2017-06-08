@@ -154,7 +154,7 @@ def login_to_session(request, user):
         request.session.cycle_key()
     except:
         pass
-    save_session(request, 'user', user.pk)
+    save_session(request, 'user', user.uid)
     return None
 
 
