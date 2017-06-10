@@ -8,6 +8,8 @@ import json
 import re
 
 from BaseFunc.error import Error
+from Reviewer.models import Reviewer
+from Writer.models import Writer
 
 
 def username_regex(username):
@@ -159,11 +161,22 @@ def login_to_session(request, user):
 
 
 def get_user_from_session(request):
+    """
+    从Session中获取保存的用户
+    :param request:
+    :return: Reviewer或Writer类
+    """
     user_pk = load_session(request, 'user', once_delete=False)
     if user_pk is None:
         return None
     try:
-        return AbstractUser.objects.get(pk=user_pk)
+        o_user = AbstractUser.objects.get(pk=user_pk)
+        if o_user.user_type == AbstractUser.TYPE_WRITER:
+            return Writer.objects.get(pk=o_user.user_id)
+        elif o_user.user_type == AbstractUser.TYPE_REVIEWER:
+            return Reviewer.objects.get(pk=o_user.user_id)
+        else:
+            return None
     except:
         return None
 

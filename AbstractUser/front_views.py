@@ -69,7 +69,7 @@ def get_packed_work_comments(work, length=None):
             ))
     total_comments += len(writer_comments)
     for comment in writer_comments[:length]:
-        print(comment.re_writer.pk)
+        # print(comment.re_writer.pk)
         comment_list.append(dict(
             avatar=comment.re_writer.get_avatar(),
             nickname=comment.re_writer.get_nickname(),
@@ -81,12 +81,54 @@ def get_packed_work_comments(work, length=None):
     return comment_list, total_comments
 
 
-def get_packed_event(event,
+def get_interact_info(o_user, work):
+    """
+    获取用户和作品的互动关系
+    :param o_user: 不能是AbstractUser类，必须为Reviewer或Writer
+    :param work: 作品类
+    :return: 互动字典
+    """
+    if o_user is None:
+        return dict(
+            thumb=False,
+            has_comment=False,
+        )
+    thumb, has_comment = False, False
+    comment = ''
+    if o_user.user_type == AbstractUser.TYPE_REVIEWER:
+        try:
+            o_comment = Comment.objects.get(is_updated=False, re_reviewer=o_user, re_work=work)
+            has_comment = o_comment.content not in [None, '']
+            thumb = o_comment.result
+            comment = o_comment.content
+        except:
+            pass
+    if o_user.user_type == AbstractUser.TYPE_WRITER:
+        try:
+            o_thumb = WriterLike.objects.get(re_work=work, re_writer=o_user)
+            thumb = not o_thumb.is_deleted
+        except:
+            pass
+        try:
+            o_comment = WriterComment.objects.filter(re_work=work, re_writer=o_user, is_deleted=False)
+            has_comment = len(o_comment) > 0
+        except:
+            pass
+    return dict(
+        thumb=thumb,
+        has_comment=has_comment,
+        comment=comment,
+    )
+
+
+def get_packed_event(o_user,
+                     event,
                      need_comment=True,
                      full_content=True,
                      ):
     """
     获取事件（时间线）信息字典
+    :param o_user: 不能是AbstractUser类，必须为Reviewer或Writer
     :param event: TimeLine类
     :param need_comment: 需要评论
     :param full_content: 展示全部内容
@@ -124,14 +166,16 @@ def get_packed_event(event,
             time=get_readable_time_string(event.create_time),
             event_owner_avatar=owner.get_avatar(),
             event_owner_nickname=owner.get_nickname(),
-            work_owner_avatar=re_work.re_writer.get_avatar() if re_work.re_writer is not None else re_work.re_reviewer.get_avatar(),
-            event_link='/v2/event/'+str(owner.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
-            thumb_link='/v2/thumbs/'+str(owner.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
-            comment_link='/v2/comments/'+str(owner.pk)+'/'+str(re_work.pk)+'/'+str(event.pk),
+            work_owner_avatar=re_work.re_writer.get_avatar() if re_work.re_writer is not None
+            else re_work.re_reviewer.get_avatar(),
+            event_link='/v2/event/' + str(owner.pk) + '/' + str(re_work.pk) + '/' + str(event.pk),
+            thumb_link='/v2/thumbs/' + str(owner.pk) + '/' + str(re_work.pk) + '/' + str(event.pk),
+            comment_link='/v2/comments/' + str(owner.pk) + '/' + str(re_work.pk) + '/' + str(event.pk),
             event_id=event.pk,
             work_id=re_work.pk,
             owner_id=owner.pk,
-        )
+        ),
+        interact=get_interact_info(o_user, re_work),
     )
     return event_info
 
@@ -149,7 +193,7 @@ def thumb_page(request, owner_id, work_id, event_id):
     thumb_list, total_thumbs = get_packed_work_thumbs(work)
     return render(request, 'v2/user-card-list.html', dict(
         thumb_list=thumb_list,
-        title=str(total_thumbs)+'人觉得很赞',
+        title=str(total_thumbs) + '人觉得很赞',
     ))
 
 
@@ -174,7 +218,10 @@ def event_page(request, owner_id, work_id, event_id):
     re_work.total_visit += 1
     re_work.save()
 
+    o_user = get_user_from_session(request)
+
     event_info = get_packed_event(
+        o_user,
         event,
         full_content=True,
     )
@@ -185,7 +232,8 @@ def event_page(request, owner_id, work_id, event_id):
         list_comment=True,
         show_comment_icon=True,
     )
-    return render(request, "v2/event.html", dict(event=event_info, user_info=get_user_info(request), page_info=page_info))
+    return render(request, "v2/event.html",
+                  dict(event=event_info, user_info=get_user_info(request), page_info=page_info))
 
 
 def center(request):
@@ -194,11 +242,15 @@ def center(request):
         related_work__is_updated=False,
         related_work__is_delete=False,
         related_work__is_public=True,
-    # ).order_by('-pk')[:20]
+        # ).order_by('-pk')[:20]
     ).order_by('-pk')
+
+    o_user = get_user_from_session(request)
+
     event_list = []
     for event in events:
         event_list.append(get_packed_event(
+            o_user,
             event,
             full_content=False,
         ))
@@ -209,7 +261,11 @@ def center(request):
         list_comment=False,
         show_comment_icon=False,
     )
-    return render(request, "v2/center.html", dict(event_list=event_list, user_info=get_user_info(request), page_info=page_info))
+    return render(request, "v2/center.html", dict(
+        event_list=event_list,
+        user_info=get_user_info(request),
+        page_info=page_info
+    ))
 
 
 def user_home(request, user_id, role_id):
@@ -218,8 +274,9 @@ def user_home(request, user_id, role_id):
     except:
         return render(request, 'v2/login.html')
     card_info = get_user_card(o_user, home_click=False)
-    # print(card_info)
     event_list = []
+
+    o_user = get_user_from_session(request)
 
     if o_user.user_type == AbstractUser.TYPE_WRITER:
         writer = Writer.objects.get(wid=o_user.user_id)
@@ -231,7 +288,12 @@ def user_home(request, user_id, role_id):
             related_work__is_public=True,
         ).order_by('-pk')[:20]
         for event in events:
-            event_list.append(get_packed_event(event, need_comment=False, full_content=False))
+            event_list.append(get_packed_event(
+                o_user,
+                event,
+                need_comment=False,
+                full_content=False
+            ))
         work_info = dict(
             total_works=writer.total_works,
             total_follow=writer.total_follow,

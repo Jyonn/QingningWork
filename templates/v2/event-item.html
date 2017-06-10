@@ -23,12 +23,12 @@
     {% endif %}
 {#                <div id="mark-btn"><i class="fa fa-star"></i></div>#}
     {% if page_info.show_comment_icon %}
-        <div id="comment-btn"><i class="fa fa-comment-o"></i></div>
+        <div id="comment-btn"><i class="fa {% if event.interact.has_comment %}fa-comment{% else %}fa-comment-o{% endif %}"></i></div>
     {% endif %}
-    {% if not user_info.is_reviewer %}
-        <div id="thumb-btn"><i class="fa fa-thumbs-o-up"></i></div>
-    {% endif %}
-        <p class="read-num">{{ event.work.visit }}人阅读</p>
+{#    {% if not user_info.is_reviewer %}#}
+        <div id="thumb-btn" data-event="{{ event.info.event_id }}" data-work="{{ event.info.work_id }}" data-owner="{{ event.info.owner_id }}" onclick="do_thumb(this)"><i class="fa {% if event.interact.thumb %}fa-thumbs-up{% else %}fa-thumbs-o-up{% endif %}"></i></div>
+{#    {% endif %}#}
+        <p class="read-num">{{ event.work.visit }}次阅读</p>
     </div>
     <hr>
     <div class="interact-list-container" id="thumb-list-container" {% if page_info.thumb_click %}onclick="window.location.href='{{ event.info.thumb_link }}'"{% endif %}>

@@ -21,14 +21,17 @@
         </div>
         <hr>
         <label for="textarea" class="comment-input-label">
-            <textarea placeholder="此处输入评价……" class="comment-content" maxlength="500" rows="3"></textarea>
-{#            <div class="hint hint-danger">4/500</div>#}
+            <textarea placeholder="此处输入评价……" class="comment-content" maxlength="500" rows="3">{{ event.interact.comment }}</textarea>
         </label>
         <hr>
     {% if user_info.is_reviewer %}
         <label for="input" class="switch-box">
+        {% if event.interact.thumb %}
+            <div class="hint-success" id="review-state">通过作品</div>
+        {% else %}
             <div class="hint-danger" id="review-state">驳回作品（没有通过审核）</div>
-            <input class="mui-switch mui-switch-animbg" id="review-switcher" type="checkbox">
+        {% endif %}
+            <input class="mui-switch mui-switch-animbg" id="review-switcher" type="checkbox" {% if event.interact.thumb %}checked{% endif %}>
         </label>
     {% endif %}
     </div>

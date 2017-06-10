@@ -118,7 +118,11 @@ class WriterLike(models.Model):
     )
 
     @classmethod
-    def create(cls, *args, **kwargs):
-        w_like = cls(*args, **kwargs)
+    def create(cls, re_work, re_writer, is_deleted):
+        w_like = cls(
+            re_work=re_work,
+            re_writer=re_writer,
+            is_deleted=is_deleted,
+        )
         w_like.save()
         return w_like

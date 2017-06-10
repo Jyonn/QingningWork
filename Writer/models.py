@@ -52,6 +52,7 @@ class Writer(AbstractUser):
             username=username,
             pwd_login=True,
         )
+        writer.save()
         from random import randint
         avatar_int = randint(1, 10)
         avatar_img = "0" if avatar_int < 10 else ""

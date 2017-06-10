@@ -2,7 +2,7 @@
 # import datetime
 
 from BaseFunc.decorator import *
-from Comment.models import Comment, WriterComment
+from Comment.models import Comment, WriterComment, WriterLike
 from QingningWork.settings import WORK_URL
 from Reviewer.models import Reviewer
 from Timeline.models import Timeline
@@ -442,4 +442,41 @@ def comment(request):
                 writer.save()
 
         Comment.create(work, reviewer, content, passed)
+    return response()
+
+
+@require_POST
+@require_json
+@require_params(['like', 'event_id', 'work_id', 'owner_id'])
+@require_login
+def like(request):
+    result = request.POST['like'] == "true"
+    event_id = request.POST['event_id']
+    work_id = request.POST['work_id']
+    owner_id = request.POST['owner_id']
+    o_user = get_user_from_session(request)
+
+    if o_user.is_frozen:
+        return error_response(Error.FROZEN_USER)
+
+    try:
+        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
+        work = event.related_work
+    except:
+        return error_response(Error.NOT_FOUND_EVENT)
+
+    if o_user.user_type == AbstractUser.TYPE_WRITER:
+        try:
+            o = WriterLike.objects.get(re_writer=o_user, re_work=work)
+            o.is_deleted = not result
+            o.save()
+        except:
+            WriterLike.create(work, o_user, not result)
+    if o_user.user_type == AbstractUser.TYPE_REVIEWER:
+        try:
+            o = Comment.objects.get(re_work=work, re_reviewer=o_user, is_updated=False)
+            o.result = result
+            o.save()
+        except:
+            Comment.create(work, o_user, None, result)
     return response()
