@@ -38,19 +38,23 @@ def get_user_card(o_user, home_click=True):
     )
 
 
-def get_packed_work_thumbs(work, length=None):
+def get_packed_work_thumbs(o_user, work, length=None):
     reviewer_likes = Comment.objects.filter(re_work=work, is_updated=False, result=True)
     writer_likes = WriterLike.objects.filter(re_work=work, is_deleted=False)
     thumb_list = []
     for thumb in reviewer_likes:
+        if thumb.re_reviewer == o_user and length is not None:
+            continue
         thumb_list.append(get_user_card(thumb.re_reviewer))
     for thumb in writer_likes[:length]:
+        if thumb.re_writer == o_user and length is not None:
+            continue
         thumb_list.append(get_user_card(thumb.re_writer))
     total_likes = len(reviewer_likes) + len(writer_likes)
     return thumb_list, total_likes
 
 
-def get_packed_work_comments(work, length=None):
+def get_packed_work_comments(o_user, work, length=None, show_self=False):
     reviewer_comments = Comment.objects.filter(re_work=work, is_updated=False)
 
     total_comments = 0
@@ -59,6 +63,8 @@ def get_packed_work_comments(work, length=None):
     for comment in reviewer_comments:
         if len(comment.content) > 0:
             total_comments += 1
+            if comment.re_reviewer == o_user and not show_self:
+                continue
             comment_list.append(dict(
                 avatar=comment.re_reviewer.get_avatar(),
                 nickname=comment.re_reviewer.get_nickname(),
@@ -69,7 +75,8 @@ def get_packed_work_comments(work, length=None):
             ))
     total_comments += len(writer_comments)
     for comment in writer_comments[:length]:
-        # print(comment.re_writer.pk)
+        if comment.re_writer == o_user and not show_self:
+            continue
         comment_list.append(dict(
             avatar=comment.re_writer.get_avatar(),
             nickname=comment.re_writer.get_nickname(),
@@ -125,9 +132,11 @@ def get_packed_event(o_user,
                      event,
                      need_comment=True,
                      full_content=True,
+                     show_self=False,
                      ):
     """
     获取事件（时间线）信息字典
+    :param show_self: comment中是否展示我
     :param o_user: 不能是AbstractUser类，必须为Reviewer或Writer
     :param event: TimeLine类
     :param need_comment: 需要评论
@@ -137,13 +146,12 @@ def get_packed_event(o_user,
     re_work = event.related_work
     owner = event.owner
 
-    like_list, total_likes = get_packed_work_thumbs(re_work, 5)
+    thumb_list, total_thumbs = get_packed_work_thumbs(o_user, re_work, 5)
 
     if need_comment:
-        comment_list, total_comments = get_packed_work_comments(re_work, 5)
+        comment_list, total_comments = get_packed_work_comments(o_user, re_work, length=5, show_self=show_self)
     else:
         comment_list, total_comments = [], 0
-
     event_info = dict(
         work=dict(
             title=re_work.work_name if re_work.work_name is not None and len(re_work.work_name) > 0 else '未命名',
@@ -151,8 +159,8 @@ def get_packed_event(o_user,
             version=re_work.version_num,
             content=re_work.content if full_content else re_work.content[:120] + '……',
             visit=re_work.total_visit,
-            thumbs=total_likes,
-            thumb_list=like_list,
+            thumbs=total_thumbs,
+            thumb_list=thumb_list,
             comments=total_comments,
             comment_list=comment_list,
         ),
@@ -190,7 +198,10 @@ def thumb_page(request, owner_id, work_id, event_id):
         work = event.related_work
     except:
         return render(request, 'v2/login.html')
-    thumb_list, total_thumbs = get_packed_work_thumbs(work)
+
+    o_user = get_user_from_session(request)
+
+    thumb_list, total_thumbs = get_packed_work_thumbs(o_user, work)
     return render(request, 'v2/user-card-list.html', dict(
         thumb_list=thumb_list,
         title=str(total_thumbs) + '人觉得很赞',
@@ -203,7 +214,10 @@ def comment_page(request, owner_id, work_id, event_id):
         work = event.related_work
     except:
         return render(request, 'v2/login.html')
-    comment_list, total_comments = get_packed_work_comments(work)
+
+    o_user = get_user_from_session(request)
+
+    comment_list, total_comments = get_packed_work_comments(o_user, work, length=None, show_self=True)
     # print(comment_list)
     return render(request, 'v2/comment-list.html', dict(comment_list=comment_list, count=total_comments))
 
@@ -224,6 +238,7 @@ def event_page(request, owner_id, work_id, event_id):
         o_user,
         event,
         full_content=True,
+        show_self=True,
     )
     page_info = dict(
         thumb_click=True,
@@ -253,6 +268,7 @@ def center(request):
             o_user,
             event,
             full_content=False,
+            show_self=False,
         ))
     page_info = dict(
         thumb_click=False,
@@ -292,7 +308,8 @@ def user_home(request, user_id, role_id):
                 o_user,
                 event,
                 need_comment=False,
-                full_content=False
+                full_content=False,
+                show_self=False,
             ))
         work_info = dict(
             total_works=writer.total_works,

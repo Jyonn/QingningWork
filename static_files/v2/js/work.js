@@ -46,11 +46,27 @@ function do_thumb(thumb_btn_raw) {
     },
         json = encodedJSON(post);
     postJSON('/work/like', json, function (response) {
+        var event_item = thumb_btn.parent().parent(),
+            me_thumb = event_item.find('#me-thumb'),
+            text_desc = event_item.find('#text-desc-thumb'),
+            thumb_count = parseInt(text_desc.attr('data-thumb'));
         if (response.code === 0) {
-            if (like)
+            if (like) {
+                thumb_count += 1;
+                me_thumb.css('display', 'inline');
                 thumb_icon.removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
-            else
+            }
+            else {
+                thumb_count -= 1;
+                me_thumb.css('display', 'none');
                 thumb_icon.removeClass('fa-thumbs-up').addClass('fa-thumbs-o-up');
+            }
+            if (thumb_count === 0)
+                text_desc.text('成为第一个赞的人吧');
+            else
+                text_desc.text('等'+thumb_count+'人觉得赞');
+            text_desc.attr('data-thumb', thumb_count);
+            review_switcher_change(like);
         }
         else {
             show_hint(response.msg)
