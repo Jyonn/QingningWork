@@ -19,7 +19,7 @@
         </div>
 
         <div class="work-edit-item">
-            <input type="text" id="work-edit-writer-name-input" placeholder="作者" maxlength="10">
+            <input type="text" id="work-edit-writer-name-input" placeholder="作者" maxlength="10" {% if user_info.is_writer %}value="{{ user_info.nickname }}"{% endif %}>
         </div>
 
         <div class="work-edit-item">
@@ -34,5 +34,10 @@
         </label>
     </div>
 
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="{% static "v2/js/work.js" %}"></script>
+    <script src="{% static "v2/js/hint.js" %}"></script>
+    <script src="{% static "v2/js/base.js" %}"></script>
+    <script src="{% static "v2/js/jquery.json.js" %}"></script>
+    <script src="{% static "v2/js/base64.min.js" %}"></script>
 </body>

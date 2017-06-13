@@ -25,6 +25,8 @@ class Comment(models.Model):
         verbose_name='评论（v2）',
         max_length=500,
         default=None,
+        blank=True,
+        null=True,
     )
     result = models.BooleanField(
         verbose_name="审稿结果",

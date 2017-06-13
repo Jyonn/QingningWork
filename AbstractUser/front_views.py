@@ -5,11 +5,10 @@ from BaseFunc.base import get_readable_time_string, get_user_from_session
 from Comment.models import WriterLike, Comment, WriterComment
 from Reviewer.models import Reviewer
 from Timeline.models import Timeline
-from Writer.models import Writer
+from Writer.models import Writer, Follow
 
 
-def get_user_info(request):
-    o_user = get_user_from_session(request)
+def get_user_info(o_user):
     if o_user is None:
         return dict(
             is_login=False,
@@ -24,6 +23,7 @@ def get_user_info(request):
             is_writer=o_user.user_type == AbstractUser.TYPE_WRITER,
             avatar=o_user.get_avatar(),
             nickname=o_user.get_nickname(),
+            user_home='/v2/user/' + str(o_user.uid) + '/' + str(o_user.pk),
         )
 
 
@@ -61,7 +61,7 @@ def get_packed_work_comments(o_user, work, length=None, show_self=False):
     comment_list = []
     writer_comments = WriterComment.objects.filter(re_work=work, is_deleted=False)
     for comment in reviewer_comments:
-        if len(comment.content) > 0:
+        if comment.content is not None and len(comment.content) > 0:
             total_comments += 1
             if comment.re_reviewer == o_user and not show_self:
                 continue
@@ -72,6 +72,7 @@ def get_packed_work_comments(o_user, work, length=None, show_self=False):
                 content=comment.content,
                 is_reviewer=True,
                 home_link='/v2/user/' + str(comment.re_reviewer.uid) + '/' + str(comment.re_reviewer.pk),
+                is_mine=comment.re_reviewer == o_user,
             ))
     total_comments += len(writer_comments)
     for comment in writer_comments[:length]:
@@ -84,6 +85,7 @@ def get_packed_work_comments(o_user, work, length=None, show_self=False):
             content=comment.content,
             is_reviewer=False,
             home_link='/v2/user/' + str(comment.re_writer.uid) + '/' + str(comment.re_writer.pk),
+            is_mine=comment.re_writer == o_user,
         ))
     return comment_list, total_comments
 
@@ -124,13 +126,12 @@ def get_interact_info(o_user, work):
     return dict(
         thumb=thumb,
         has_comment=has_comment,
-        comment=comment,
+        comment=comment if comment is not None else '',
     )
 
 
 def get_packed_event(o_user,
                      event,
-                     need_comment=True,
                      full_content=True,
                      show_self=False,
                      ):
@@ -139,7 +140,6 @@ def get_packed_event(o_user,
     :param show_self: comment中是否展示我
     :param o_user: 不能是AbstractUser类，必须为Reviewer或Writer
     :param event: TimeLine类
-    :param need_comment: 需要评论
     :param full_content: 展示全部内容
     :return:
     """
@@ -148,10 +148,7 @@ def get_packed_event(o_user,
 
     thumb_list, total_thumbs = get_packed_work_thumbs(o_user, re_work, 5)
 
-    if need_comment:
-        comment_list, total_comments = get_packed_work_comments(o_user, re_work, length=5, show_self=show_self)
-    else:
-        comment_list, total_comments = [], 0
+    comment_list, total_comments = get_packed_work_comments(o_user, re_work, length=5, show_self=show_self)
     event_info = dict(
         work=dict(
             title=re_work.work_name if re_work.work_name is not None and len(re_work.work_name) > 0 else '未命名',
@@ -172,6 +169,7 @@ def get_packed_event(o_user,
             ),
             intro='' if owner.introduce is None else owner.introduce,
             time=get_readable_time_string(event.create_time),
+            event_owner_home='/v2/user/' + str(owner.uid) + '/' + str(owner.pk),
             event_owner_avatar=owner.get_avatar(),
             event_owner_nickname=owner.get_nickname(),
             work_owner_avatar=re_work.re_writer.get_avatar() if re_work.re_writer is not None
@@ -248,18 +246,10 @@ def event_page(request, owner_id, work_id, event_id):
         show_comment_icon=True,
     )
     return render(request, "v2/event.html",
-                  dict(event=event_info, user_info=get_user_info(request), page_info=page_info))
+                  dict(event=event_info, user_info=get_user_info(o_user), page_info=page_info))
 
 
-def center(request):
-    events = Timeline.objects.filter(
-        is_delete=False,
-        related_work__is_updated=False,
-        related_work__is_delete=False,
-        related_work__is_public=True,
-        # ).order_by('-pk')[:20]
-    ).order_by('-pk')
-
+def event_list_packer(request, events):
     o_user = get_user_from_session(request)
 
     event_list = []
@@ -277,28 +267,77 @@ def center(request):
         list_comment=False,
         show_comment_icon=False,
     )
-    return render(request, "v2/center.html", dict(
+
+    return dict(
         event_list=event_list,
-        user_info=get_user_info(request),
+        user_info=get_user_info(o_user),
         page_info=page_info
-    ))
+    )
+
+
+def center(request):
+    events = Timeline.objects.filter(
+        is_delete=False,
+        related_work__is_updated=False,
+        related_work__is_delete=False,
+        related_work__is_public=True,
+    ).order_by('-pk')[:20]
+    return render(request, "v2/center.html", event_list_packer(request, events))
+
+
+def require_review(request):
+    o_user = get_user_from_session(request)
+    if o_user.user_type != AbstractUser.TYPE_REVIEWER:
+        return render(request, 'v2/login.html')
+    events = Timeline.objects.filter(
+        is_delete=False,
+        type__in=(Timeline.TYPE_MODIFY_WORK, Timeline.TYPE_CREATE_WORK),
+        related_work__is_delete=False,
+        related_work__is_updated=False,
+        related_work__is_public=True,
+    )
+    filter_events = []
+    for event in events:
+        try:
+            Comment.objects.get(is_updated=False, re_reviewer=o_user, re_work=event.related_work)
+        except:
+            filter_events.append(event)
+    return render(request, 'v2/center.html', event_list_packer(request, filter_events))
+
+
+def follow_events(request):
+    o_user = get_user_from_session(request)
+    if o_user.user_type != AbstractUser.TYPE_WRITER:
+        return render(request, 'v2/login.html')
+    follows = Follow.objects.filter(follower=o_user, is_delete=False)
+    followees = []
+    for follow in follows:
+        followees.append(follow.followee)
+    events = Timeline.objects.filter(
+        owner__in=followees,
+        is_delete=False,
+        related_work__is_public=True,
+        related_work__is_updated=False,
+        related_work__is_delete=False,
+    )
+    return render(request, 'v2/center.html', event_list_packer(request, events))
 
 
 def user_home(request, user_id, role_id):
     try:
-        o_user = AbstractUser.objects.get(pk=user_id, is_frozen=False, user_id=role_id)
+        o_visit_user = AbstractUser.objects.get(pk=user_id, is_frozen=False, user_id=role_id)
     except:
         return render(request, 'v2/login.html')
-    card_info = get_user_card(o_user, home_click=False)
+    card_info = get_user_card(o_visit_user, home_click=False)
     event_list = []
 
     o_user = get_user_from_session(request)
 
-    if o_user.user_type == AbstractUser.TYPE_WRITER:
-        writer = Writer.objects.get(wid=o_user.user_id)
+    if o_visit_user.user_type == AbstractUser.TYPE_WRITER:
+        writer = Writer.objects.get(wid=o_visit_user.user_id)
         events = Timeline.objects.filter(
             is_delete=False,
-            related_writer=writer,
+            owner=writer,
             related_work__is_updated=False,
             related_work__is_delete=False,
             related_work__is_public=True,
@@ -307,7 +346,6 @@ def user_home(request, user_id, role_id):
             event_list.append(get_packed_event(
                 o_user,
                 event,
-                need_comment=False,
                 full_content=False,
                 show_self=False,
             ))
@@ -317,7 +355,7 @@ def user_home(request, user_id, role_id):
             total_followed=writer.total_followed,
         )
     else:
-        reviewer = Reviewer.objects.get(rid=o_user.user_id)
+        reviewer = Reviewer.objects.get(rid=o_visit_user.user_id)
         work_info = dict(
             total_upload=reviewer.total_upload,
             total_review=reviewer.total_review,
@@ -335,11 +373,26 @@ def user_home(request, user_id, role_id):
         card_info=card_info,
         work_info=work_info,
         page_info=page_info,
+        user_info=get_user_info(o_user),
     ))
 
 
 def upload_work(request):
-    return render(request, 'v2/work-edit.html')
+    o_user = get_user_from_session(request)
+    return render(request, 'v2/work-edit.html', dict(
+        user_info=get_user_info(o_user),
+        page_info=dict(
+            is_create=True,
+            is_modify=False,
+        ),
+    ))
+
+
+def modify_work(request):
+    o_user = get_user_from_session(request)
+    if o_user is None:
+        return render(request, 'v2/login.html')
+
 
 
 def login_v2(request):

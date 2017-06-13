@@ -23,6 +23,8 @@ urlpatterns = [
     url(r'^$', front_views.user),
     url(r'^v2/login$', front_views.login_v2, name='user-login-page'),
     url(r'^v2/center$', front_views.center, name='center-page'),
+    url(r'^v2/center/review$', front_views.require_review, name='review-center-page'),
+    url(r'^v2/center/follow$', front_views.follow_events, name='writer-center-page'),
     url(r'^v2/event/(?P<owner_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.event_page),
     url(r'^v2/thumbs/(?P<owner_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.thumb_page),
     url(r'^v2/comments/(?P<owner_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.comment_page),

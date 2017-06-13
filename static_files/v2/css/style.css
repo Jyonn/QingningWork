@@ -465,6 +465,16 @@ hr {
         font-size: 14px;
         margin: 0 10px 0 30px;
     }
+    .event-list .event-item .comment-container .comment .delete {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        padding: 2px 10px 10px;
+    }
+    .event-list .event-item .comment-container .comment .delete i {
+        font-size: 18px;
+        color: #888888;
+    }
 
 #like-page-list-container {
     position: absolute;
