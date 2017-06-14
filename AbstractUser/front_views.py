@@ -59,6 +59,8 @@ def get_packed_work_comments(o_user, work, length=None, show_self=False):
 
     total_comments = 0
     comment_list = []
+    comment_user_list = []
+    comment_user_uid_list = []
     writer_comments = WriterComment.objects.filter(re_work=work, is_deleted=False)
     for comment in reviewer_comments:
         if comment.content is not None and len(comment.content) > 0:
@@ -74,6 +76,8 @@ def get_packed_work_comments(o_user, work, length=None, show_self=False):
                 home_link='/v2/user/' + str(comment.re_reviewer.uid) + '/' + str(comment.re_reviewer.pk),
                 is_mine=comment.re_reviewer == o_user,
             ))
+            comment_user_list.append(comment.re_reviewer.get_nickname())
+
     total_comments += len(writer_comments)
     for comment in writer_comments[:length]:
         if comment.re_writer == o_user and not show_self:
@@ -87,7 +91,13 @@ def get_packed_work_comments(o_user, work, length=None, show_self=False):
             home_link='/v2/user/' + str(comment.re_writer.uid) + '/' + str(comment.re_writer.pk),
             is_mine=comment.re_writer == o_user,
         ))
-    return comment_list, total_comments
+        if comment.re_writer.uid not in comment_user_uid_list:
+            comment_user_uid_list.append(comment.re_writer.uid)
+            comment_user_list.append(comment.re_writer.get_nickname())
+
+    comment_str = '、'
+    comment_str = comment_str.join(comment_user_list)
+    return comment_list, total_comments, comment_str
 
 
 def get_interact_info(o_user, work):
@@ -147,8 +157,13 @@ def get_packed_event(o_user,
     owner = event.owner
 
     thumb_list, total_thumbs = get_packed_work_thumbs(o_user, re_work, 5)
+    thumb_str = ''
+    for thumb in thumb_list[:-1]:
+        thumb_str += thumb['nickname'] + '、'
+    if len(thumb_list) > 0:
+        thumb_str += thumb_list[-1]['nickname']
 
-    comment_list, total_comments = get_packed_work_comments(o_user, re_work, length=5, show_self=show_self)
+    comment_list, total_comments, comment_str = get_packed_work_comments(o_user, re_work, length=5, show_self=show_self)
     event_info = dict(
         work=dict(
             title=re_work.work_name if re_work.work_name is not None and len(re_work.work_name) > 0 else '未命名',
@@ -158,8 +173,10 @@ def get_packed_event(o_user,
             visit=re_work.total_visit,
             thumbs=total_thumbs,
             thumb_list=thumb_list,
+            thumb_str=thumb_str,
             comments=total_comments,
             comment_list=comment_list,
+            comment_str=comment_str,
         ),
         info=dict(
             type=dict(
@@ -215,7 +232,7 @@ def comment_page(request, owner_id, work_id, event_id):
 
     o_user = get_user_from_session(request)
 
-    comment_list, total_comments = get_packed_work_comments(o_user, work, length=None, show_self=True)
+    comment_list, total_comments, comment_str = get_packed_work_comments(o_user, work, length=None, show_self=True)
     # print(comment_list)
     return render(request, 'v2/comment-list.html', dict(comment_list=comment_list, count=total_comments))
 
@@ -281,7 +298,7 @@ def center(request):
         related_work__is_updated=False,
         related_work__is_delete=False,
         related_work__is_public=True,
-    ).order_by('-pk')[:20]
+    ).order_by('-pk')
     return render(request, "v2/center.html", event_list_packer(request, events))
 
 
