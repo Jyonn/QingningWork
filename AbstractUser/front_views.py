@@ -411,7 +411,6 @@ def modify_work(request):
         return render(request, 'v2/login.html')
 
 
-
 def login_v2(request):
     return render(request, "v2/login.html")
 
