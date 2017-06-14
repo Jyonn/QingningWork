@@ -201,6 +201,8 @@ hr {
         left: 0;
         height: 26px;
         padding: 12px;
+        font-size: 30px;
+        color: #FFFFFF;
     }
     .navigation .user-avatar {
         height: 30px;
@@ -265,6 +267,8 @@ hr {
         left: 0;
         width: 16px;
         padding: 15px 10px;
+        font-size: 32px;
+        color: #FFFFFF;
     }
     .sidebar-container .btn-box {
         margin-top: 20px;
@@ -464,6 +468,9 @@ hr {
     .event-list .event-item .comment-container .comment .user-comment-content {
         font-size: 14px;
         margin: 0 10px 0 30px;
+    }
+    .event-list .event-item .comment-container .comment .user-comment-content:hover {
+        background: #eeeeee;
     }
     .event-list .event-item .comment-container .comment .delete {
         position: absolute;
