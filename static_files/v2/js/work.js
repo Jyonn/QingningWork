@@ -32,6 +32,43 @@ $(document).ready(function () {
     });
     comment_cancel.on('click', hide_comment_box);
     comment_mask.on('click', hide_comment_box);
+
+    var create_work = $('#create-work'),
+        work_edit_work_name_input = $('#work-edit-work-name-input'),
+        work_edit_writer_name_input = $('#work-edit-writer-name-input'),
+        work_edit_work_content = $('#work-edit-work-content'),
+        switch_for_public = $('#switch-for-public');
+    create_work.on('click', function () {
+        var post = {
+            work_name: work_edit_work_name_input.val(),
+            writer_name: work_edit_writer_name_input.val(),
+            content: work_edit_work_content.val(),
+            is_public: switch_for_public.length === 0 || switch_for_public.is(':checked'),
+        },
+            json = encodedJSON(post);
+        if (post.work_name === '') {
+            show_hint('作品名不允许为空');
+            return;
+        }
+        if (post.writer_name === '') {
+            show_hint('作者名不允许为空');
+            return;
+        }
+        if (post.content === '') {
+            show_hint('正文不允许为空');
+            return;
+        }
+        postJSON('/work/upload', json, function (response) {
+            if (response.code === 0) {
+                show_hint('发布成功', 500, function () {
+                    window.location.href = response.body
+                });
+            }
+            else {
+                show_hint(response.msg)
+            }
+        })
+    })
 });
 
 function do_thumb(thumb_btn_raw) {

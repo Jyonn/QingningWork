@@ -1,5 +1,10 @@
 # coding=utf-8
 class Error:
+    WORK_SAVE_ERROR = 1038
+    CONTENT_NONE = 1037
+    WRITER_NAME_NONE = 1036
+    WORK_NAME_NONE = 1035
+    REVIEWER_PUBLIC = 1034
     COMMENT_ERROR = 1033
     NOT_FOUND_EVENT = 1032
     PASSWORD_MATCH_ERROR = 1031
@@ -74,4 +79,9 @@ class Error:
         (PASSWORD_MATCH_ERROR, "密码存在非法字符，或长度不在6-20位之间"),
         (NOT_FOUND_EVENT, '不存在的事件'),
         (COMMENT_ERROR, '评论不能为空，长度应在500个字符以内'),
+        (REVIEWER_PUBLIC, '审稿员只能上传公开稿件'),
+        (WORK_NAME_NONE, '作品名不能为空'),
+        (WRITER_NAME_NONE, '作者名不能为空'),
+        (CONTENT_NONE, '正文不能为空'),
+        (WORK_SAVE_ERROR, '作品保存失败'),
     ]

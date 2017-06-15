@@ -1,4 +1,6 @@
 from django.db import models
+
+from AbstractUser.models import AbstractUser
 from Writer.models import Writer
 from Reviewer.models import Reviewer
 
@@ -48,11 +50,6 @@ class Work(models.Model):
         verbose_name='标题',
         db_index=True,
         max_length=20,
-        default=None,
-    )
-    work_store = models.CharField(
-        verbose_name='存储路径',
-        max_length=32,
         default=None,
     )
     content = models.TextField(
@@ -113,7 +110,33 @@ class Work(models.Model):
     )
 
     @classmethod
-    def create(cls, *args, **kwargs):
-        work = cls(*args, **kwargs)
-        work.save()
-        return work
+    def create(cls, o_user, work_name, writer_name, content, is_public, last_version_work):
+        re_writer, re_reviewer = None, None
+        if o_user.user_type == AbstractUser.TYPE_REVIEWER:
+            re_reviewer = o_user
+        if o_user.user_type == AbstractUser.TYPE_WRITER:
+            re_writer = o_user
+        o_work = cls(
+            re_writer=re_writer,
+            re_reviewer=re_reviewer,
+            work_name=work_name,
+            writer_name=writer_name,
+            content=content,
+            is_public=is_public,
+            last_version_work=last_version_work,
+            version_num=1 if last_version_work is None else last_version_work.version_num + 1,
+            is_updated=False,
+            status=Work.STATUS_UNDER_REVIEW if is_public else Work.STATUS_UNDER_WRITE,
+        )
+        try:
+            o_work.save()
+            o_work.newest_version_work = o_work
+            o_work.save()
+            while last_version_work is not None:
+                last_version_work.newest_version_work = o_work
+                last_version_work.is_updated = True
+                last_version_work.save()
+                last_version_work = last_version_work.last_version_work
+        except:
+            return None
+        return o_work

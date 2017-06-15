@@ -39,8 +39,9 @@ $(document).ready(function () {
                 show_hint(response.msg)
             }
             else {
-                show_hint('评论成功');
-                window.location.reload();
+                show_hint('评论成功', 500, function () {
+                    window.location.reload()
+                });
             }
         })
     });

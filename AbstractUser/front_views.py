@@ -396,6 +396,9 @@ def user_home(request, user_id, role_id):
 
 def upload_work(request):
     o_user = get_user_from_session(request)
+    if o_user is None:
+        return render(request, 'v2/login.html')
+
     return render(request, 'v2/work-edit.html', dict(
         user_info=get_user_info(o_user),
         page_info=dict(

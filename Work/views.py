@@ -189,7 +189,7 @@ def create_work(request):
         return None, Error.WORK_NAME_TOO_LONG
     if len(writer_name) > 6:
         return None, Error.NICKNAME_TOO_LONG
-    
+
     # #  获取作品类型
     # try:
     #     work_type = int(work_type)
@@ -295,25 +295,43 @@ def delete_work(work):
 
 @require_POST
 @require_json
-@require_params(["work_type", "work_name", "writer_name", "content"])
+@require_params(["work_name", "writer_name", "content", "is_public"])
 @require_login
 def upload_work(request):
     """
     审稿员或作者上传稿件
     request
     {
-        work_type: 作品类型，只能为 WORK_TYPE_FILE 或 WORK_TYPE_TEXT
         work_name: 作品名称
         writer_name: 作者名称
         content: 作品正文，当 work_type 为 WORK_TYPE_TEXT 时有效
-        file: 上传的作品，当 work_type 为 WORK_TYPE_FILE 时有效
+        is_public: 是否公开，仅对writer有效
     }
     """
-    work, ret_code = create_work(request)
-    if ret_code != Error.OK:
-        return error_response(ret_code)
+    work_name = request.POST['work_name']
+    writer_name = request.POST['writer_name']
+    content = request.POST['content']
+    is_public = request.POST['is_public'] == 'true'
+    o_user = get_user_from_session(request)
+    if o_user.user_type == AbstractUser.TYPE_REVIEWER and not is_public:
+        return error_response(Error.REVIEWER_PUBLIC)
+    pattern = r'^\s*$'
+    if re.search(pattern, work_name) is not None:
+        return error_response(Error.WORK_NAME_NONE)
+    if re.search(pattern, writer_name) is not None:
+        return error_response(Error.WRITER_NAME_NONE)
+    if re.search(pattern, content) is not None:
+        return error_response(Error.CONTENT_NONE)
 
-    return response(body=work.pk)
+    o_work = Work.create(o_user, work_name, writer_name, content, is_public, None)
+    if o_work is None:
+        return error_response(Error.WORK_SAVE_ERROR)
+    if o_user.user_type == AbstractUser.WRITER:
+        Timeline.create(o_user, o_work, Timeline.TYPE_CREATE_WORK)
+    else:
+        qn_user = Writer.objects.get(username='青柠')
+        Timeline.create(qn_user, o_work, Timeline.TYPE_CREATE_WORK)
+    return response()
 
 
 @require_POST
@@ -324,25 +342,8 @@ def modify(request):
     """
     修改作品（懒惰删除，保留备份）
     """
-    wid = request.POST["wid"]
-    work, ret_code = get_work_by_id(wid)
-    if work is None:
-        return error_response(ret_code)
 
-    # 删除原作品
-    ret_code = delete_work(work)
-    if ret_code != Error.OK:
-        return error_response(ret_code)
-
-    # 创建新作品
-    modified_work, ret_code = create_work(request)
-    if ret_code != Error.OK:
-        return error_response(ret_code)
-    modified_work.last_version_work = work
-    modified_work.version_num = work.version_num + 1
-    modified_work.save()
-
-    return response(body=modified_work.pk)
+    return response()
 
 
 @require_POST

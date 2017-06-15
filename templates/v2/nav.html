@@ -21,7 +21,7 @@
             {% else %}
             <i class="fa fa-check btn slow" onclick="window.location.href='{% url 'review-center-page' %}'"><div>待审文章</div></i>
             {% endif %}
-            <i class="fa fa-file-o btn slow" onclick="window.location.href='{% url 'upload-work' %}'"><div>发布文章</div></i>
+            <i class="fa fa-file-o btn slow" onclick="window.location.href='{% url 'upload-work-page' %}'"><div>发布文章</div></i>
             <i class="fa fa-user-o btn slow" onclick="window.location.href='{{ user_info.user_home }}'"><div>个人主页</div></i>
             <i class="fa fa-edit btn slow"><div>编辑信息</div></i>
             <i class="fa fa-sign-out btn slow"><div>退出登录</div></i>

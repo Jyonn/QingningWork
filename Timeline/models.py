@@ -42,12 +42,11 @@ class Timeline(models.Model):
     )
 
     @classmethod
-    def create(cls, related_writer, related_work, tl_type, **kwargs):
+    def create(cls, related_writer, related_work, tl_type):
         event = cls(
             related_work=related_work,
-            related_writer=related_writer,
+            owner=related_writer,
             type=tl_type,
-            **kwargs,
         )
         event.save()
         return event

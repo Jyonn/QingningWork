@@ -9,8 +9,8 @@
 </head>
 <body>
     <div class="navigation">
-        <div class="t left">取消</div>
-        <div class="t right">发布</div>
+        <div class="t left" onclick="window.history.back()">取消</div>
+        <div class="t right" id="create-work">发布</div>
     </div>
 
     <div id="work-edit-container">
@@ -27,13 +27,16 @@
                 <textarea id="work-edit-work-content" class="preview-content" placeholder="正文"></textarea>
             </label>
         </div>
-
+    {% if user_info.is_writer %}
         <label for="input" class="switch-box work-edit-item">
             <div class="switch-desc-large">设为私密文章</div>
-            <input class="mui-switch mui-switch-animbg" type="checkbox">
+            <input class="mui-switch mui-switch-animbg" type="checkbox" id="switch-for-public">
         </label>
+    {% endif %}
     </div>
-
+    <div class="hint-box">
+        <div class="hint-body"></div>
+    </div>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="{% static "v2/js/work.js" %}"></script>
     <script src="{% static "v2/js/hint.js" %}"></script>

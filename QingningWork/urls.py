@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^v2/thumbs/(?P<owner_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.thumb_page),
     url(r'^v2/comments/(?P<owner_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.comment_page),
     url(r'^v2/user/(?P<user_id>\d+)/(?P<role_id>\d+)', front_views.user_home),
-    url(r'^v2/work/upload$', front_views.upload_work, name='upload-work'),
+    url(r'^v2/work/upload$', front_views.upload_work, name='upload-work-page'),
 
     url(r'^legacy/', include("Work.legacy_urls")),
 
