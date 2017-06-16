@@ -70,18 +70,10 @@ require_login = decorator_generator(require_login_func, Error.REQUIRE_LOGIN)
 deny_login = decorator_generator(deny_login_func, Error.DENY_LOGIN)
 
 
-def require_login_writer_func(request):
-    ret = require_login_func(request)
-    if ret is not True:
-        return False
-    return request.session["role_type"] == AbstractUser.WRITER
-
-
 def require_login_reviewer_func(request):
     ret = require_login_func(request)
     if ret is not True:
         return False
     return request.session["role_type"] == AbstractUser.REVIEWER
 
-require_login_writer = decorator_generator(require_login_writer_func, Error.REQUIRE_WRITER)
 require_login_reviewer = decorator_generator(require_login_reviewer_func, Error.REQUIRE_REVIEWER)

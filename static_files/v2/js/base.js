@@ -32,3 +32,12 @@ function encodedJSON(dict) {
         }
     return $.toJSON(dict)
 }
+
+function switcher_state_changer(switcher, text_holder, on_text, off_text, on_class, off_class) {
+    switcher.on('change', function () {
+        if (switcher.is(':checked'))
+            text_holder.text(on_text).removeClass(off_class).addClass(on_class);
+        else
+            text_holder.text(off_text).removeClass(on_class).addClass(off_class);
+    })
+}

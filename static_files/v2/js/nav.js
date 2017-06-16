@@ -28,3 +28,9 @@ $(document).ready(function () {
         });
     });
 });
+
+function user_logout() {
+    postJSON('/user/logout', '', function (response) {
+        window.location.reload();
+    });
+}

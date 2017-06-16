@@ -185,9 +185,7 @@ def logout_from_session(request):
     """
     登出系统，销毁session
     """
-    del request.session["role_id"]
-    del request.session["role_type"]
-    del request.session["login_in"]
+    load_session(request, 'user', once_delete=True)
     request.session.flush()
     return None
 

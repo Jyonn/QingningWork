@@ -1,5 +1,6 @@
 # coding=utf-8
 class Error:
+    COMMENT_DELETE_ERROR = 1039
     WORK_SAVE_ERROR = 1038
     CONTENT_NONE = 1037
     WRITER_NAME_NONE = 1036
@@ -84,4 +85,5 @@ class Error:
         (WRITER_NAME_NONE, '作者名不能为空'),
         (CONTENT_NONE, '正文不能为空'),
         (WORK_SAVE_ERROR, '作品保存失败'),
+        (COMMENT_DELETE_ERROR, '评论删除失败'),
     ]

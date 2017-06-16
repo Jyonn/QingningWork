@@ -10,6 +10,7 @@ urlpatterns = [
     # url(r'^modify/$', views.modify, name="modify-work-by-its-owner"),
     url(r'^comment$', views.comment, name='comment-work'),
     url(r'^like$', views.like, name='like-work'),
+    url(r'^comment/delete$', views.comment_delete, name='comment-delete')
 ] + [
     # url(r'^detail.view/(?P<wid>\d+)/', front_views.detail, name="front-page-work-detail"),
     # url(r'^upload.act/', front_views.upload, name="front-page-upload-work"),

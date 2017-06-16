@@ -24,15 +24,21 @@
 
         <div class="work-edit-item">
             <label for="textarea">
-                <textarea id="work-edit-work-content" class="preview-content" placeholder="正文"></textarea>
+                <textarea id="work-edit-work-content" class="preview-content" rows="5" placeholder="正文"></textarea>
+            </label>
+        </div>
+        <div class="work-edit-item">
+            <label for="textarea">
+                <textarea id="work-edit-motion" class="comment-content" rows="2" placeholder="我没有其他要说的咯(o'ω'o)？"></textarea>
             </label>
         </div>
     {% if user_info.is_writer %}
         <label for="input" class="switch-box work-edit-item">
-            <div class="switch-desc-large">设为私密文章</div>
-            <input class="mui-switch mui-switch-animbg" type="checkbox" id="switch-for-public">
+            <div class="switch-desc-large" id="switch-public-desc">所有人可以看</div>
+            <input class="mui-switch mui-switch-animbg" type="checkbox" id="switch-for-public" checked>
         </label>
     {% endif %}
+        <div class="work-edit-item"></div>
     </div>
     <div class="hint-box">
         <div class="hint-body"></div>

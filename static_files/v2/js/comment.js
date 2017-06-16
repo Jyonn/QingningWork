@@ -1,25 +1,33 @@
-function review_state_change(checked) {
-    var review_state = $('#review-state');
-    if (checked) {
-        review_state.text('通过作品').removeClass('hint-danger').addClass('hint-success');
-    }
-    else {
-        review_state.text('驳回作品（没有通过审核）').removeClass('hint-success').addClass('hint-danger');
-    }
-}
+// function review_state_change(checked) {
+//     var review_state = $('#review-state');
+//     if (checked) {
+//         review_state.text('通过作品').removeClass('hint-danger').addClass('hint-success');
+//     }
+//     else {
+//         review_state.text('驳回作品（没有通过审核）').removeClass('hint-success').addClass('hint-danger');
+//     }
+// }
 
 function review_switcher_change(like) {
     var review_switcher = $('#review-switcher');
     review_switcher.prop('checked', like);
-    review_state_change(like);
+    // review_state_change(like);
 }
 
 $(document).ready(function () {
     var review_switcher = $('#review-switcher');
-    review_switcher.on('change', function () {
-        var checked = review_switcher.prop('checked');
-        review_state_change(checked);
-    });
+    // review_switcher.on('change', function () {
+    //     var checked = review_switcher.is(':checked');
+    //     review_state_change(checked);
+    // });
+    switcher_state_changer(
+        review_switcher,
+        $('#review-state'),
+        '通过作品',
+        '驳回作品（没有通过审核）',
+        'hint-success',
+        'hint-danger'
+    );
 
     var comment_do = $('#comment-do'),
         comment_content = $('.comment-content');
@@ -46,3 +54,19 @@ $(document).ready(function () {
         })
     });
 });
+
+function delete_comment(o_delete) {
+    var comment_id = $(o_delete).attr('data-comment-id'),
+        work_id = $(o_delete).attr('data-work-id'),
+        post = {
+            comment_id: comment_id,
+            work_id: work_id,
+        },
+        json = encodedJSON(post);
+    postJSON('/work/comment/delete', json, function (response) {
+        if (response.code === 0)
+            window.location.reload();
+        else
+            show_hint(response.msg)
+    });
+}

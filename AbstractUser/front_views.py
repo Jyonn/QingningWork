@@ -62,38 +62,40 @@ def get_packed_work_comments(o_user, work, length=None, show_self=False):
     comment_user_list = []
     comment_user_uid_list = []
     writer_comments = WriterComment.objects.filter(re_work=work, is_deleted=False)
-    for comment in reviewer_comments:
-        if comment.content is not None and len(comment.content) > 0:
+    for o_comment in reviewer_comments:
+        if o_comment.content is not None and len(o_comment.content) > 0:
             total_comments += 1
-            if comment.re_reviewer == o_user and not show_self:
+            if o_comment.re_reviewer == o_user and not show_self:
                 continue
             comment_list.append(dict(
-                avatar=comment.re_reviewer.get_avatar(),
-                nickname=comment.re_reviewer.get_nickname(),
-                time=get_readable_time_string(comment.comment_time),
-                content=comment.content,
+                id=o_comment.pk,
+                avatar=o_comment.re_reviewer.get_avatar(),
+                nickname=o_comment.re_reviewer.get_nickname(),
+                time=get_readable_time_string(o_comment.comment_time),
+                content=o_comment.content,
                 is_reviewer=True,
-                home_link='/v2/user/' + str(comment.re_reviewer.uid) + '/' + str(comment.re_reviewer.pk),
-                is_mine=comment.re_reviewer == o_user,
+                home_link='/v2/user/' + str(o_comment.re_reviewer.uid) + '/' + str(o_comment.re_reviewer.pk),
+                is_mine=o_comment.re_reviewer == o_user,
             ))
-            comment_user_list.append(comment.re_reviewer.get_nickname())
+            comment_user_list.append(o_comment.re_reviewer.get_nickname())
 
     total_comments += len(writer_comments)
-    for comment in writer_comments[:length]:
-        if comment.re_writer == o_user and not show_self:
+    for o_comment in writer_comments[:length]:
+        if o_comment.re_writer == o_user and not show_self:
             continue
         comment_list.append(dict(
-            avatar=comment.re_writer.get_avatar(),
-            nickname=comment.re_writer.get_nickname(),
-            time=get_readable_time_string(comment.create_time),
-            content=comment.content,
+            id=o_comment.pk,
+            avatar=o_comment.re_writer.get_avatar(),
+            nickname=o_comment.re_writer.get_nickname(),
+            time=get_readable_time_string(o_comment.create_time),
+            content=o_comment.content,
             is_reviewer=False,
-            home_link='/v2/user/' + str(comment.re_writer.uid) + '/' + str(comment.re_writer.pk),
-            is_mine=comment.re_writer == o_user,
+            home_link='/v2/user/' + str(o_comment.re_writer.uid) + '/' + str(o_comment.re_writer.pk),
+            is_mine=o_comment.re_writer == o_user,
         ))
-        if comment.re_writer.uid not in comment_user_uid_list:
-            comment_user_uid_list.append(comment.re_writer.uid)
-            comment_user_list.append(comment.re_writer.get_nickname())
+        if o_comment.re_writer.uid not in comment_user_uid_list:
+            comment_user_uid_list.append(o_comment.re_writer.uid)
+            comment_user_list.append(o_comment.re_writer.get_nickname())
 
     comment_str = '、'
     comment_str = comment_str.join(comment_user_list)
@@ -303,13 +305,14 @@ def center(request):
         related_work__is_updated=False,
         related_work__is_delete=False,
         related_work__is_public=True,
+        type__in=(Timeline.TYPE_CREATE_WORK, Timeline.TYPE_MODIFY_WORK)
     ).order_by('-pk')[:20]
     return render(request, "v2/center.html", event_list_packer(request, events))
 
 
 def require_review(request):
     o_user = get_user_from_session(request)
-    if o_user.user_type != AbstractUser.TYPE_REVIEWER:
+    if o_user is None or o_user.user_type != AbstractUser.TYPE_REVIEWER:
         return render(request, 'v2/login.html')
     events = Timeline.objects.filter(
         is_delete=False,

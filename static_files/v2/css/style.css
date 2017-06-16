@@ -653,7 +653,7 @@ hr {
         color: #000;
     }
     #work-edit-writer-name-input {
-        font-size: 20px;
+        font-size: 14px;
         padding: 8px 10px;
         color: #000;
     }
@@ -691,7 +691,7 @@ hr {
         position: relative;
         width: 100%;
         height: 40px;
-        background: #eee;
+        background: #ddd;
     }
     .comment-box .nav .box-btn {
         position: absolute;
@@ -717,6 +717,9 @@ hr {
     }
     .hint-success {
         color: #3F9913!important;
+    }
+    .hint-normal {
+        color: #000000;
     }
     #comment-do {
         font-weight: bold;

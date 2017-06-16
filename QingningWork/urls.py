@@ -34,11 +34,11 @@ urlpatterns = [
 
     url(r'^legacy/', include("Work.legacy_urls")),
 
-    url(r'^admin/', admin.site.urls),
+    # url(r'^admin/', admin.site.urls),
     url(r'^user/', include("AbstractUser.urls")),
-    url(r'^reviewer/', include("Reviewer.urls")),
+    # url(r'^reviewer/', include("Reviewer.urls")),
     url(r'^work/', include("Work.urls")),
-    url(r'^writer/', include("Writer.urls")),
+    # url(r'^writer/', include("Writer.urls")),
     url(r'^base/', include("BaseFunc.urls")),
 ]
 

@@ -37,12 +37,24 @@ $(document).ready(function () {
         work_edit_work_name_input = $('#work-edit-work-name-input'),
         work_edit_writer_name_input = $('#work-edit-writer-name-input'),
         work_edit_work_content = $('#work-edit-work-content'),
-        switch_for_public = $('#switch-for-public');
+        switch_for_public = $('#switch-for-public'),
+        work_edit_motion = $('#work-edit-motion');
+
+    switcher_state_changer(
+        switch_for_public,
+        $('#switch-public-desc'),
+        '所有人可以看',
+        '仅我可见',
+        'hint-normal',
+        'hint-normal'
+    );
+
     create_work.on('click', function () {
         var post = {
             work_name: work_edit_work_name_input.val(),
             writer_name: work_edit_writer_name_input.val(),
             content: work_edit_work_content.val(),
+            motion: work_edit_motion.val(),
             is_public: switch_for_public.length === 0 || switch_for_public.is(':checked'),
         },
             json = encodedJSON(post);
@@ -61,7 +73,8 @@ $(document).ready(function () {
         postJSON('/work/upload', json, function (response) {
             if (response.code === 0) {
                 show_hint('发布成功', 500, function () {
-                    window.location.href = response.body
+                    window.location.href = '/v2/event/' + response.body.owner_id + '/' +
+                        response.body.work_id + '/' + response.body.event_id
                 });
             }
             else {
