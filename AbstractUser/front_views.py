@@ -1,10 +1,12 @@
 from django.shortcuts import render
 
 from AbstractUser.models import AbstractUser
-from BaseFunc.base import get_readable_time_string, get_user_from_session
+from BaseFunc.base import get_readable_time_string, get_user_from_session, get_normal_date_string, \
+    get_chinese_date_string
 from Comment.models import WriterLike, Comment, WriterComment
 from Reviewer.models import Reviewer
 from Timeline.models import Timeline
+from Work.models import Work
 from Writer.models import Writer, Follow
 
 
@@ -434,5 +436,13 @@ def info(request):
     return render(request, "info.html")
 
 
-def work_style(request, style_id):
-    return render(request, 'v2/style/3.html')
+def work_style(request, work_id, style_id):
+    o_work = Work.objects.get(pk=work_id, is_delete=False, is_public=True)
+    work_info = dict(
+        writer_name=o_work.writer_name,
+        work_name=o_work.work_name,
+        date_normal=get_normal_date_string(o_work.create_time.date()),
+        date_chinese=get_chinese_date_string(o_work.create_time.date()),
+        content=o_work.content,
+    )
+    return render(request, 'v2/style/'+style_id+'.html', dict(work_info=work_info))

@@ -24,6 +24,32 @@ def password_regex(password):
     return re.fullmatch(r, password) is not None
 
 
+def get_chinese_date_string(d):
+    month_str = "零壹贰叁肆伍陆柒捌玖拾"
+    date_string = ""
+    if d.month >= 10:
+        date_string = month_str[10]
+    t = d.month % 10
+    if t > 0:
+        date_string += month_str[t]
+    date_string += "月"
+    t = d.day
+    if t >= 30:
+        date_string += month_str[3]
+    elif t >= 20:
+        date_string += month_str[2]
+    if t >= 10:
+        date_string += month_str[10]
+    t = t % 10
+    if t > 0:
+        date_string += month_str[t]
+    date_string += '日'
+    return date_string
+
+def get_normal_date_string(d):
+    return str(d.year) + '/' + str(d.month) + '/' + str(d.day)
+
+
 def get_readable_time_string(t):
     crt_date = datetime.datetime.now().date()
     ret_str = ''
