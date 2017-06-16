@@ -66,7 +66,7 @@ class Writer(AbstractUser):
 
 class Follow(models.Model):
     followee = models.ForeignKey(
-        Writer,
+        AbstractUser,
         verbose_name='关注者',
         related_name='followee',
     )
@@ -85,7 +85,15 @@ class Follow(models.Model):
     )
 
     @classmethod
-    def create(cls, *args, **kwargs):
-        follow = cls(*args, **kwargs)
+    def create(cls, followee, follower, following=True):
+        try:
+            follow = Follow.objects.get(follower=follower, followee_id=followee.uid)
+            follow.is_delete = not following
+        except:
+            follow = cls(
+                followee=followee,
+                follower=follower,
+                is_delete=not following
+            )
         follow.save()
         return follow

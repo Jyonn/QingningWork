@@ -141,7 +141,7 @@ def get_interact_info(o_user, work):
 
 
 def get_packed_event(o_user,
-                     event,
+                     o_event,
                      full_content=True,
                      show_self=False,
                      ):
@@ -149,12 +149,13 @@ def get_packed_event(o_user,
     获取事件（时间线）信息字典
     :param show_self: comment中是否展示我
     :param o_user: 不能是AbstractUser类，必须为Reviewer或Writer
-    :param event: TimeLine类
+    :param o_event: TimeLine类
     :param full_content: 展示全部内容
     :return:
     """
-    re_work = event.related_work
-    owner = event.owner
+    re_work = o_event.related_work
+    owner = o_event.owner  # AbstractUser
+    work_owner = re_work.re_writer if re_work.re_writer is not None else re_work.re_reviewer
 
     thumb_list, total_thumbs = get_packed_work_thumbs(o_user, re_work, 5)
     thumb_str = ''
@@ -180,26 +181,30 @@ def get_packed_event(o_user,
         ),
         info=dict(
             type=dict(
-                create=event.type == Timeline.TYPE_CREATE_WORK,
-                modify=event.type == Timeline.TYPE_MODIFY_WORK,
-                repost=event.type == Timeline.TYPE_REPOST_WORK,
+                create=o_event.type == Timeline.TYPE_CREATE_WORK,
+                modify=o_event.type == Timeline.TYPE_MODIFY_WORK,
+                repost=o_event.type == Timeline.TYPE_REPOST_WORK,
+                thumb=o_event.type == Timeline.TYPE_THUMB_WORK,
+                comment=o_event.type == Timeline.TYPE_COMMENT_WORK,
+                review=o_event.type == Timeline.TYPE_REVIEW_WORK,
+                claim=o_event.type == Timeline.TYPE_CLAIM_WORK,
+                desc=Timeline.get_desc(o_event.type),
             ),
+            event_owner=get_user_card(owner),
+            work_owner=get_user_card(work_owner),
+            motion='' if o_event.motion is None else o_event.motion,
             intro='' if owner.introduce is None else owner.introduce,
-            time=get_readable_time_string(event.create_time),
-            event_owner_home='/v2/user/' + str(owner.uid) + '/' + str(owner.pk),
-            event_owner_avatar=owner.get_avatar(),
-            event_owner_nickname=owner.get_nickname(),
-            work_owner_avatar=re_work.re_writer.get_avatar() if re_work.re_writer is not None
-            else re_work.re_reviewer.get_avatar(),
-            event_link='/v2/event/' + str(owner.pk) + '/' + str(re_work.pk) + '/' + str(event.pk),
-            thumb_link='/v2/thumbs/' + str(owner.pk) + '/' + str(re_work.pk) + '/' + str(event.pk),
-            comment_link='/v2/comments/' + str(owner.pk) + '/' + str(re_work.pk) + '/' + str(event.pk),
-            event_id=event.pk,
+            time=get_readable_time_string(o_event.create_time),
+            event_link='/v2/event/' + str(owner.pk) + '/' + str(re_work.pk) + '/' + str(o_event.pk),
+            thumb_link='/v2/thumbs/' + str(owner.pk) + '/' + str(re_work.pk) + '/' + str(o_event.pk),
+            comment_link='/v2/comments/' + str(owner.pk) + '/' + str(re_work.pk) + '/' + str(o_event.pk),
+            event_id=o_event.pk,
             work_id=re_work.pk,
             owner_id=owner.pk,
         ),
         interact=get_interact_info(o_user, re_work),
     )
+    # print(event_info)
     return event_info
 
 
@@ -298,7 +303,7 @@ def center(request):
         related_work__is_updated=False,
         related_work__is_delete=False,
         related_work__is_public=True,
-    ).order_by('-pk')
+    ).order_by('-pk')[:20]
     return render(request, "v2/center.html", event_list_packer(request, events))
 
 
@@ -424,3 +429,7 @@ def login(request):
 
 def info(request):
     return render(request, "info.html")
+
+
+def work_style(request, style_id):
+    return render(request, 'v2/style/3.html')

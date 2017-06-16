@@ -1,0 +1,136 @@
+::-webkit-scrollbar {
+    width: 0;
+}
+
+pre {
+    display: block;
+    border: none;
+    outline: none;
+    text-overflow: clip;
+    overflow: hidden;
+    resize: none;
+    text-align: justify;
+    white-space: pre-wrap;
+}
+
+.work-style-1-body {
+    background: #FFFFFF;
+}
+
+.work-style-1-name {
+    position: absolute;
+    left: 30px;
+    top: 50px;
+    font-size: 22px;
+    color: #000000;
+    letter-spacing: 1px;
+}
+
+.work-style-1-info {
+    position: absolute;
+    left: 30px;
+    top: 90px;
+    font-size: 12px;
+    color: #DE4355;
+}
+
+.work-style-1-content {
+    position: absolute;
+    margin: 0 30px;
+    padding-bottom: 50px;
+    left: 0;
+    top: 140px;
+    font-size: 13px;
+    width: calc(100% - 60px);
+    line-height: 20px;
+    letter-spacing: 1px;
+}
+
+.work-style-2-body {
+    background: #FFFFFF;
+}
+
+.work-style-2-name {
+    position: absolute;
+    margin: 0 30px;
+    left: 0;
+    top: 50px;
+    width: calc(100% - 60px);
+    text-align: center;
+    font-size: 40px;
+    color: #000000;
+    letter-spacing: 2px;
+}
+
+.work-style-2-writer {
+    position: absolute;
+    margin: 0 30px;
+    left: 0;
+    top: 140px;
+    width: calc(100% - 60px);
+    text-align: center;
+    font-size: 12px;
+    color: #000000;
+}
+
+.work-style-2-time {
+    position: absolute;
+    margin: 0 30px;
+    left: 0;
+    top: 160px;
+    width: calc(100% - 60px);
+    text-align: center;
+    font-size: 12px;
+    color: #000000;
+}
+
+.work-style-2-content {
+    position: absolute;
+    margin: 0 30px;
+    padding-bottom: 50px;
+    left: 0;
+    top: 290px;
+    font-size: 13px;
+    width: calc(100% - 60px);
+    line-height: 20px;
+    letter-spacing: 2px;
+}
+
+.work-style-3-body {
+    background: #FFFFFF;
+    writing-mode: vertical-rl;
+    margin: 0;
+}
+
+.work-style-3-name {
+    margin-top: calc(50% - 200px);
+    margin-right: 30px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.work-style-3-content {
+    margin: calc(50% - 200px) 50px;
+    font-size: 16px;
+    height: 400px;
+    line-height: 24px;
+    letter-spacing: 2px;
+}
+
+.work-style-3-writer {
+    margin-top: calc(50% - 200px);
+    margin-right: 100px;
+    font-size: 14px;
+}
+
+.work-style-3-time {
+    margin: calc(50% - 200px) 10px 0 30px;
+    font-size: 14px;
+}
+
+@media (max-height: 500px) {
+    .work-style-3-name, .work-style-3-content, .work-style-3-writer, .work-style-3-time {
+        margin-top: 20px;
+        height: calc(100% - 40px);
+    }
+}

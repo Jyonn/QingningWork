@@ -1,6 +1,6 @@
 from AbstractUser.models import AbstractUser
 from BaseFunc.base import response
-from Comment.models import Comment
+from Comment.models import Comment, WriterComment, WriterLike
 from QingningWork.settings import WORK_URL
 from Reviewer.models import Reviewer
 from Work.models import Work
@@ -101,4 +101,34 @@ def update_abstract_user_type(request):
         reviewer.user_type = AbstractUser.TYPE_REVIEWER
         reviewer.save()
 
+    return response()
+
+
+def create_timeline(request):
+    works = Work.objects.all()
+    for o_work in works:
+        if o_work.re_reviewer is not None:
+            Timeline.create(o_work.re_reviewer, o_work, Timeline.TYPE_CREATE_WORK)
+            if o_work.re_writer is not None:
+                Timeline.create(o_work.re_writer, o_work, Timeline.TYPE_CLAIM_WORK, extension_id=o_work.re_reviewer.uid)
+        else:
+            Timeline.create(o_work.re_writer, o_work, Timeline.TYPE_CREATE_WORK)
+    comments = Comment.objects.all()
+    for o_comment in comments:
+        Timeline.create(o_comment.re_reviewer, o_comment.re_work, Timeline.TYPE_REVIEW_WORK, extension_id=o_comment.pk)
+    writer_comments = WriterComment.objects.all()
+    for o_writer_comment in writer_comments:
+        Timeline.create(
+            o_writer_comment.re_writer,
+            o_writer_comment.re_work,
+            Timeline.TYPE_COMMENT_WORK,
+            extension_id=o_writer_comment.pk
+        )
+    writer_likes = WriterLike.objects.filter()
+    for o_writer_like in writer_likes:
+        Timeline.create(
+            o_writer_like.re_writer,
+            o_writer_like.re_work,
+            Timeline.TYPE_THUMB_WORK,
+        )
     return response()

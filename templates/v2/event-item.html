@@ -1,19 +1,19 @@
 <div class="event-item">
-    <img class="avatar event-owner-avatar" src="{{ event.info.event_owner_avatar }}" onclick="window.location.href='{{ event.info.event_owner_home }}'">
-{% if event.info.type.repost %}
-    <img class="avatar writer-avatar" src="{{ event.info.work_owner_avatar }}">
-    <p class="event-owner-name">{{ event.info.event_owner_nickname }} <small>分享<b>{{ event.work.writer }}</b>的文章</small></p>
-{% elif event.info.type.create %}
-    <p class="event-owner-name">{{ event.work.writer }} <small>发表文章</small></p>
-{% elif event.info.type.modify %}
-    <p class="event-owner-name">{{ event.work.writer }} <small>修改文章</small></p>
+    <img class="avatar event-owner-avatar" src="{{ event.info.event_owner.avatar }}" onclick="window.location.href='{{ event.info.event_owner.home_link }}'">
+
+{% if event.info.type.repost or event.info.type.thumb or event.info.type.comment or event.info.type.claim or event.info.type.review %}
+    <img class="avatar writer-avatar" src="{{ event.info.work_owner.avatar }}" onclick="window.location.href='{{ event.info.work_owner.home_link }}'">
+    <p class="event-owner-name">{{ event.info.event_owner.nickname }} <small>{{ event.info.type.desc }} <b>{{ event.info.work_owner.nickname }}</b> 的文章</small></p>
+{% elif event.info.type.create or event.info.type.modify %}
+    <p class="event-owner-name">{{ event.info.event_owner.nickname }} <small>发表文章</small></p>
 {% endif %}
+
     <div class="sub-title">
         <p class="work-time">{{ event.info.time }}</p>
         <p class="introduce">{{ event.info.intro }}</p>
     </div>
     <label for="textarea" {% if page_info.content_click %}onclick="window.location.href='{{ event.info.event_link }}'"{% endif %}>
-        <p class="work-title">「{{ event.work.title }}」</p>
+        <p class="work-title">{{ event.work.writer }} / {{ event.work.title }}</p>
         {% if event.work.version > 1 %}<p class="modify-times">第{{ event.work.version }}稿</p>{% endif %}
         <textarea class="preview-content" readonly>{{ event.work.content }}</textarea>
     </label>
