@@ -19,8 +19,9 @@ pre {
 
 .work-style-1-name {
     position: absolute;
-    left: 30px;
+    left: 0;
     top: 50px;
+    margin-left: 30px;
     font-size: 22px;
     color: #000000;
     letter-spacing: 1px;
@@ -28,8 +29,9 @@ pre {
 
 .work-style-1-info {
     position: absolute;
-    left: 30px;
+    left: 0;
     top: 90px;
+    margin-left: 30px;
     font-size: 12px;
     color: #DE4355;
 }
@@ -46,6 +48,13 @@ pre {
     letter-spacing: 1px;
 }
 
+@media (min-width: 660px) {
+    .work-style-1-name, .work-style-1-info, .work-style-1-content {
+        margin-left: calc(50% - 300px);
+        width: 600px;
+    }
+}
+
 .work-style-2-body {
     background: #FFFFFF;
 }
@@ -53,7 +62,6 @@ pre {
 .work-style-2-name {
     position: absolute;
     margin: 0 30px;
-    left: 0;
     top: 50px;
     width: calc(100% - 60px);
     text-align: center;
@@ -94,6 +102,13 @@ pre {
     width: calc(100% - 60px);
     line-height: 20px;
     letter-spacing: 2px;
+}
+
+@media (min-width: 660px) {
+    .work-style-2-name, .work-style-2-writer, .work-style-2-time, .work-style-2-content {
+        margin: 0 calc(50% - 300px);
+        width: 600px;
+    }
 }
 
 .work-style-3-body {

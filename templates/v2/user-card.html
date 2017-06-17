@@ -1,4 +1,4 @@
-<div id="user-info-card" {% if card_info.home_click %}onclick="window.location.href='{{ card_info.home_link }}'"{% endif %}>
+<div id="user-info-card" {% if card_info.home_click %}onclick="window.location.href='{{ card_info.home_link }}'" class="press" {% endif %}>
     <i class="fa fa-quote-left user-quote"></i>
     <p class="user-quote-content">{{ card_info.introduce }}</p>
     <p class="user-name"><b>{% if card_info.is_reviewer %}审稿{% else %}作者{% endif %}</b> | {{ card_info.nickname }}</p>

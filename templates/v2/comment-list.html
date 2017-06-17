@@ -16,7 +16,7 @@
     </div>
     <div id="comment-page-list-container">
         {% for item in comment_list %}
-        <div id="work-comment-item" onclick="window.location.href='{{ item.home_link }}'">
+        <div id="work-comment-item" onclick="window.location.href='{{ item.home_link }}'" class="press">
             <i class="fa fa-quote-left user-quote"></i>
             <p class="user-comment-content">{{ item.content }}</p>
             <p class="user-name"><b>{% if item.is_reviewer %}审稿{% else %}作者{% endif %}</b> | {{ item.nickname }}</p>

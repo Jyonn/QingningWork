@@ -362,20 +362,6 @@ def user_home(request, user_id, role_id):
 
     if o_visit_user.user_type == AbstractUser.TYPE_WRITER:
         writer = Writer.objects.get(wid=o_visit_user.user_id)
-        events = Timeline.objects.filter(
-            is_delete=False,
-            owner=writer,
-            related_work__is_updated=False,
-            related_work__is_delete=False,
-            related_work__is_public=True,
-        ).order_by('-pk')[:20]
-        for event in events:
-            event_list.append(get_packed_event(
-                o_user,
-                event,
-                full_content=False,
-                show_self=False,
-            ))
         work_info = dict(
             total_works=writer.total_works,
             total_follow=writer.total_follow,
@@ -388,6 +374,22 @@ def user_home(request, user_id, role_id):
             total_review=reviewer.total_review,
             total_likes=reviewer.total_likes,
         )
+
+    events = Timeline.objects.filter(
+        is_delete=False,
+        owner=o_visit_user,
+        related_work__is_updated=False,
+        related_work__is_delete=False,
+        related_work__is_public=True,
+    ).order_by('-pk')[:20]
+    for event in events:
+        event_list.append(get_packed_event(
+            o_user,
+            event,
+            full_content=False,
+            show_self=False,
+        ))
+
     page_info = dict(
         thumb_click=False,
         content_click=True,

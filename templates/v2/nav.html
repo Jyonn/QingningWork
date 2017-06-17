@@ -1,10 +1,10 @@
 {% load static %}
     <div class="navigation">
-        <img class="slogan" src="{% static "img/slogan-white.png" %}" onclick="window.location.href='{% url 'center-page' %}'">
+        <img class="slogan press" src="{% static "img/slogan-white.png" %}" onclick="window.location.href='{% url 'center-page' %}'">
         {% if user_info.is_login %}
-        <img class="avatar user-avatar" id="nav-user-avatar" src="{{ user_info.avatar }}">
+        <img class="avatar user-avatar press" id="nav-user-avatar" src="{{ user_info.avatar }}">
         {% else %}
-        <i class="fa fa-user-circle-o avatar user-avatar" id="nav-user-login" onclick="window.location.href='{% url 'user-login-page' %}'"></i>
+        <i class="fa fa-user-circle-o avatar user-avatar press" id="nav-user-login" onclick="window.location.href='{% url 'user-login-page' %}'"></i>
         {% endif %}
     </div>
 {% if user_info.is_login %}
@@ -14,17 +14,17 @@
         <img class="user-avatar" src="{{ user_info.avatar }}">
         <div class="user-name">{{ user_info.nickname }}</div>
         <div class="btn-box">
-            <i class="fa fa-search btn slow" onclick="window.location.href='{% url 'center-page' %}'"><div>发现空间</div></i>
-            <i class="fa fa-bell-o btn slow"><div>我的消息</div></i>
+            <i class="fa fa-search btn slow press" onclick="window.location.href='{% url 'center-page' %}'"><div>发现空间</div></i>
+            <i class="fa fa-bell-o btn slow press"><div>我的消息</div></i>
             {% if user_info.is_writer %}
-            <i class="fa fa-heart-o btn slow" onclick="window.location.href='{% url 'writer-center-page' %}'"><div>好友动态</div></i>
+            <i class="fa fa-heart-o btn slow press" onclick="window.location.href='{% url 'writer-center-page' %}'"><div>好友动态</div></i>
             {% else %}
-            <i class="fa fa-check btn slow" onclick="window.location.href='{% url 'review-center-page' %}'"><div>待审文章</div></i>
+            <i class="fa fa-check btn slow press" onclick="window.location.href='{% url 'review-center-page' %}'"><div>待审文章</div></i>
             {% endif %}
-            <i class="fa fa-file-o btn slow" onclick="window.location.href='{% url 'upload-work-page' %}'"><div>发布文章</div></i>
-            <i class="fa fa-user-o btn slow" onclick="window.location.href='{{ user_info.user_home }}'"><div>个人主页</div></i>
-            <i class="fa fa-edit btn slow"><div>编辑信息</div></i>
-            <i class="fa fa-sign-out btn slow" onclick="user_logout()"><div>退出登录</div></i>
+            <i class="fa fa-file-o btn slow press" onclick="window.location.href='{% url 'upload-work-page' %}'"><div>发布文章</div></i>
+            <i class="fa fa-user-o btn slow press" onclick="window.location.href='{{ user_info.user_home }}'"><div>个人主页</div></i>
+            <i class="fa fa-edit btn slow press"><div>编辑信息</div></i>
+            <i class="fa fa-sign-out btn slow press" onclick="user_logout()"><div>退出登录</div></i>
         </div>
     </div>
 {% endif %}

@@ -18,6 +18,10 @@ body {
     transition: 0.2s;
 }
 
+.press {
+    cursor: pointer;
+}
+
 label {
     display: block;
     border: none;
@@ -323,6 +327,7 @@ hr {
         left: 70px;
         margin: 0;
         font-size: 16px;
+        max-width: calc(100% - 100px);
     }
     .event-list .event-item .sub-title {
         position: absolute;
@@ -378,6 +383,19 @@ hr {
             text-align: justify;
             letter-spacing: 2px;
             line-height: 20px;
+        }
+        .event-list .event-item .event-menu {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            right: 5px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .event-list .event-item .event-menu i {
+            color: #888888;
+            font-size: 16px;
         }
         .event-list .event-item label .read-more {
             margin: 10px 0 0 0;

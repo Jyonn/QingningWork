@@ -1,8 +1,9 @@
 <div class="event-item">
-    <img class="avatar event-owner-avatar" src="{{ event.info.event_owner.avatar }}" onclick="window.location.href='{{ event.info.event_owner.home_link }}'">
+    <div class="event-menu"><i class="fa fa-chevron-down back"></i></div>
+    <img class="avatar event-owner-avatar press" src="{{ event.info.event_owner.avatar }}" onclick="window.location.href='{{ event.info.event_owner.home_link }}'">
 
 {% if event.info.type.repost or event.info.type.thumb or event.info.type.comment or event.info.type.claim or event.info.type.review %}
-    <img class="avatar writer-avatar" src="{{ event.info.work_owner.avatar }}" onclick="window.location.href='{{ event.info.work_owner.home_link }}'">
+    <img class="avatar writer-avatar press" src="{{ event.info.work_owner.avatar }}" onclick="window.location.href='{{ event.info.work_owner.home_link }}'">
     <p class="event-owner-name">{{ event.info.event_owner.nickname }} <small>{{ event.info.type.desc }} <b>{{ event.info.work_owner.nickname }}</b> 的文章</small></p>
 {% elif event.info.type.create or event.info.type.modify %}
     <p class="event-owner-name">{{ event.info.event_owner.nickname }} <small>发表文章</small></p>
@@ -12,7 +13,7 @@
         <p class="work-time">{{ event.info.time }}</p>
         <p class="introduce">{{ event.info.intro }}</p>
     </div>
-    <label for="textarea" {% if page_info.content_click %}onclick="window.location.href='{{ event.info.event_link }}'"{% endif %}>
+    <label for="textarea" {% if page_info.content_click %}onclick="window.location.href='{{ event.info.event_link }}'" class="press" {% endif %}>
         <p class="work-title">{{ event.work.writer }} / {{ event.work.title }}</p>
         {% if event.work.version > 1 %}<p class="modify-times">第{{ event.work.version }}稿</p>{% endif %}
         <textarea class="preview-content" readonly>{{ event.work.content }}</textarea>
@@ -25,9 +26,7 @@
     {% if page_info.show_comment_icon %}
         <div id="comment-btn"><i class="fa {% if event.interact.has_comment %}fa-comment{% else %}fa-comment-o{% endif %}"></i></div>
     {% endif %}
-{#    {% if not user_info.is_reviewer %}#}
         <div id="thumb-btn" data-event="{{ event.info.event_id }}" data-work="{{ event.info.work_id }}" data-owner="{{ event.info.owner_id }}" onclick="do_thumb(this)"><i class="fa {% if event.interact.thumb %}fa-thumbs-up{% else %}fa-thumbs-o-up{% endif %}"></i></div>
-{#    {% endif %}#}
         <p class="read-num">{{ event.work.visit }}次阅读</p>
     </div>
     <hr>
@@ -51,14 +50,14 @@
     <div class="comment-container">
     {% for comment in event.work.comment_list %}
         <div class="comment">
-            <img class="avatar user-comment-avatar" src="{{ comment.avatar }}" onclick="window.location.href='{{ comment.home_link }}'">
+            <img class="avatar user-comment-avatar press" src="{{ comment.avatar }}" onclick="window.location.href='{{ comment.home_link }}'">
             <p class="user-comment-name">{{ comment.nickname }}
                 {% if comment.is_reviewer %}<i class="fa fa-vcard"></i>{% endif %}
             </p>
             <p class="user-comment-time">{{ comment.time }}</p>
             <p class="user-comment-content">{{ comment.content }}</p>
         {% if comment.is_mine and not comment.is_reviewer %}
-            <div class="delete" data-comment-id="{{ comment.id }}" data-work-id="{{ event.info.work_id }}" onclick="delete_comment(this)"><i class="fa fa-trash"></i></div>
+            <div class="delete press" data-comment-id="{{ comment.id }}" data-work-id="{{ event.info.work_id }}" onclick="delete_comment(this)"><i class="fa fa-trash"></i></div>
         {% endif %}
         </div>
     {% endfor %}
