@@ -709,7 +709,7 @@ hr {
         position: relative;
         width: 100%;
         height: 40px;
-        background: #ddd;
+        background: #eee;
     }
     .comment-box .nav .box-btn {
         position: absolute;
@@ -724,12 +724,6 @@ hr {
     .comment-box .comment-input-label {
         padding: 0 10px;
     }
-    /*.comment-box .comment-input-label .hint {*/
-        /*letter-spacing: 2px;*/
-        /*text-align: right;*/
-        /*font-size: 14px;*/
-        /*padding-bottom: 10px;*/
-    /*}*/
     .hint-danger {
         color: #CC5A40!important;
     }
@@ -761,6 +755,30 @@ hr {
     }
     .comment-box .switch-box {
         margin: 5px 0;
+    }
+
+#event-menu-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 2;
+}
+    .event-menu-item {
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 16px;
+    }
+    .event-menu-item:hover {
+        background: #EEEEEE ;
+    }
+    .event-menu-item .icon-box {
+        width: 30px;
+        text-align: center;
+        display: inline-block;
     }
 
 .hint-box {
