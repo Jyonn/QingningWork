@@ -21,11 +21,11 @@
     </label>
     <div class="foot-info">
     {% if not user_info.is_reviewer %}
-        <div id="share-btn" class="press"><i class="fa fa-share-alt"></i></div>
+        <div id="share-btn" class="press" data-work="{{ event.info.work_id }}"><i class="fa fa-share-alt"></i></div>
     {% endif %}
 {#                <div id="mark-btn"><i class="fa fa-star"></i></div>#}
     {% if page_info.show_comment_icon %}
-        <div id="comment-btn" class="press"><i class="fa {% if event.interact.has_comment %}fa-comment{% else %}fa-comment-o{% endif %}"></i></div>
+        <div id="comment-btn" class="press" data-work="{{ event.info.work_id }}"><i class="fa {% if event.interact.has_comment %}fa-comment{% else %}fa-comment-o{% endif %}"></i></div>
     {% endif %}
         <div id="thumb-btn" class="press" data-work="{{ event.info.work_id }}" onclick="do_thumb(this)"><i class="fa {% if event.interact.thumb %}fa-thumbs-up{% else %}fa-thumbs-o-up{% endif %}"></i></div>
         <p class="read-num">{{ event.work.visit }}次阅读</p>

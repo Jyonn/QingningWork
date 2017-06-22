@@ -147,19 +147,36 @@ $(document).ready(function () {
     menu_mask.on('click', function () {
         event_menu_container.animate({bottom: '-210px'});
         menu_mask.css('display', 'none');
-    })
-});
+    });
 
-$(document).ready(function () {
-    var event_menu_container = $('#event-menu-container'),
-        event_id = event_menu_container.attr('data-event'),
-        work_id = event_menu_container.attr('data-work'),
-        owner_id = event_menu_container.attr('data-owner');
-    var item_share = $('#item-share'),
+    var share_menu_container = $('#share-menu-container'),
+        share_mask = $('#share-mask'),
+        share_btn = $('#share-btn');
+    share_btn.on('click', function () {
+        share_menu_container.attr('data-work', share_btn.attr('data-work'));
+        share_menu_container.animate({bottom: '0'}, function () {
+            share_mask.css('display', 'inherit');
+        })
+    });
+    share_mask.on('click', function () {
+        share_menu_container.animate({bottom: '-105px'});
+        share_mask.css('display', 'none');
+    });
+
+    var work_id = event_menu_container.attr('data-work'),
+        item_share = $('#item-share'),
         item_private = $('#item-private'),
         item_public = $('#item-public'),
         item_modify = $('#item-modify'),
         item_delete = $('#item-delete');
+    item_share.on('click', function () {
+        event_menu_container.animate({bottom: '-210px'});
+        menu_mask.css('display', 'none');
+        share_menu_container.attr('data-work', work_id);
+        share_menu_container.animate({bottom: '0'}, function () {
+            share_mask.css('display', 'inherit');
+        });
+    });
     item_delete.on('click', function () {
         alert('不可撤销，确认删除文章？', 'delete-work', function () {
             var post = {
@@ -208,5 +225,22 @@ $(document).ready(function () {
                     show_hint(response.msg)
             })
         }, null)
+    });
+});
+
+$(document).ready(function () {
+    var share_menu_container = $('#share-menu-container'),
+        share_qn = $('#share-qn'),
+        share_s1 = $('#share-s1'),
+        share_s2 = $('#share-s2'),
+        share_s3 = $('#share-s3');
+    share_s1.on('click', function () {
+        window.location.href = '/v2/work/style/'+share_menu_container.attr('data-work')+'/1'
+    });
+    share_s2.on('click', function () {
+        window.location.href = '/v2/work/style/'+share_menu_container.attr('data-work')+'/2'
+    });
+    share_s3.on('click', function () {
+        window.location.href = '/v2/work/style/'+share_menu_container.attr('data-work')+'/3'
     });
 });
