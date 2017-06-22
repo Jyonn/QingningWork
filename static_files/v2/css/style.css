@@ -1,9 +1,7 @@
 body {
     background: #EEE;
     margin: 0;
-    /*height: 100%;*/
     width: 100%;
-    /*position: fixed;*/
     overflow-y: scroll;
 }
 
@@ -811,6 +809,35 @@ hr {
         text-align: center;
         display: inline-block;
     }
+
+#share-menu-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: #fff;
+    z-index: 2;
+    border-top: solid 1px #dddddd;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+    .share-menu-item {
+        height: 80px;
+        width: 70px;
+        padding: 10px 10px;
+        text-align: center;
+        display: inline-block;
+    }
+        .share-menu-item img {
+            width: 40px;
+            height: 40px;
+            padding: 5px;
+        }
+        .share-menu-item div {
+            font-size: 12px;
+        }
+
 
 .hint-box {
     display: none;
