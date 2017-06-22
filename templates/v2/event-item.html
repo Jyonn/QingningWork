@@ -17,7 +17,7 @@
         <p class="work-title">{{ event.work.title }}</p>
         {% if event.work.version > 1 %}<p class="modify-times">第{{ event.work.version }}稿</p>{% endif %}
         <pre>{{ event.work.content }}</pre>
-        <p class="writer-name"><b>{{ event.work.writer }}</b> <i class="fa fa-cog fa-spin"></i> 作品</p>
+        <p class="writer-name"><b>{{ event.work.writer }}</b>作品</p>
     </label>
     <div class="foot-info">
     {% if not user_info.is_reviewer %}

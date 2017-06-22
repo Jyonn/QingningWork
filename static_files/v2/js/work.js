@@ -145,7 +145,7 @@ $(document).ready(function () {
         });
     });
     menu_mask.on('click', function () {
-        event_menu_container.animate({bottom: '-410px'});
+        event_menu_container.animate({bottom: '-210px'});
         menu_mask.css('display', 'none');
     })
 });
