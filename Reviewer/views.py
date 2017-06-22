@@ -201,7 +201,7 @@ def get_reviewed_work(request):
     try:
         work = Work.objects.get(pk=wid)
     except:
-        return error_response(Error.NOT_FOUND_WORK_ID)
+        return error_response(Error.NOT_FOUND_WORK)
 
     return_dict = dict(
         work=dict(
@@ -257,7 +257,7 @@ def review_work(request):
     try:
         work = Work.objects.get(pk=wid)
     except:
-        return error_response(Error.NOT_FOUND_WORK_ID)
+        return error_response(Error.NOT_FOUND_WORK)
     if work.status != Work.STATUS_UNDER_REVIEW:  # 不在审阅状态，非法获取
         return error_response(Error.NOT_UNDER_REVIEW)
     if work.is_delete:

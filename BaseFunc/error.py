@@ -27,7 +27,7 @@ class Error:
     NOT_UNDER_REVIEW = 1015
     WORK_IS_PRIVATE = 1014
     WORK_HAS_DELETED = 1013
-    NOT_FOUND_WORK_ID = 1012
+    NOT_FOUND_WORK = 1012
     NOT_FOUND_WORK_TYPE = 1011
     NOT_FOUND_FILE = 1010
     REQUIRE_REVIEWER = 1009
@@ -58,7 +58,7 @@ class Error:
         (REQUIRE_REVIEWER, "需要审稿员登录"),
         (NOT_FOUND_FILE, "没有上传的文件"),
         (NOT_FOUND_WORK_TYPE, "不存在的作品类型"),
-        (NOT_FOUND_WORK_ID, "不存在的作品"),
+        (NOT_FOUND_WORK, "不存在的作品"),
         (WORK_HAS_DELETED, "作品已被删除"),
         (WORK_IS_PRIVATE, "作品没有公开"),
         (NOT_UNDER_REVIEW, "作品不在审阅状态"),

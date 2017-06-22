@@ -95,9 +95,7 @@ function do_thumb(thumb_btn_raw) {
     var thumb_icon = thumb_btn.children('i'),
         like = thumb_icon.hasClass('fa-thumbs-o-up');
     var post = {
-        event_id: thumb_btn.attr('data-event'),
         work_id: thumb_btn.attr('data-work'),
-        owner_id: thumb_btn.attr('data-owner'),
         like: like,
     },
         json = encodedJSON(post);
@@ -138,35 +136,77 @@ function hide_comment_box() {
 }
 
 $(document).ready(function () {
+    var event_menu = $('.event-menu'),
+        event_menu_container = $('#event-menu-container'),
+        menu_mask = $('#menu-mask');
+    event_menu.on('click', function () {
+        event_menu_container.animate({bottom: '0'}, function () {
+            menu_mask.css('display', 'inherit');
+        });
+    });
+    menu_mask.on('click', function () {
+        event_menu_container.animate({bottom: '-410px'});
+        menu_mask.css('display', 'none');
+    })
+});
+
+$(document).ready(function () {
     var event_menu_container = $('#event-menu-container'),
         event_id = event_menu_container.attr('data-event'),
         work_id = event_menu_container.attr('data-work'),
         owner_id = event_menu_container.attr('data-owner');
     var item_share = $('#item-share'),
         item_private = $('#item-private'),
+        item_public = $('#item-public'),
         item_modify = $('#item-modify'),
         item_delete = $('#item-delete');
     item_delete.on('click', function () {
         alert('不可撤销，确认删除文章？', 'delete-work', function () {
             var post = {
-                event_id: event_id,
                 work_id: work_id,
-                owner_id: owner_id,
             },
                 json = encodedJSON(post);
             postJSON('/api/work/delete', json, function (response) {
-                if (response.code === 0) {
-                    window.location.href = '/v2/center'
-                }
-                else {
+                if (response.code === 0)
+                    window.location.href = '/v2/center';
+                else
                     show_hint(response.msg)
-                }
             })
         }, null);
     });
     item_modify.on('click', function () {
-        alert('修改后数据清零，是否确认修改？', 'modify-work', function () {
+        alert('修改后评论点赞重置，是否确认修改？', 'modify-work', function () {
             window.location.href = '/v2/work/modify/'+work_id
         }, null);
-    })
+    });
+    item_private.on('click', function () {
+        alert('设置后其他人将看不到作品，是否继续？', 'private-work', function () {
+            var post = {
+                work_id: work_id,
+                be_public: false,
+            },
+                json = encodedJSON(post);
+            postJSON('/api/work/set/privilege', json, function (response) {
+                if (response.code === 0)
+                    window.location.reload();
+                else
+                    show_hint(response.msg)
+            })
+        }, null)
+    });
+    item_public.on('click', function () {
+        alert('设置后所有人能看到作品，是否继续？', 'public-work', function () {
+            var post = {
+                work_id: work_id,
+                be_public: true,
+            },
+                json = encodedJSON(post);
+            postJSON('/api/work/set/privilege', json, function (response) {
+                if (response.code === 0)
+                    window.location.reload();
+                else
+                    show_hint(response.msg)
+            })
+        }, null)
+    });
 });

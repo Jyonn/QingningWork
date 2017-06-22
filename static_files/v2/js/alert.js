@@ -8,7 +8,7 @@ function alert(text, id_str, success_func, cancel_func) {
         alert_ok = "alert-ok-" + rand_str,
         alert_cancel = "alert-cancel-" + rand_str,
         alert_mask = "alert-mask-" + rand_str,
-        mask_html = '<div class="body-mask press" id="'+alert_mask+'"></div>',
+        mask_html = '<div class="body-mask higher-body-mask press" id="'+alert_mask+'"></div>',
         alert_html =
         '<div class="alert-box" id="'+alert_box+'" style="display: none;">' +
         '   <div class="alert-body">'+text+'</div>' +

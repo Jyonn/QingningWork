@@ -26,7 +26,7 @@ def get_work_by_id(wid):
     try:
         work = Work.objects.get(pk=wid)
     except:
-        return None, Error.NOT_FOUND_WORK_ID
+        return None, Error.NOT_FOUND_WORK
     if work.is_delete is True:
         return None, Error.WORK_HAS_DELETED
     return work, Error.OK
@@ -276,6 +276,8 @@ def modify(request):
     try:
         last_work = Work.objects.get(pk=work_id, is_delete=False).newest_version_work
     except:
+        return error_response(Error.NOT_FOUND_WORK)
+    if not work_belongs(last_work, o_user):
         return error_response(Error.NOT_YOUR_WORK)
 
     o_work = Work.create(o_user, work_name, writer_name, content, is_public, last_work)
@@ -292,19 +294,16 @@ def modify(request):
 
 @require_POST
 @require_json
-@require_params(['event_id', 'work_id', 'owner_id'])
+@require_params(['work_id'])
 @require_login
 def delete(request):
-    event_id = request.POST['event_id']
     work_id = request.POST['work_id']
-    owner_id = request.POST['owner_id']
     o_user = get_user_from_session(request)
 
     try:
-        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
-        work = event.related_work
+        work = Work.objects.get(pk=work_id, is_delete=False)
     except:
-        return error_response(Error.NOT_FOUND_EVENT)
+        return error_response(Error.NOT_FOUND_WORK)
 
     if not work_belongs(work, o_user):
         return error_response(Error.NOT_YOUR_WORK)
@@ -399,23 +398,20 @@ def comment(request):
 
 @require_POST
 @require_json
-@require_params(['like', 'event_id', 'work_id', 'owner_id'])
+@require_params(['like', 'work_id'])
 @require_login
 def like(request):
     result = request.POST['like'] == 'true'
-    event_id = request.POST['event_id']
     work_id = request.POST['work_id']
-    owner_id = request.POST['owner_id']
     o_user = get_user_from_session(request)
 
     if o_user.is_frozen:
         return error_response(Error.FROZEN_USER)
 
     try:
-        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
-        work = event.related_work
+        work = Work.objects.get(pk=work_id, is_delete=False, is_public=True)
     except:
-        return error_response(Error.NOT_FOUND_EVENT)
+        return error_response(Error.NOT_FOUND_WORK)
 
     if o_user.user_type == AbstractUser.TYPE_WRITER:
         try:
@@ -442,6 +438,8 @@ def comment_delete(request):
     comment_id = request.POST['comment_id']
     work_id = request.POST['work_id']
     o_user = get_user_from_session(request)
+    if o_user.is_frozen:
+        return error_response(Error.FROZEN_USER)
     if o_user.user_type != AbstractUser.TYPE_WRITER:
         return error_response(Error.REQUIRE_WRITER)
     try:
@@ -454,4 +452,25 @@ def comment_delete(request):
         o_comment.save()
     except:
         return error_response(Error.COMMENT_DELETE_ERROR)
+    return response()
+
+
+@require_POST
+@require_json
+@require_params(['work_id', 'be_public'])
+@require_login
+def set_privilege(request):
+    work_id = request.POST['work_id']
+    be_public = request.POST['be_public'] == 'true'
+    o_user = get_user_from_session(request)
+    try:
+        work = Work.objects.get(pk=work_id, is_delete=False)
+    except:
+        return error_response(Error.NOT_FOUND_WORK)
+    if not work_belongs(work, o_user):
+        return error_response(Error.NOT_YOUR_WORK)
+
+    work.is_public = be_public
+    work.save()
+
     return response()

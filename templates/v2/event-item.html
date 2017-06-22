@@ -1,5 +1,5 @@
 <div class="event-item">
-    <div class="event-menu"><i class="fa fa-chevron-down back"></i></div>
+    <div class="event-menu press"><i class="fa fa-chevron-down back"></i></div>
     <img class="avatar event-owner-avatar press" src="{{ event.info.event_owner.avatar }}" onclick="window.location.href='{{ event.info.event_owner.home_link }}'">
 
 {% if event.info.type.repost or event.info.type.thumb or event.info.type.comment or event.info.type.claim or event.info.type.review %}
@@ -14,7 +14,7 @@
         <p class="introduce">{{ event.info.intro }}</p>
     </div>
     <label for="textarea" {% if page_info.content_click %}onclick="window.location.href='{{ event.info.event_link }}'" class="press" {% endif %}>
-        <p class="work-title">{{ event.work.writer }} / {{ event.work.title }}</p>
+        <p class="work-title">{{ event.work.title }}</p>
         {% if event.work.version > 1 %}<p class="modify-times">第{{ event.work.version }}稿</p>{% endif %}
         <textarea class="preview-content" readonly>{{ event.work.content }}</textarea>
     </label>
@@ -26,7 +26,7 @@
     {% if page_info.show_comment_icon %}
         <div id="comment-btn" class="press"><i class="fa {% if event.interact.has_comment %}fa-comment{% else %}fa-comment-o{% endif %}"></i></div>
     {% endif %}
-        <div id="thumb-btn" class="press" data-event="{{ event.info.event_id }}" data-work="{{ event.info.work_id }}" data-owner="{{ event.info.owner_id }}" onclick="do_thumb(this)"><i class="fa {% if event.interact.thumb %}fa-thumbs-up{% else %}fa-thumbs-o-up{% endif %}"></i></div>
+        <div id="thumb-btn" class="press" data-work="{{ event.info.work_id }}" onclick="do_thumb(this)"><i class="fa {% if event.interact.thumb %}fa-thumbs-up{% else %}fa-thumbs-o-up{% endif %}"></i></div>
         <p class="read-num">{{ event.work.visit }}次阅读</p>
     </div>
     <hr>

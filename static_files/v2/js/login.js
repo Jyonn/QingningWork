@@ -2,7 +2,7 @@ var ACT_LOGIN = 0,
     ACT_SIGNUP = 1;
 
 function refresh_captcha_img(captcha) {
-    captcha.attr('src', '/base/captcha/img');
+    captcha.attr('src', '/api/base/captcha/img');
 }
 
 $(document).ready(function() {

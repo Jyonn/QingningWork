@@ -182,6 +182,7 @@ def get_packed_event(o_user,
             comments=total_comments,
             comment_list=comment_list,
             comment_str=comment_str,
+            is_public=re_work.is_public,
         ),
         info=dict(
             type=dict(
@@ -205,6 +206,7 @@ def get_packed_event(o_user,
             event_id=o_event.pk,
             work_id=re_work.pk,
             owner_id=owner.pk,
+            is_mine=work_owner==o_user,
         ),
         interact=get_interact_info(o_user, re_work),
     )

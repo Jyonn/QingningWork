@@ -35,20 +35,31 @@
         </label>
     {% endif %}
     </div>
+    <div class="body-mask press" id="comment-mask"></div>
+
     <div id="event-menu-container" data-event="{{ event.info.event_id }}" data-work="{{ event.info.work_id }}" data-owner="{{ event.info.owner_id }}">
         <hr>
         <div class="event-menu-item press" id="item-share"><div class="icon-box"><i class="fa fa-share-alt"></i></div>分享文章</div>
         <hr>
+    {% if event.work.version > 1 %}
         <div class="event-menu-item press" id="item-history"><div class="icon-box"><i class="fa fa-history"></i></div>历史版本</div>
         <hr>
+    {% endif %}
+    {% if event.info.is_mine %}
+        {% if not event.work.is_public %}
+        <div class="event-menu-item press" id="item-public"><div class="icon-box"><i class="fa fa-eye"></i></div>对外公开</div>
+        <hr>
+        {% else %}
         <div class="event-menu-item press" id="item-private"><div class="icon-box"><i class="fa fa-eye-slash"></i></div>仅我可见</div>
         <hr>
+        {% endif %}
         <div class="event-menu-item press" id="item-modify"><div class="icon-box"><i class="fa fa-edit"></i></div>修改文章</div>
         <hr>
         <div class="event-menu-item press" id="item-delete"><div class="icon-box"><i class="fa fa-trash"></i></div>删除文章</div>
         <hr>
+    {% endif %}
     </div>
-    <div class="body-mask press" id="comment-mask"></div>
+    <div class="body-mask press" id="menu-mask"></div>
     <div class="hint-box">
         <div class="hint-body"></div>
     </div>
