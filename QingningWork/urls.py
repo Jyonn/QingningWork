@@ -30,16 +30,17 @@ urlpatterns = [
     url(r'^v2/comments/(?P<owner_id>\d+)/(?P<work_id>\d+)/(?P<event_id>\d+)$', front_views.comment_page),
     url(r'^v2/user/(?P<user_id>\d+)/(?P<role_id>\d+)', front_views.user_home),
     url(r'^v2/work/upload$', front_views.upload_work, name='upload-work-page'),
+    url(r'^v2/work/modify/(?P<work_id>\d+)$', front_views.modify_work),
     url(r'^v2/work/style/(?P<work_id>\d+)/(?P<style_id>\d+)$', front_views.work_style, name='work-style-page'),
 
     url(r'^legacy/', include("Work.legacy_urls")),
 
     # url(r'^admin/', admin.site.urls),
-    url(r'^user/', include("AbstractUser.urls")),
+    url(r'^api/user/', include("AbstractUser.urls")),
     # url(r'^reviewer/', include("Reviewer.urls")),
-    url(r'^work/', include("Work.urls")),
+    url(r'^api/work/', include("Work.urls")),
     # url(r'^writer/', include("Writer.urls")),
-    url(r'^base/', include("BaseFunc.urls")),
+    url(r'^api/base/', include("BaseFunc.urls")),
 ]
 
 urlpatterns += static.static('/', document_root=STATIC_FILE)

@@ -6,7 +6,7 @@
     <img class="avatar writer-avatar press" src="{{ event.info.work_owner.avatar }}" onclick="window.location.href='{{ event.info.work_owner.home_link }}'">
     <p class="event-owner-name">{{ event.info.event_owner.nickname }} <small>{{ event.info.type.desc }} <b>{{ event.info.work_owner.nickname }}</b> 的文章</small></p>
 {% elif event.info.type.create or event.info.type.modify %}
-    <p class="event-owner-name">{{ event.info.event_owner.nickname }} <small>发表文章</small></p>
+    <p class="event-owner-name">{{ event.info.event_owner.nickname }} <small>{{ event.info.type.desc }}文章</small></p>
 {% endif %}
 
     <div class="sub-title">
@@ -33,7 +33,6 @@
     <div class="interact-list-container press" id="thumb-list-container" {% if page_info.thumb_click %}onclick="window.location.href='{{ event.info.thumb_link }}'"{% endif %}>
         <div class="icon-box"><i class="fa fa-thumbs-up"></i></div>
             <p class="interact-list" id="me-thumb" style="display: {% if event.interact.thumb %}inline{% else %}none{% endif %}">我{% if event.work.thumb_list|length > 0 %}和{% endif %}</p>
-{#            <p class="interact-list">{% for thumb in event.work.thumb_list %}{% if not forloop.first %}、{% endif %}{{ thumb.nickname }}{% endfor %}</p>#}
             <p class="interact-list">{{ event.work.thumb_str }}</p>
             <p id="text-desc-thumb" data-thumb="{{ event.work.thumbs }}">{% if event.work.thumbs > 0 %}等{{ event.work.thumbs }}人觉得赞{% else %}成为第一个赞的人吧{% endif %}</p>
     </div>
@@ -41,7 +40,6 @@
     <div class="interact-list-container" onclick="window.location.href='{{ event.info.event_link }}'">
         <div class="icon-box"><i class="fa fa-comment"></i></div>
             <p class="interact-list" id="me-comment" style="display: {% if event.interact.has_comment %}inline{% else %}none{% endif %}">我{% if event.work.comment_list|length > 0 %}和{% endif %}</p>
-{#            <p class="interact-list">{% for thumb in event.work.comment_list %}{% if not forloop.first %}、{% endif %}{{ thumb.nickname }}{% endfor %}</p>#}
             <p class="interact-list">{{ event.work.comment_str }}</p>
             <p id="text-desc-comment" data-thumb="{{ event.work.comments }}">{% if event.work.comments > 0 %}等评论作品{{ event.work.comments }}次{% else %}成为第一个评论的人吧{% endif %}</p>
     </div>

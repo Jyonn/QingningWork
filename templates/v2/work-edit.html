@@ -10,21 +10,21 @@
 <body>
     <div class="navigation">
         <div class="t left press" onclick="window.history.back()">取消</div>
-        <div class="t right press" id="create-work">发布</div>
+        <div class="t right press" id="{% if page_info.is_create %}create-work{% else %}modify-work{% endif %}" data-work="{{ work_info.id }}">发布</div>
     </div>
 
     <div id="work-edit-container">
         <div class="work-edit-item">
-            <input type="text" id="work-edit-work-name-input" placeholder="文章名称" maxlength="20">
+            <input type="text" id="work-edit-work-name-input" placeholder="文章名称" maxlength="20" {% if page_info.is_modify %}value="{{ work_info.work_name }}"{% endif %}>
         </div>
 
         <div class="work-edit-item">
-            <input type="text" id="work-edit-writer-name-input" placeholder="作者" maxlength="10" {% if user_info.is_writer %}value="{{ user_info.nickname }}"{% endif %}>
+            <input type="text" id="work-edit-writer-name-input" placeholder="作者" maxlength="10" {% if page_info.is_modify %}value="{{ work_info.writer_name }}"{% else %}{% if user_info.is_writer %}value="{{ user_info.nickname }}"{% endif %}{% endif %}>
         </div>
 
         <div class="work-edit-item">
             <label for="textarea">
-                <textarea id="work-edit-work-content" class="preview-content" rows="5" placeholder="正文"></textarea>
+                <textarea id="work-edit-work-content" class="preview-content" rows="5" placeholder="正文">{% if page_info.is_modify %}{{ work_info.content }}{% endif %}</textarea>
             </label>
         </div>
         <div class="work-edit-item">

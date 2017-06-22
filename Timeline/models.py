@@ -14,8 +14,8 @@ class Timeline(models.Model):
     TYPE_REVIEW_WORK = 5
     TYPE_CLAIM_WORK = 6
     TYPE_TABLE = (
-        (TYPE_CREATE_WORK, '创建'),
-        (TYPE_MODIFY_WORK, '修改'),
+        (TYPE_CREATE_WORK, '发表'),
+        (TYPE_MODIFY_WORK, '修订'),
         (TYPE_REPOST_WORK, '分享'),
         (TYPE_THUMB_WORK, '点赞'),
         (TYPE_COMMENT_WORK, '评论'),

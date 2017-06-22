@@ -34,6 +34,7 @@ $(document).ready(function () {
     comment_mask.on('click', hide_comment_box);
 
     var create_work = $('#create-work'),
+        modify_work = $('#modify-work'),
         work_edit_work_name_input = $('#work-edit-work-name-input'),
         work_edit_writer_name_input = $('#work-edit-writer-name-input'),
         work_edit_work_content = $('#work-edit-work-content'),
@@ -49,15 +50,17 @@ $(document).ready(function () {
         'hint-normal'
     );
 
-    create_work.on('click', function () {
+    function finish_work(type, work_id) {
         var post = {
             work_name: work_edit_work_name_input.val(),
             writer_name: work_edit_writer_name_input.val(),
             content: work_edit_work_content.val(),
             motion: work_edit_motion.val(),
             is_public: switch_for_public.length === 0 || switch_for_public.is(':checked'),
-        },
-            json = encodedJSON(post);
+        };
+        if (work_id !== null)
+            post.work_id = work_id;
+        var json = encodedJSON(post);
         if (post.work_name === '') {
             show_hint('作品名不允许为空');
             return;
@@ -70,7 +73,7 @@ $(document).ready(function () {
             show_hint('正文不允许为空');
             return;
         }
-        postJSON('/work/upload', json, function (response) {
+        postJSON('/api/work/'+type, json, function (response) {
             if (response.code === 0) {
                 show_hint('发布成功', 500, function () {
                     window.location.href = '/v2/event/' + response.body.owner_id + '/' +
@@ -81,7 +84,10 @@ $(document).ready(function () {
                 show_hint(response.msg)
             }
         })
-    })
+    }
+
+    create_work.on('click', function () { finish_work('upload', null)} );
+    modify_work.on('click', function () { finish_work('modify', modify_work.attr('data-work'))} );
 });
 
 function do_thumb(thumb_btn_raw) {
@@ -95,7 +101,7 @@ function do_thumb(thumb_btn_raw) {
         like: like,
     },
         json = encodedJSON(post);
-    postJSON('/work/like', json, function (response) {
+    postJSON('/api/work/like', json, function (response) {
         var event_item = thumb_btn.parent().parent(),
             me_thumb = event_item.find('#me-thumb'),
             text_desc = event_item.find('#text-desc-thumb'),
@@ -130,3 +136,37 @@ function hide_comment_box() {
     comment_mask.css('display', 'none');
     comment_box.animate({bottom: '-180px'});
 }
+
+$(document).ready(function () {
+    var event_menu_container = $('#event-menu-container'),
+        event_id = event_menu_container.attr('data-event'),
+        work_id = event_menu_container.attr('data-work'),
+        owner_id = event_menu_container.attr('data-owner');
+    var item_share = $('#item-share'),
+        item_private = $('#item-private'),
+        item_modify = $('#item-modify'),
+        item_delete = $('#item-delete');
+    item_delete.on('click', function () {
+        alert('不可撤销，确认删除文章？', 'delete-work', function () {
+            var post = {
+                event_id: event_id,
+                work_id: work_id,
+                owner_id: owner_id,
+            },
+                json = encodedJSON(post);
+            postJSON('/api/work/delete', json, function (response) {
+                if (response.code === 0) {
+                    window.location.href = '/v2/center'
+                }
+                else {
+                    show_hint(response.msg)
+                }
+            })
+        }, null);
+    });
+    item_modify.on('click', function () {
+        alert('修改后数据清零，是否确认修改？', 'modify-work', function () {
+            window.location.href = '/v2/work/modify/'+work_id
+        }, null);
+    })
+});

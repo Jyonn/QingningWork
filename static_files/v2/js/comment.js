@@ -42,7 +42,7 @@ $(document).ready(function () {
         },
             json = encodedJSON(post);
         hide_comment_box();
-        postJSON('/work/comment', json, function (response) {
+        postJSON('/api/work/comment', json, function (response) {
             if (response.code !== 0) {
                 show_hint(response.msg)
             }
@@ -56,17 +56,19 @@ $(document).ready(function () {
 });
 
 function delete_comment(o_delete) {
-    var comment_id = $(o_delete).attr('data-comment-id'),
-        work_id = $(o_delete).attr('data-work-id'),
-        post = {
-            comment_id: comment_id,
-            work_id: work_id,
-        },
-        json = encodedJSON(post);
-    postJSON('/work/comment/delete', json, function (response) {
-        if (response.code === 0)
-            window.location.reload();
-        else
-            show_hint(response.msg)
-    });
+    alert('确认删除评论？', 'delete-comment', function () {
+        var comment_id = $(o_delete).attr('data-comment-id'),
+            work_id = $(o_delete).attr('data-work-id'),
+            post = {
+                comment_id: comment_id,
+                work_id: work_id,
+            },
+            json = encodedJSON(post);
+        postJSON('/api/work/comment/delete', json, function (response) {
+            if (response.code === 0)
+                window.location.reload();
+            else
+                show_hint(response.msg)
+        });
+    }, null);
 }

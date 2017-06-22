@@ -211,7 +211,7 @@ def delete_work(work):
 @require_json
 @require_params(['work_name', 'writer_name', 'content', 'is_public', 'motion'])
 @require_login
-def upload_work(request):
+def upload(request):
     """
     审稿员或作者上传稿件
     request
@@ -227,7 +227,6 @@ def upload_work(request):
     content = request.POST['content']
     is_public = request.POST['is_public'] == 'true'
     motion = request.POST['motion']
-    print(is_public)
     o_user = get_user_from_session(request)
     if o_user.user_type == AbstractUser.TYPE_REVIEWER and not is_public:
         return error_response(Error.REVIEWER_PUBLIC)
@@ -252,32 +251,68 @@ def upload_work(request):
 
 @require_POST
 @require_json
-@require_params(['work_type', 'work_name', 'writer_name', 'content', 'wid'])
+@require_params(['work_name', 'writer_name', 'content', 'is_public', 'motion', 'work_id'])
 @require_login
 def modify(request):
     """
     修改作品（懒惰删除，保留备份）
     """
+    work_name = request.POST['work_name']
+    writer_name = request.POST['writer_name']
+    content = request.POST['content']
+    is_public = request.POST['is_public'] == 'true'
+    motion = request.POST['motion']
+    work_id = request.POST['work_id']
+    o_user = get_user_from_session(request)
+    if o_user.user_type == AbstractUser.TYPE_REVIEWER and not is_public:
+        return error_response(Error.REVIEWER_PUBLIC)
+    pattern = r'^\s*$'
+    if re.search(pattern, work_name) is not None:
+        return error_response(Error.WORK_NAME_NONE)
+    if re.search(pattern, writer_name) is not None:
+        return error_response(Error.WRITER_NAME_NONE)
+    if re.search(pattern, content) is not None:
+        return error_response(Error.CONTENT_NONE)
+    try:
+        last_work = Work.objects.get(pk=work_id, is_delete=False).newest_version_work
+    except:
+        return error_response(Error.NOT_YOUR_WORK)
 
-    return response()
+    o_work = Work.create(o_user, work_name, writer_name, content, is_public, last_work)
+    if o_work is None:
+        return error_response(Error.WORK_SAVE_ERROR)
+    o_event = Timeline.create(o_user, o_work, Timeline.TYPE_MODIFY_WORK, motion=motion)
+
+    return response(body=dict(
+        event_id=o_event.pk,
+        work_id=o_work.pk,
+        owner_id=o_user.uid,
+    ))
 
 
 @require_POST
 @require_json
-@require_params(['wid'])
+@require_params(['event_id', 'work_id', 'owner_id'])
 @require_login
 def delete(request):
-    wid = request.POST['wid']
-    # 获取作品
-    work, ret_code = get_work_by_id(wid)
-    if ret_code != Error.OK:
-        return error_response(ret_code)
-    if work_is_mine(request, work) is False:
-        return error_response(Error.NOT_YOUR_WORK)
+    event_id = request.POST['event_id']
+    work_id = request.POST['work_id']
+    owner_id = request.POST['owner_id']
+    o_user = get_user_from_session(request)
 
-    ret_code = delete_work(work)
-    if ret_code != Error.OK:
-        return error_response(ret_code)
+    try:
+        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
+        work = event.related_work
+    except:
+        return error_response(Error.NOT_FOUND_EVENT)
+
+    if not work_belongs(work, o_user):
+        return error_response(Error.NOT_YOUR_WORK)
+    if work.status == Work.STATUS_CONFIRM_FEE:
+        return error_response(Error.CAN_NOT_DELETE_CAUSE_CONFIRMED)
+
+    work.is_delete = True
+    work.save()
 
     return response()
 

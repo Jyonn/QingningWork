@@ -28,7 +28,7 @@ $(document).ready(function() {
                 captcha: captcha_input.val(),
             },
                 json = encodedJSON(post);
-            postJSON('/user/login', json, function (response) {
+            postJSON('/api/user/login', json, function (response) {
                 refresh_captcha_img(captcha);
                 if (response.code !== 0)
                     show_hint(response.msg);
@@ -54,7 +54,7 @@ $(document).ready(function() {
                 captcha: captcha_input.val(),
             },
                 json = encodedJSON(post);
-            postJSON('/user/register', json, function (response) {
+            postJSON('/api/user/register', json, function (response) {
                 refresh_captcha_img(captcha);
                 if (response.code !== 0)
                     show_hint(response.msg);

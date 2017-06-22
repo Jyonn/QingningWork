@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from AbstractUser.models import AbstractUser
 from BaseFunc.base import get_readable_time_string, get_user_from_session, get_normal_date_string, \
-    get_chinese_date_string
+    get_chinese_date_string, work_belongs
 from Comment.models import WriterLike, Comment, WriterComment
 from Reviewer.models import Reviewer
 from Timeline.models import Timeline
@@ -420,10 +420,30 @@ def upload_work(request):
     ))
 
 
-def modify_work(request):
+def modify_work(request, work_id):
     o_user = get_user_from_session(request)
     if o_user is None:
         return render(request, 'v2/login.html')
+    try:
+        work = Work.objects.get(pk=work_id, is_delete=False)
+    except:
+        return render(request, 'v2/login.html')
+    if not work_belongs(work, o_user):
+        return render(request, 'v2/login.html')
+    if work.status == Work.STATUS_CONFIRM_FEE:
+        return render(request, 'v2/login.html')
+    return render(request, 'v2/work-edit.html', dict(
+        work_info=dict(
+            id=work_id,
+            writer_name=work.writer_name,
+            work_name=work.work_name,
+            content=work.content,
+        ),
+        page_info=dict(
+            is_create=False,
+            is_modify=True,
+        ),
+    ))
 
 
 def login_v2(request):

@@ -5,9 +5,9 @@ from Work import views, front_views
 urlpatterns = [
     # url(r'^detail/$', views.get_work_detail, name="get-work-detail"),
     # url(r'^comment/$', views.get_work_comments, name="get-work-comment"),
-    url(r'^upload$', views.upload_work, name="upload-work"),
-    # url(r'^delete/$', views.delete, name="delete-work-by-its-owner"),
-    # url(r'^modify/$', views.modify, name="modify-work-by-its-owner"),
+    url(r'^upload$', views.upload, name="upload-work"),
+    url(r'^delete$', views.delete, name="delete-work-by-its-owner"),
+    url(r'^modify$', views.modify, name="modify-work-by-its-owner"),
     url(r'^comment$', views.comment, name='comment-work'),
     url(r'^like$', views.like, name='like-work'),
     url(r'^comment/delete$', views.comment_delete, name='comment-delete')

@@ -35,15 +35,17 @@
         </label>
     {% endif %}
     </div>
-    <div id="event-menu-container">
+    <div id="event-menu-container" data-event="{{ event.info.event_id }}" data-work="{{ event.info.work_id }}" data-owner="{{ event.info.owner_id }}">
         <hr>
-        <div class="event-menu-item press"><div class="icon-box"><i class="fa fa-share-alt"></i></div>分享文章</div>
+        <div class="event-menu-item press" id="item-share"><div class="icon-box"><i class="fa fa-share-alt"></i></div>分享文章</div>
         <hr>
-        <div class="event-menu-item press"><div class="icon-box"><i class="fa fa-eye-slash"></i></div>隐藏动态（个人主页可见）</div>
+        <div class="event-menu-item press" id="item-history"><div class="icon-box"><i class="fa fa-history"></i></div>历史版本</div>
         <hr>
-        <div class="event-menu-item press"><div class="icon-box"><i class="fa fa-edit"></i></div>修改文章</div>
+        <div class="event-menu-item press" id="item-private"><div class="icon-box"><i class="fa fa-eye-slash"></i></div>仅我可见</div>
         <hr>
-        <div class="event-menu-item press"><div class="icon-box"><i class="fa fa-trash"></i></div>删除文章</div>
+        <div class="event-menu-item press" id="item-modify"><div class="icon-box"><i class="fa fa-edit"></i></div>修改文章</div>
+        <hr>
+        <div class="event-menu-item press" id="item-delete"><div class="icon-box"><i class="fa fa-trash"></i></div>删除文章</div>
         <hr>
     </div>
     <div class="body-mask press" id="comment-mask"></div>
@@ -56,4 +58,5 @@
     <script src="{% static "v2/js/base.js" %}"></script>
     <script src="{% static "v2/js/jquery.json.js" %}"></script>
     <script src="{% static "v2/js/base64.min.js" %}"></script>
+    <script src="{% static "v2/js/alert.js" %}"></script>
 </body>

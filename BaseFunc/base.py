@@ -12,6 +12,10 @@ from Reviewer.models import Reviewer
 from Writer.models import Writer
 
 
+def work_belongs(work, o_user):
+    return (work.re_reviewer == o_user and work.re_writer is None) or work.re_writer == o_user
+
+
 def username_regex(username):
     # r = r'[A-Za-z]\w{5,19}'
     # r = r'\w{6,20}'
@@ -45,6 +49,7 @@ def get_chinese_date_string(d):
         date_string += month_str[t]
     date_string += '日'
     return date_string
+
 
 def get_normal_date_string(d):
     return str(d.year) + '/' + str(d.month) + '/' + str(d.day)
