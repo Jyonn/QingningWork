@@ -396,6 +396,7 @@ hr {
             font-size: 12px;
             text-align: right;
             color: #333333;
+            padding-right: 5px;
         }
         .preview-content {
             color: #333333;
