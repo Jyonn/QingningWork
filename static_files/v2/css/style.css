@@ -7,6 +7,26 @@ body {
     overflow-y: scroll;
 }
 
+pre {
+    color: #333333;
+    padding: 10px 0 0 0;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: "PingFang SC", "San Francisco", "等线", "STHeiti", serif!important;
+    text-overflow: clip;
+    overflow: hidden;
+    resize: none;
+    text-align: justify;
+    letter-spacing: 2px;
+    line-height: 20px;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
 ::-webkit-scrollbar {
     width: 0;
 }
@@ -370,6 +390,12 @@ hr {
             display: inline;
             /*margin: -18px 10px 0 0;*/
             /*text-align: right;*/
+        }
+        .event-list .event-item label .writer-name {
+            margin: 3px 0;
+            font-size: 12px;
+            text-align: right;
+            color: #333333;
         }
         .preview-content {
             color: #333333;

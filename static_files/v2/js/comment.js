@@ -1,32 +1,17 @@
-// function review_state_change(checked) {
-//     var review_state = $('#review-state');
-//     if (checked) {
-//         review_state.text('通过作品').removeClass('hint-danger').addClass('hint-success');
-//     }
-//     else {
-//         review_state.text('驳回作品（没有通过审核）').removeClass('hint-success').addClass('hint-danger');
-//     }
-// }
-
 function review_switcher_change(like) {
     var review_switcher = $('#review-switcher');
     review_switcher.prop('checked', like);
-    // review_state_change(like);
 }
 
 $(document).ready(function () {
     var review_switcher = $('#review-switcher');
-    // review_switcher.on('change', function () {
-    //     var checked = review_switcher.is(':checked');
-    //     review_state_change(checked);
-    // });
     switcher_state_changer(
         review_switcher,
         $('#review-state'),
         '通过作品',
         '驳回作品（没有通过审核）',
         'hint-success',
-        'hint-danger'
+        'hint-danger',
     );
 
     var comment_do = $('#comment-do'),
