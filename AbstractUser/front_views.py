@@ -380,7 +380,7 @@ def user_home(request, user_id, role_id):
     events = Timeline.objects.filter(
         is_delete=False,
         owner=o_visit_user,
-        related_work__is_updated=False,
+        # related_work__is_updated=False,
         related_work__is_delete=False,
         related_work__is_public=True,
     ).order_by('-pk')[:20]
