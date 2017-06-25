@@ -3,7 +3,7 @@
  */
 
 $(document).ready(function () {
-    var nav_user_avatar = $('#nav-user-avatar'),
+    let nav_user_avatar = $('#nav-user-avatar'),
         sidebar = $('.sidebar-container'),
         sidebar_fold_btn = $('#sidebar-fold-btn'),
         sidebar_mask = $('#sidebar-mask');

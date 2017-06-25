@@ -1,10 +1,10 @@
 function review_switcher_change(like) {
-    var review_switcher = $('#review-switcher');
+    let review_switcher = $('#review-switcher');
     review_switcher.prop('checked', like);
 }
 
 $(document).ready(function () {
-    var review_switcher = $('#review-switcher');
+    let review_switcher = $('#review-switcher');
     switcher_state_changer(
         review_switcher,
         $('#review-state'),
@@ -14,11 +14,11 @@ $(document).ready(function () {
         'hint-danger',
     );
 
-    var comment_do = $('#comment-do'),
+    let comment_do = $('#comment-do'),
         comment_content = $('.comment-content');
     comment_do.on('click', function () {
-        var pass = (review_switcher === undefined) ? false : review_switcher.is(':checked');
-        var post = {
+        let pass = (review_switcher === undefined) ? false : review_switcher.is(':checked');
+        let post = {
             content: comment_content.val(),
             pass: pass,
             event_id: comment_do.attr('data-event'),
@@ -42,7 +42,7 @@ $(document).ready(function () {
 
 function delete_comment(o_delete) {
     alert('确认删除评论？', 'delete-comment', function () {
-        var comment_id = $(o_delete).attr('data-comment-id'),
+        let comment_id = $(o_delete).attr('data-comment-id'),
             work_id = $(o_delete).attr('data-work-id'),
             post = {
                 comment_id: comment_id,

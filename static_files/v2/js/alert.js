@@ -1,25 +1,25 @@
 function alert(text, id_str, success_func, cancel_func) {
-    var rand_str;
+    let rand_str;
     if (id_str === "")
         rand_str = Math.random().toString(36).substr(2);
     else
         rand_str = id_str;
-    var alert_box = "alert-box-" + rand_str,
+    let alert_box = "alert-box-" + rand_str,
         alert_ok = "alert-ok-" + rand_str,
         alert_cancel = "alert-cancel-" + rand_str,
         alert_mask = "alert-mask-" + rand_str,
-        mask_html = '<div class="body-mask higher-body-mask press" id="'+alert_mask+'"></div>',
+        mask_html = `<div class="body-mask higher-body-mask press" id="${alert_mask}"></div>`,
         alert_html =
-        '<div class="alert-box" id="'+alert_box+'" style="display: none;">' +
-        '   <div class="alert-body">'+text+'</div>' +
-        '   <hr>' +
-        '   <div class="alert-btns">' +
-        '       <div class="alert-btn press alert-ok" id="'+alert_ok+'">确定</div>' +
-        '       <div class="alert-btn press alert-cancel" id="'+alert_cancel+'">取消</div>' +
-        '   </div>' +
-        '</div>';
+        `<div class="alert-box" id="${alert_box}" style="display: none;">` +
+        `   <div class="alert-body">${text}</div>` +
+        `   <hr>` +
+        `   <div class="alert-btns">` +
+        `       <div class="alert-btn press alert-ok" id="${alert_ok}">确定</div>` +
+        `       <div class="alert-btn press alert-cancel" id="${alert_cancel}">取消</div>` +
+        `   </div>` +
+        `</div>`;
     $('body').append(mask_html).append(alert_html);
-    var j_alert_mask = $('#'+alert_mask),
+    let j_alert_mask = $('#'+alert_mask),
         j_alert_ok = $('#'+alert_ok),
         j_alert_cancel = $('#'+alert_cancel),
         j_alert_box = $('#'+alert_box);

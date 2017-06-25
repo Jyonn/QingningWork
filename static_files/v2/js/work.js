@@ -19,7 +19,7 @@ $(document).ready(function () {
     resize();
     window.onresize = resize;
 
-    var comment_btn = $('#comment-btn'),
+    let comment_btn = $('#comment-btn'),
         comment_box = $('.comment-box'),
         comment_content = $('.comment-content'),
         comment_cancel = $('#comment-cancel'),
@@ -33,7 +33,7 @@ $(document).ready(function () {
     comment_cancel.on('click', hide_comment_box);
     comment_mask.on('click', hide_comment_box);
 
-    var create_work = $('#create-work'),
+    let create_work = $('#create-work'),
         modify_work = $('#modify-work'),
         work_edit_work_name_input = $('#work-edit-work-name-input'),
         work_edit_writer_name_input = $('#work-edit-writer-name-input'),
@@ -51,7 +51,7 @@ $(document).ready(function () {
     );
 
     function finish_work(type, work_id) {
-        var post = {
+        let post = {
             work_name: work_edit_work_name_input.val(),
             writer_name: work_edit_writer_name_input.val(),
             content: work_edit_work_content.val(),
@@ -60,7 +60,7 @@ $(document).ready(function () {
         };
         if (work_id !== null)
             post.work_id = work_id;
-        var json = encodedJSON(post);
+        let json = encodedJSON(post);
         if (post.work_name === '') {
             show_hint('作品名不允许为空');
             return;
@@ -76,11 +76,11 @@ $(document).ready(function () {
         postJSON('/api/work/'+type, json, function (response) {
             if (response.code === 0) {
                 show_hint('发布成功', 500, function () {
-                    window.location.href = '/v2/event/' + response.body.owner_id + '/' +
-                        response.body.work_id + '/' + response.body.event_id
+                    window.location.href = `/v2/event/${response.body.owner_id}/${response.body.work_id}/${response.body.event_id}`
                 });
             }
             else {
+                /** @namespace response.msg */
                 show_hint(response.msg)
             }
         })
@@ -91,16 +91,16 @@ $(document).ready(function () {
 });
 
 function do_thumb(thumb_btn_raw) {
-    var thumb_btn = $(thumb_btn_raw);
-    var thumb_icon = thumb_btn.children('i'),
+    let thumb_btn = $(thumb_btn_raw);
+    let thumb_icon = thumb_btn.children('i'),
         like = thumb_icon.hasClass('fa-thumbs-o-up');
-    var post = {
+    let post = {
         work_id: thumb_btn.attr('data-work'),
         like: like,
     },
         json = encodedJSON(post);
     postJSON('/api/work/like', json, function (response) {
-        var event_item = thumb_btn.parent().parent(),
+        let event_item = thumb_btn.parent().parent(),
             me_thumb = event_item.find('#me-thumb'),
             text_desc = event_item.find('#text-desc-thumb'),
             thumb_count = parseInt(text_desc.attr('data-thumb'));
@@ -118,7 +118,7 @@ function do_thumb(thumb_btn_raw) {
             if (thumb_count === 0)
                 text_desc.text('成为第一个赞的人吧');
             else
-                text_desc.text('等'+thumb_count+'人觉得赞');
+                text_desc.text(`等${thumb_count}人觉得赞`);
             text_desc.attr('data-thumb', thumb_count);
             review_switcher_change(like);
         }
@@ -129,14 +129,14 @@ function do_thumb(thumb_btn_raw) {
 }
 
 function hide_comment_box() {
-    var comment_box = $('.comment-box'),
+    let comment_box = $('.comment-box'),
         comment_mask = $('#comment-mask');
     comment_mask.css('display', 'none');
     comment_box.animate({bottom: '-180px'});
 }
 
 $(document).ready(function () {
-    var event_menu = $('.event-menu'),
+    let event_menu = $('.event-menu'),
         event_menu_container = $('#event-menu-container'),
         menu_mask = $('#menu-mask');
     event_menu.on('click', function () {
@@ -149,7 +149,7 @@ $(document).ready(function () {
         menu_mask.css('display', 'none');
     });
 
-    var share_menu_container = $('#share-menu-container'),
+    let share_menu_container = $('#share-menu-container'),
         share_mask = $('#share-mask'),
         share_btn = $('#share-btn');
     share_btn.on('click', function () {
@@ -163,7 +163,7 @@ $(document).ready(function () {
         share_mask.css('display', 'none');
     });
 
-    var work_id = event_menu_container.attr('data-work'),
+    let work_id = event_menu_container.attr('data-work'),
         item_share = $('#item-share'),
         item_private = $('#item-private'),
         item_public = $('#item-public'),
@@ -179,7 +179,7 @@ $(document).ready(function () {
     });
     item_delete.on('click', function () {
         alert('不可撤销，确认删除文章？', 'delete-work', function () {
-            var post = {
+            let post = {
                 work_id: work_id,
             },
                 json = encodedJSON(post);
@@ -198,7 +198,7 @@ $(document).ready(function () {
     });
     item_private.on('click', function () {
         alert('设置后其他人将看不到作品，是否继续？', 'private-work', function () {
-            var post = {
+            let post = {
                 work_id: work_id,
                 be_public: false,
             },
@@ -213,7 +213,7 @@ $(document).ready(function () {
     });
     item_public.on('click', function () {
         alert('设置后所有人能看到作品，是否继续？', 'public-work', function () {
-            var post = {
+            let post = {
                 work_id: work_id,
                 be_public: true,
             },
@@ -229,18 +229,18 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    var share_menu_container = $('#share-menu-container'),
-        share_qn = $('#share-qn'),
+    let share_menu_container = $('#share-menu-container'),
+        // share_qn = $('#share-qn'),
         share_s1 = $('#share-s1'),
         share_s2 = $('#share-s2'),
         share_s3 = $('#share-s3');
     share_s1.on('click', function () {
-        window.location.href = '/v2/work/style/'+share_menu_container.attr('data-work')+'/1'
+        window.location.href = `/v2/work/style/${share_menu_container.attr('data-work')}/1`
     });
     share_s2.on('click', function () {
-        window.location.href = '/v2/work/style/'+share_menu_container.attr('data-work')+'/2'
+        window.location.href = `/v2/work/style/${share_menu_container.attr('data-work')}/2`
     });
     share_s3.on('click', function () {
-        window.location.href = '/v2/work/style/'+share_menu_container.attr('data-work')+'/3'
+        window.location.href = `/v2/work/style/${share_menu_container.attr('data-work')}/3`
     });
 });

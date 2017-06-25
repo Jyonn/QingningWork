@@ -1,4 +1,4 @@
-var ACT_LOGIN = 0,
+let ACT_LOGIN = 0,
     ACT_SIGNUP = 1;
 
 function refresh_captcha_img(captcha) {
@@ -6,13 +6,13 @@ function refresh_captcha_img(captcha) {
 }
 
 $(document).ready(function() {
-    var login_act = $('#login-act'),
+    let login_act = $('#login-act'),
         signup_act = $('#signup-act'),
         current_act = ACT_LOGIN;
-    var username_input = $('#username-input'),
+    let username_input = $('#username-input'),
         password_input = $('#password-input'),
         captcha_input = $('#captcha-input');
-    var captcha = $('.captcha');
+    let captcha = $('.captcha');
     login_act.on("click", function () {
         if (current_act === ACT_SIGNUP) {
             login_act.stop().animate({'top': '0'});
@@ -22,7 +22,7 @@ $(document).ready(function() {
             current_act = ACT_LOGIN;
         }
         else if (current_act === ACT_LOGIN) {
-            var post = {
+            let post = {
                 username: username_input.val(),
                 password: password_input.val(),
                 captcha: captcha_input.val(),
@@ -48,7 +48,7 @@ $(document).ready(function() {
             current_act = ACT_SIGNUP;
         }
         else if (current_act === ACT_SIGNUP) {
-            var post = {
+            let post = {
                 username: username_input.val(),
                 password: password_input.val(),
                 captcha: captcha_input.val(),
