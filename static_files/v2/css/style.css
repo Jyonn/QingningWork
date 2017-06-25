@@ -822,6 +822,11 @@ hr {
     overflow-x: auto;
     white-space: nowrap;
 }
+    .divide-line {
+        border-right: solid 1px #dddddd;
+        height: 80px;
+        display: inline-block;
+    }
     .share-menu-item {
         height: 80px;
         width: 70px;

@@ -185,7 +185,7 @@ $(document).ready(function () {
                 json = encodedJSON(post);
             postJSON('/api/work/delete', json, function (response) {
                 if (response.code === 0)
-                    window.location.href = '/v2/center';
+                    window.history.back();
                 else
                     show_hint(response.msg)
             })
