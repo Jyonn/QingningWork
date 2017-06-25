@@ -487,6 +487,7 @@ hr {
         position: relative;
         margin-top: 5px;
         letter-spacing: 1px;
+        display: none;
     }
     .event-list .event-item .comment-container .comment .user-comment-avatar {
         height: 40px;

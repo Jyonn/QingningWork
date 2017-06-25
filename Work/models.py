@@ -109,8 +109,26 @@ class Work(models.Model):
         default=0,
     )
 
+    work_group_id = models.IntegerField(
+        verbose_name='稿件组',
+        default=None,
+        null=True,
+        blank=True,
+    )
+
     @classmethod
-    def create(cls, o_user, work_name, writer_name, content, is_public, last_version_work):
+    def create(cls, o_user, work_name, writer_name, content, is_public, one_work):
+        try:
+            if one_work is None:
+                o_work_group = None
+                o_latest_work = None
+            else:
+                o_work_group = WorkGroup.objects.get(pk=one_work.work_group_id)
+                o_latest_work = Work.objects.get(pk=o_work_group.latest)
+                o_latest_work.is_updated = True
+                o_latest_work.save()
+        except:
+            return None
         re_writer, re_reviewer = None, None
         if o_user.user_type == AbstractUser.TYPE_REVIEWER:
             re_reviewer = o_user
@@ -123,20 +141,41 @@ class Work(models.Model):
             writer_name=writer_name,
             content=content,
             is_public=is_public,
-            last_version_work=last_version_work,
-            version_num=1 if last_version_work is None else last_version_work.version_num + 1,
+            # last_version_work=last_version_work,
+            version_num=1 if one_work is None else o_latest_work.version_num + 1,
             is_updated=False,
             status=Work.STATUS_UNDER_REVIEW if is_public else Work.STATUS_UNDER_WRITE,
+            work_group_id=None if o_work_group is None else o_work_group.pk,
         )
         try:
             o_work.save()
-            o_work.newest_version_work = o_work
-            o_work.save()
-            while last_version_work is not None:
-                last_version_work.newest_version_work = o_work
-                last_version_work.is_updated = True
-                last_version_work.save()
-                last_version_work = last_version_work.last_version_work
+            if o_work_group is None:
+                o_work_group = WorkGroup.create(o_work)
+                o_work.work_group_id = o_work_group.pk
+                o_work.save()
+            else:
+                o_work_group.latest = o_work
+                o_work_group.save()
         except:
             return None
         return o_work
+
+
+class WorkGroup(models.Model):
+    """
+    文章组，多次修改稿件的为一组
+    """
+    latest = models.ForeignKey(
+        Work,
+        verbose_name='最新稿',
+        unique=True,
+    )
+
+    @classmethod
+    def create(cls, latest):
+        o_work_group = cls(latest=latest)
+        try:
+            o_work_group.save()
+        except:
+            return None
+        return o_work_group

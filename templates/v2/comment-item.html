@@ -1,0 +1,11 @@
+<div class="comment" id="{{ comment.html_id }}">
+    <img class="avatar user-comment-avatar press" src="{{ comment.avatar }}" onclick="window.location.href='{{ comment.home_link }}'">
+    <p class="user-comment-name">{{ comment.nickname }}
+        {% if comment.is_reviewer %}<i class="fa fa-vcard"></i>{% endif %}
+    </p>
+    <p class="user-comment-time">{{ comment.time }}</p>
+    <p class="user-comment-content">{{ comment.content }}</p>
+{% if comment.is_mine and not comment.is_reviewer %}
+    <div class="delete press" data-comment-id="{{ comment.id }}" data-work-id="{{ event.info.work_id }}" onclick="delete_comment(this)"><i class="fa fa-trash"></i></div>
+{% endif %}
+</div>

@@ -15,7 +15,8 @@ $(document).ready(function () {
     );
 
     let comment_do = $('#comment-do'),
-        comment_content = $('.comment-content');
+        comment_content = $('.comment-content'),
+        comment_container = $('.comment-container');
     comment_do.on('click', function () {
         let pass = (review_switcher === undefined) ? false : review_switcher.is(':checked');
         let post = {
@@ -32,28 +33,49 @@ $(document).ready(function () {
                 show_hint(response.msg)
             }
             else {
-                show_hint('评论成功', 500, function () {
-                    window.location.reload()
-                });
+                let old_html_id = response.body.old_html_id,
+                    new_html_id = response.body.new_html_id,
+                    old_html = $(`#${old_html_id}`);
+                comment_container.prepend(response.body.new_html);
+                if (old_html_id === null) {
+                    let new_html = $(`#${new_html_id}`);
+                    new_html.slideDown()
+                }
+                else {
+                    old_html.slideUp('250', function () {
+                        old_html.remove();
+                        let new_html = $(`#${new_html_id}`);
+                        new_html.slideDown()
+                    })
+                }
             }
         })
     });
 });
 
-function delete_comment(o_delete) {
+function delete_comment(raw_o_delete) {
     alert('确认删除评论？', 'delete-comment', function () {
-        let comment_id = $(o_delete).attr('data-comment-id'),
-            work_id = $(o_delete).attr('data-work-id'),
+        let o_delete = $(raw_o_delete),
+            o_comment = o_delete.parent(),
+            comment_id = o_delete.attr('data-comment-id'),
+            work_id = o_delete.attr('data-work-id'),
             post = {
                 comment_id: comment_id,
                 work_id: work_id,
             },
             json = encodedJSON(post);
         postJSON('/api/work/comment/delete', json, function (response) {
-            if (response.code === 0)
-                window.location.reload();
+            if (response.code === 0) {
+                o_comment.slideUp('250', function () {
+                    o_comment.remove()
+                })
+            }
             else
                 show_hint(response.msg)
         });
     }, null);
 }
+
+$(document).ready(function () {
+    $('.comment').slideDown()
+});

@@ -3,7 +3,7 @@ from BaseFunc.base import response
 from Comment.models import Comment, WriterComment, WriterLike
 from QingningWork.settings import WORK_URL
 from Reviewer.models import Reviewer
-from Work.models import Work
+from Work.models import Work, WorkGroup
 from Timeline.models import Timeline
 
 import base64
@@ -131,4 +131,16 @@ def create_timeline(request):
             o_writer_like.re_work,
             Timeline.TYPE_THUMB_WORK,
         )
+    return response()
+
+
+def work_group_create(request):
+    works = Work.objects.all()
+    for work in works:
+        if not work.is_updated:
+            o_work_group = WorkGroup.create(work)
+            work_groups = Work.objects.filter(newest_version_work=work)
+            for w in work_groups:
+                w.work_group_id = o_work_group.pk
+                w.save()
     return response()

@@ -56,6 +56,33 @@ def get_packed_work_thumbs(o_user, work, length=None):
     return thumb_list, total_likes
 
 
+def get_packed_work_comment(o_user, o_comment, is_reviewer):
+    if is_reviewer:
+        return dict(
+            html_id=o_comment.get_html_id(),
+            id=o_comment.pk,
+            avatar=o_comment.re_reviewer.get_avatar(),
+            nickname=o_comment.re_reviewer.get_nickname(),
+            time=get_readable_time_string(o_comment.comment_time),
+            content=o_comment.content,
+            is_reviewer=True,
+            home_link='/v2/user/' + str(o_comment.re_reviewer.uid) + '/' + str(o_comment.re_reviewer.pk),
+            is_mine=o_comment.re_reviewer == o_user,
+        )
+    else:
+        return dict(
+            html_id=o_comment.get_html_id(),
+            id=o_comment.pk,
+            avatar=o_comment.re_writer.get_avatar(),
+            nickname=o_comment.re_writer.get_nickname(),
+            time=get_readable_time_string(o_comment.create_time),
+            content=o_comment.content,
+            is_reviewer=False,
+            home_link='/v2/user/' + str(o_comment.re_writer.uid) + '/' + str(o_comment.re_writer.pk),
+            is_mine=o_comment.re_writer == o_user,
+        )
+
+
 def get_packed_work_comments(o_user, work, length=None, show_self=False):
     reviewer_comments = Comment.objects.filter(re_work=work, is_updated=False)
 
@@ -69,32 +96,36 @@ def get_packed_work_comments(o_user, work, length=None, show_self=False):
             total_comments += 1
             if o_comment.re_reviewer == o_user and not show_self:
                 continue
-            comment_list.append(dict(
-                id=o_comment.pk,
-                avatar=o_comment.re_reviewer.get_avatar(),
-                nickname=o_comment.re_reviewer.get_nickname(),
-                time=get_readable_time_string(o_comment.comment_time),
-                content=o_comment.content,
-                is_reviewer=True,
-                home_link='/v2/user/' + str(o_comment.re_reviewer.uid) + '/' + str(o_comment.re_reviewer.pk),
-                is_mine=o_comment.re_reviewer == o_user,
-            ))
+            # comment_list.append(dict(
+            #     html_id=o_comment.get_html_id(),
+            #     id=o_comment.pk,
+            #     avatar=o_comment.re_reviewer.get_avatar(),
+            #     nickname=o_comment.re_reviewer.get_nickname(),
+            #     time=get_readable_time_string(o_comment.comment_time),
+            #     content=o_comment.content,
+            #     is_reviewer=True,
+            #     home_link='/v2/user/' + str(o_comment.re_reviewer.uid) + '/' + str(o_comment.re_reviewer.pk),
+            #     is_mine=o_comment.re_reviewer == o_user,
+            # ))
+            comment_list.append(get_packed_work_comment(o_user, o_comment, True))
             comment_user_list.append(o_comment.re_reviewer.get_nickname())
 
     total_comments += len(writer_comments)
     for o_comment in writer_comments[:length]:
         if o_comment.re_writer == o_user and not show_self:
             continue
-        comment_list.append(dict(
-            id=o_comment.pk,
-            avatar=o_comment.re_writer.get_avatar(),
-            nickname=o_comment.re_writer.get_nickname(),
-            time=get_readable_time_string(o_comment.create_time),
-            content=o_comment.content,
-            is_reviewer=False,
-            home_link='/v2/user/' + str(o_comment.re_writer.uid) + '/' + str(o_comment.re_writer.pk),
-            is_mine=o_comment.re_writer == o_user,
-        ))
+        # comment_list.append(dict(
+        #     html_id=o_comment.get_html_id(),
+        #     id=o_comment.pk,
+        #     avatar=o_comment.re_writer.get_avatar(),
+        #     nickname=o_comment.re_writer.get_nickname(),
+        #     time=get_readable_time_string(o_comment.create_time),
+        #     content=o_comment.content,
+        #     is_reviewer=False,
+        #     home_link='/v2/user/' + str(o_comment.re_writer.uid) + '/' + str(o_comment.re_writer.pk),
+        #     is_mine=o_comment.re_writer == o_user,
+        # ))
+        comment_list.append(get_packed_work_comment(o_user, o_comment, False))
         if o_comment.re_writer.uid not in comment_user_uid_list:
             comment_user_uid_list.append(o_comment.re_writer.uid)
             comment_user_list.append(o_comment.re_writer.get_nickname())

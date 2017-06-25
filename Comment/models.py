@@ -53,6 +53,9 @@ class Comment(models.Model):
         comment.save()
         return comment
 
+    def get_html_id(self):
+        return 'comment-r'+str(self.pk)
+
 
 class WriterComment(models.Model):
     L = {
@@ -94,6 +97,9 @@ class WriterComment(models.Model):
         )
         w_comment.save()
         return w_comment
+
+    def get_html_id(self):
+        return 'comment-w'+str(self.pk)
 
 
 class WriterLike(models.Model):

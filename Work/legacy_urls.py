@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^comment-decode-base64$', legacy_views.comment_decode_base64),
     url(r'^update-abstract-user-type$', legacy_views.update_abstract_user_type),
 
-    url(r'^create-timeline', legacy_views.create_timeline),
+    url(r'^create-timeline$', legacy_views.create_timeline),
+    url(r'^work-group$', legacy_views.work_group_create)
 ]

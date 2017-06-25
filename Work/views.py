@@ -1,9 +1,10 @@
 # coding=utf-8
 # import datetime
+from django.shortcuts import render
 
+from AbstractUser.front_views import get_packed_work_comment
 from BaseFunc.decorator import *
 from Comment.models import Comment, WriterComment, WriterLike
-from QingningWork.settings import WORK_URL
 from Reviewer.models import Reviewer
 from Timeline.models import Timeline
 from Work.models import Work
@@ -41,15 +42,15 @@ def get_packed_work(work, related_type=None):
     if dist < 60:
         dist_str = str(int(dist)) + '秒前'
     elif dist < 60 * 60:
-        dist_str = str(int(dist/60)) + '分钟前'
+        dist_str = str(int(dist / 60)) + '分钟前'
     elif dist < 60 * 60 * 24:
-        dist_str = str(int(dist/60/60)) + '小时前'
+        dist_str = str(int(dist / 60 / 60)) + '小时前'
     elif dist < 60 * 60 * 24 * 30:
-        dist_str = str(int(dist/60/60/24)) + '天前'
+        dist_str = str(int(dist / 60 / 60 / 24)) + '天前'
     elif dist < 60 * 60 * 24 * 365:
-        dist_str = str(int(dist/60/60/24/30)) + '个月前'
+        dist_str = str(int(dist / 60 / 60 / 24 / 30)) + '个月前'
     else:
-        dist_str = str(int(dist/60/60/24/365)) + '年前'
+        dist_str = str(int(dist / 60 / 60 / 24 / 365)) + '年前'
 
     work_detail = dict(
         wid=work.pk,  # 作品编号
@@ -70,141 +71,6 @@ def get_packed_work(work, related_type=None):
     else:
         work_detail['re_avatar'] = work.re_reviewer.avatar
     return work_detail
-
-
-@require_POST
-@require_json
-@require_params(['wid'])
-def get_work_detail(request):
-    """
-    获取作品详细信息
-    request
-    {
-        wid: 作品编号
-    }
-    response
-    {
-        wid: 作品编号
-        writer_name: 作者名称
-        work_name: 作品名称
-        create_time: 创建时间
-        status: 作品状态，详见 Work 表定义
-        fee: 作品稿费，仅当 status 为 STATUS_CONFIRM_FEE 时有效
-        work_type: 作品类型
-        re_writer_id: 作者编号
-        re_reviewer_id: 审稿员编号
-        is_mine: 是当前用户的作品
-    }
-    """
-    wid = request.POST['wid']
-    work, ret_code = get_work_by_id(wid)
-    if work is None:
-        return error_response(ret_code)
-
-    work_detail = dict(
-        wid=work.pk,
-        writer_name=work.writer_name,
-        work_name=work.work_name,
-        create_time=get_readable_time_string(work.create_time),
-        status=work.status,
-        fee=work.fee,
-        work_type=work.work_type,
-    )
-    if work.re_writer is not None:
-        work_detail['re_writer_id'] = work.re_writer.pk
-    if work.re_reviewer is not None:
-        work_detail['re_reviewer_id'] = work.re_reviewer.pk
-
-    work_detail['is_mine'] = work_is_mine(request, work)
-
-    if work.is_public is False and work_detail['is_mine'] is False:
-        return error_response(Error.WORK_IS_PRIVATE)
-
-    file_path = WORK_URL + work.work_store
-    with open(file_path, 'rb+') as f:
-        content = f.read().decode()
-        f.close()
-    work_detail['content'] = content
-    work_detail['url'] = None
-
-    return response(body=work_detail)
-
-
-@require_POST
-@require_json
-@require_params(['wid'])
-def get_work_comments(request):
-    """
-    获取作品的所有(最新)评论
-    response
-    {
-        rid: 审稿员编号
-        nickname: 审稿员昵称
-        avatar: 审稿员头像
-        content: 评价内容
-        result: 评价结果
-        comment_time: 评价时间
-        times: 评价次数
-    }
-    """
-    wid = request.POST['wid']
-    work, ret_code = get_work_by_id(wid)
-    if work is None:
-        return error_response(ret_code)
-    if work.is_public is False:
-        return error_response(Error.WORK_IS_PRIVATE)
-
-    comment_list = []
-    comments = Comment.objects.filter(
-        re_work=work,
-        is_updated=False,
-    )
-    for o_comment in comments:
-        reviewer_comments = Comment.objects.filter(re_work=work, re_reviewer=o_comment.re_reviewer)
-        comment_list.append(dict(
-            rid=o_comment.re_reviewer.pk,
-            nickname=o_comment.re_reviewer.nickname,
-            avatar=o_comment.re_reviewer.avatar,
-            content=o_comment.content,
-            result=o_comment.result,
-            comment_time=get_readable_time_string(o_comment.comment_time),
-            times=reviewer_comments.count(),
-        ))
-
-    return response(body=comment_list)
-
-
-def delete_work(work):
-    """
-    删除作品
-    """
-    if work.status == Work.STATUS_CONFIRM_FEE:  # 作品被确认收录，无法删除
-        return Error.CAN_NOT_DELETE_CAUSE_CONFIRMED
-    if work.re_writer is not None:  # 作品属于某作者
-        work.re_writer.total_works -= 1  # 作者作品总数-1
-        if work.status == Work.STATUS_RECEIVED:  # 作者被采纳作品数-1
-            work.re_writer.total_received -= 1
-        elif work.status == Work.STATUS_REFUSED:  # 作者被驳回作品数-1
-            work.re_writer.total_refused -= 1
-        work.re_writer.save()
-    elif work.re_reviewer is not None:  # 作品属于某审稿员
-        work.re_reviewer.total_upload -= 1  # 审稿员总上传数-1
-        work.re_reviewer.save()
-
-    # 获取作品评论
-    comments = Comment.objects.filter(re_work=work, is_updated=False)
-    for o_comment in comments:
-        # 恢复审稿员的审稿数
-        if o_comment.result is True:
-            o_comment.re_reviewer.total_received -= 1
-        else:
-            o_comment.re_reviewer.total_refused -= 1
-        o_comment.re_reviewer.save()
-
-    # 标记删除
-    work.is_delete = True
-    work.save()
-    return Error.OK
 
 
 @require_POST
@@ -340,11 +206,15 @@ def comment(request):
     except:
         return error_response(Error.NOT_FOUND_EVENT)
 
+    old_html_id = None
+    new_comment = None
+
     if o_user.user_type == AbstractUser.TYPE_WRITER:
         if len(content) < 1:
             return error_response(Error.COMMENT_ERROR)
         writer = Writer.objects.get(pk=o_user.user_id)
-        WriterComment.create(work, writer, content)
+        o_writer_comment = WriterComment.create(work, writer, content)
+        new_comment = o_writer_comment
     elif o_user.user_type == AbstractUser.TYPE_REVIEWER:
         reviewer = Reviewer.objects.get(pk=o_user.user_id)
         writer = work.re_writer
@@ -356,6 +226,7 @@ def comment(request):
             )
             o_comment.is_updated = True  # 原评论被更新标记
             o_comment.save()
+            old_html_id = o_comment.get_html_id()
             # 若评价结果不同，更新审稿员和作者数据
             if o_comment.result != passed:
                 # 更新审稿员
@@ -392,8 +263,11 @@ def comment(request):
                     writer.total_refused += 1
                 writer.save()
 
-        Comment.create(work, reviewer, content, passed)
-    return response()
+        o_comment = Comment.create(work, reviewer, content, passed)
+        new_comment = o_comment
+    new_comment_dict = get_packed_work_comment(o_user, new_comment, o_user.user_type == AbstractUser.TYPE_REVIEWER)
+    new_html = render(request, 'v2/comment-item.html', dict(comment=new_comment_dict)).content.decode('utf-8')
+    return response(body=dict(old_html_id=old_html_id, new_html=new_html, new_html_id=new_comment.get_html_id()))
 
 
 @require_POST
