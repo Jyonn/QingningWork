@@ -220,7 +220,13 @@ def user(request):
 
 def thumb_page(request, owner_id, work_id, event_id):
     try:
-        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
+        event = Timeline.objects.get(
+            pk=event_id,
+            related_work__pk=work_id,
+            related_work__is_delete=False,
+            owner__pk=owner_id,
+            is_delete=False,
+        )
         work = event.related_work
     except:
         return render(request, 'v2/login.html')
@@ -236,7 +242,13 @@ def thumb_page(request, owner_id, work_id, event_id):
 
 def comment_page(request, owner_id, work_id, event_id):
     try:
-        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
+        event = Timeline.objects.get(
+            pk=event_id,
+            related_work__pk=work_id,
+            related_work__is_delete=False,
+            owner__pk=owner_id,
+            is_delete=False,
+        )
         work = event.related_work
     except:
         return render(request, 'v2/login.html')
@@ -250,7 +262,13 @@ def comment_page(request, owner_id, work_id, event_id):
 
 def event_page(request, owner_id, work_id, event_id):
     try:
-        event = Timeline.objects.get(pk=event_id, related_work__pk=work_id, owner__pk=owner_id)
+        event = Timeline.objects.get(
+            pk=event_id,
+            related_work__pk=work_id,
+            related_work__is_delete=False,
+            owner__pk=owner_id,
+            is_delete=False,
+        )
     except:
         return render(request, 'v2/login.html')
 
@@ -380,7 +398,7 @@ def user_home(request, user_id, role_id):
     events = Timeline.objects.filter(
         is_delete=False,
         owner=o_visit_user,
-        related_work__is_updated=False,
+        # related_work__is_updated=False,
         related_work__is_delete=False,
         related_work__is_public=True,
     ).order_by('-pk')[:20]
