@@ -150,14 +150,7 @@ $(document).ready(function () {
     });
 
     let share_menu_container = $('#share-menu-container'),
-        share_mask = $('#share-mask'),
-        share_btn = $('#share-btn');
-    share_btn.on('click', function () {
-        share_menu_container.attr('data-work', share_btn.attr('data-work'));
-        share_menu_container.animate({bottom: '0'}, function () {
-            share_mask.css('display', 'inherit');
-        })
-    });
+        share_mask = $('#share-mask');
     share_mask.on('click', function () {
         share_menu_container.animate({bottom: '-105px'});
         share_mask.css('display', 'none');
@@ -244,3 +237,13 @@ $(document).ready(function () {
         window.location.href = `/v2/work/style/${share_menu_container.attr('data-work')}/3`
     });
 });
+
+function do_share(raw_share_btn) {
+    let share_btn = $(raw_share_btn),
+        share_mask = $('#share-mask'),
+        share_menu_container = $('#share-menu-container');
+    share_menu_container.attr('data-work', share_btn.attr('data-work'));
+    share_menu_container.animate({bottom: '0'}, function () {
+        share_mask.css('display', 'inherit');
+    });
+}
