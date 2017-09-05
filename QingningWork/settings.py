@@ -144,7 +144,7 @@ WORK_URL = os.path.join(MEDIA_ROOT, 'work', '')
 USER_URL = os.path.join(MEDIA_ROOT, 'user', '')
 AVATAR_URL = os.path.join(MEDIA_ROOT, 'avatar', '')
 
-STATIC_URL = '/static/'
+STATIC_URL = '/'
 STATIC_FILE = os.path.join(BASE_DIR, "static_files")
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 STATICFILES_DIRS = (
