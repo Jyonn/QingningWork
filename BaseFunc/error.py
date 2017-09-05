@@ -1,5 +1,6 @@
 # coding=utf-8
 class Error:
+    REQUIRE_BASE64 = 1040
     COMMENT_DELETE_ERROR = 1039
     WORK_SAVE_ERROR = 1038
     CONTENT_NONE = 1037
@@ -86,4 +87,5 @@ class Error:
         (CONTENT_NONE, '正文不能为空'),
         (WORK_SAVE_ERROR, '作品保存失败'),
         (COMMENT_DELETE_ERROR, '评论删除失败'),
+        (REQUIRE_BASE64, '需要base64编码'),
     ]

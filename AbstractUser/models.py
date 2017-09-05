@@ -146,6 +146,7 @@ class AbstractUser(models.Model):
         salt, encrypted = AbstractUser.get_encrypt_password(raw_password)
         self.salt = salt
         self.password = encrypted
+        self.save()
         return self
 
     def get_avatar(self):

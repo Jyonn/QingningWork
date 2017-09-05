@@ -1,0 +1,5 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/dataSources.local.xml
+.idea/preferred-vcs.xml
+.idea/workspace.xml
+mysql.local.conf

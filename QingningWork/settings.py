@@ -156,4 +156,4 @@ STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.AppDirectoriesFinder"
 )
 
-SESSION_COOKIE_AGE = 60*60*24
+SESSION_COOKIE_AGE = 30*60*60*24

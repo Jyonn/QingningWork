@@ -20,7 +20,10 @@ def require_params(need_params, decode=True):
                 if need_param in request.POST:
                     if decode:
                         x = request.POST[need_param]
-                        c = base64.decodebytes(bytes(x, encoding='utf8')).decode()
+                        try:
+                            c = base64.decodebytes(bytes(x, encoding='utf8')).decode()
+                        except:
+                            return error_response(Error.REQUIRE_BASE64)
                         request.POST[need_param] = c
                 else:
                     return error_response(Error.REQUIRE_PARAM, append_msg=need_param)
