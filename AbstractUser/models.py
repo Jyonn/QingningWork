@@ -151,7 +151,7 @@ class AbstractUser(models.Model):
 
     def get_avatar(self):
         from BaseFunc.cdn import QiNiu
-        return QiNiu.host + '/' + self.avatar
+        return QiNiu.host + '/qn/' + self.avatar
 
     def get_introduce(self):
         return '他还没有填写介绍。' if self.introduce in [None, ''] else self.introduce

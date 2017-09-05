@@ -6,7 +6,7 @@ class QiNiu:
     access_key = 'oX6jJmjudP-3BXHJ3A8lYjEQRlQHBc70734ZyTR4'
     secret_key = 'l7bAEUyU00tcjYGQ63TZw1QGksLJXXZQ2q_EqDyh'
     bucket_name = 'qingningimage'
-    host = 'http://ooj8t2ocf.bkt.clouddn.com'
+    host = 'https://res.jzdxq.cn'
     q = Auth(access_key, secret_key)
 
     @staticmethod

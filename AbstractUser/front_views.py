@@ -510,6 +510,7 @@ def info(request):
 
 
 def work_style(request, work_id, style_id):
+    return render(request, 'v2/style/'+style_id+'.html')
     o_work = Work.objects.get(pk=work_id, is_delete=False, is_public=True)
     work_info = dict(
         writer_name=o_work.writer_name,

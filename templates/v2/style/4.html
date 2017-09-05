@@ -1,0 +1,34 @@
+{% load static %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{{ work_info.work_name }} - {{ work_info.writer_name }}</title>
+    <link href="{% static "v2/css/work-style.css" %}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="https://cdn.webfont.youziku.com/wwwroot/js/wf/youziku.api.min.js"></script>
+</head>
+<body class="work-style-4-body">
+    <div class="work-style-4-head-box">
+        <div class="work-style-4-head-inner-box">
+            <div class="work-style-4-title-box">
+                <div class="work-style-4-name">{{ work_info.work_name }}</div>
+                <img class="work-style-4-name-diamond" src="http://ooj8t2ocf.bkt.clouddn.com/qn/img/diamond.png">
+                <div class="work-style-4-writer">{{ work_info.writer_name }}</div>
+                <div class="work-style-4-time">{{ work_info.date_normal }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="work-style-4-diamond-box">
+        <img class="work-style-4-diamond" src="http://ooj8t2ocf.bkt.clouddn.com/qn/img/diamond.png">
+    </div>
+    <pre class="work-style-4-content">{{ work_info.content }}</pre>
+    <div class="work-style-4-diamond-box">
+        <img class="work-style-4-diamond" src="http://ooj8t2ocf.bkt.clouddn.com/qn/img/diamond.png">
+    </div>
+    <script type="text/javascript">
+       $youziku.load(".work-style-4-writer", "03e7a2705e504e28aa41ecbb5bf1ce94", "hdjshusonger");
+       $youziku.load(".work-style-4-time", "03e7a2705e504e28aa41ecbb5bf1ce94", "hdjshusonger");
+       $youziku.load(".work-style-4-content", "03e7a2705e504e28aa41ecbb5bf1ce94", "hdjshusonger");
+       $youziku.load(".work-style-4-name", "d26a2ece5c304259be6bf4d9e1ef625d", "CTBiaoSongSJ");
+       $youziku.draw();
+    </script>
+</body>
